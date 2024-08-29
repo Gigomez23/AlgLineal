@@ -108,35 +108,3 @@ def matriz_identidad(dimension):
     identidad = [[1 if i == j else 0 for j in range(dimension)] for i in range(dimension)]
     return identidad
 
-
-def resolver_matriz():
-    """
-         Funcion para resolver la matriz.
-         Contiene las demas funciones que forman parte del proeceso de resolución
-         """
-    print("Elija una opción:")
-    print("1. Crear matriz aleatoria")
-    print("2. Ingresar matriz manualmente")
-
-    opcion = int(input("Ingrese su opción: "))
-    dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
-
-    if opcion == 1:
-        matriz = crear_matriz_aleatoria(dimension)
-    elif opcion == 2:
-        matriz = ingresar_matriz_usuario(dimension)
-        if matriz is None:
-            return
-    else:
-        print("Opción no válida")
-        return
-
-    print("Matriz inicial:")
-    imprimir_matriz(matriz)
-
-    if escalonar_matriz(matriz, dimension):
-        print("La matriz ha sido transformada a una matriz identidad:")
-        identidad = matriz_identidad(dimension)
-        imprimir_matriz(identidad)
-    else:
-        print("No se pudo resolver la matriz ya que es inconsistente.")

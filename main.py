@@ -1,8 +1,9 @@
-# Version 1.0 de Programa de resolucion de funciones lineales para
-#clase de Algebra Lineal.
-#Integrantes de grupo: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
-from funciones import *
+# Version 1.1 de Programa de resolucion de funciones lineales para
+# clase de Algebra Lineal.
+# Integrantes de grupo: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
+from funcionesDeMenu.menu import menuPrincipal
 
-# funcion main
+# fucion main
 if __name__ == '__main__':
-    resolver_matriz()
+    menuPrincipal.show()
+
