@@ -119,12 +119,12 @@ def resolver_matriz():
     print("2. Ingresar matriz manualmente")
 
     opcion = int(input("Ingrese su opción: "))
-    tamano = int(input("Ingrese el tamaño de la matriz cuadrada: "))
+    dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
 
     if opcion == 1:
-        matriz = crear_matriz_aleatoria(tamano)
+        matriz = crear_matriz_aleatoria(dimension)
     elif opcion == 2:
-        matriz = ingresar_matriz_usuario(tamano)
+        matriz = ingresar_matriz_usuario(dimension)
         if matriz is None:
             return
     else:
@@ -134,9 +134,9 @@ def resolver_matriz():
     print("Matriz inicial:")
     imprimir_matriz(matriz)
 
-    if escalonar_matriz(matriz, tamano):
+    if escalonar_matriz(matriz, dimension):
         print("La matriz ha sido transformada a una matriz identidad:")
-        identidad = matriz_identidad(tamano)
+        identidad = matriz_identidad(dimension)
         imprimir_matriz(identidad)
     else:
         print("No se pudo resolver la matriz ya que es inconsistente.")
