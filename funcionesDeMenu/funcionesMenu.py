@@ -1,46 +1,43 @@
+"""
+Archivo: funcionesMenu.py 1.5.0
+Descripcion: archivo con funciones para el menu
+"""
 import os
-from funciones import *
+from historial import *
 
 
 def matriz_aleatoria():
     """
-        Funcion que crea una matriz de forma aleatoria.
-        Calcula la matriz identidad.
-        Imprime la matriz identidad.
+    Funcion que pide al usuario digitar dimension y titulo de matriz.
+    Crea una matriz aleatoria y la agrega a la lista de historial.
     """
-    dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
-    matriz = crear_matriz_aleatoria(dimension)
-
-    print("Matriz Inicial:")
-    imprimir_matriz(matriz)
-
-    if escalonar_matriz(matriz, dimension):
-        print("La matriz ha sido transformada a una matriz identidad:")
-        identidad = matriz_identidad(dimension)
-        imprimir_matriz(identidad)
-    else:
-        print("No se pudo resolver la matriz ya que es inconsistente.")
+    try:
+        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
+        titulo_matriz = input("Ingrese el nombre de la matriz: ")
+        agregar_matriz_aleatoria(dimension, titulo_matriz)
+    except ValueError:
+        print("Por favor digite un valor numerico como dimensión. ")
 
     os.system("pause")
 
 
 def matriz_manul():
     """
-            Funcion que crea una matriz pidiendo al usuario los valores
-            Calcula la matriz identidad.
-            Imprime la matriz identidad.
-        """
-    dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
-    matriz = ingresar_matriz_usuario(dimension)
-
-    print("Matriz Inicial:")
-    imprimir_matriz(matriz)
-
-    if escalonar_matriz(matriz, dimension):
-        print("La matriz ha sido transformada a una matriz identidad:")
-        identidad = matriz_identidad(dimension)
-        imprimir_matriz(identidad)
-    else:
-        print("No se pudo resolver la matriz ya que es inconsistente.")
+    Funcion que pide al usuario digitar dimension y titulo de matriz.
+    Crea una matriz de forma manual y la agrega a la lista de historial.
+    """
+    try:
+        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
+        titulo_matriz = input("Ingrese el nombre de la matriz: ")
+        agregar_matriz_manual(dimension, titulo_matriz)
+    except ValueError:
+        print("Por favor digite un valor numerico como dimension. ")
 
     os.system("pause")
+
+
+def imprimir_historial():
+    """
+    Funcion de menu que ejecuta la seleccion de matrices del historial.
+    """
+    mostrar_matrices_y_seleccionar()

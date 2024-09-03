@@ -1,5 +1,10 @@
+"""
+Archivo: funciones 1.3
+Descripcion: archivo que gestiona la creacion de los objetos matriz.
+Los agrega a la lista que sirve de historial.
+"""
 from fractions import Fraction
-
+import random
 
 def crear_matriz_aleatoria(dimension):
     """
@@ -10,7 +15,6 @@ def crear_matriz_aleatoria(dimension):
 
     Returns: una matriz con la dimension especificada y numeros aleatorios
     """
-    import random
     matriz = [[random.randint(1, 10) for _ in range(dimension)] for _ in range(dimension)]
     return matriz
 
@@ -43,6 +47,7 @@ def imprimir_matriz(matriz):
      Args:
          matriz (int): lista con los datos de la matriz.
      """
+
     # Definir un ancho fijo para los elementos (ajustable según lo necesites)
     ancho = 10
 
@@ -98,13 +103,13 @@ def escalonar_matriz(matriz, dimension):
 
 def matriz_identidad(dimension):
     """
-         Funcion crear la matriz identidad.
+     Funcion crear la matriz identidad.
 
-         Args:
-             dimension (int): la dimension de la matriz
+     Args:
+         dimension (int): la dimension de la matriz
 
-         Returns: la lista que contiene la matriz identidad.
-         """
+     Returns: la lista que contiene la matriz identidad.
+     """
     identidad = [[1 if i == j else 0 for j in range(dimension)] for i in range(dimension)]
     return identidad
 
