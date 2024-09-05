@@ -55,13 +55,7 @@ def mostrar_matrices_y_seleccionar():
             print(f"\nMatriz seleccionada: {matriz_seleccionada.nombre}")
 
             # Imprimir la matriz principal
-            print("Matriz principal:")
-            matriz_seleccionada.imprimir_matriz(matriz_seleccionada.matriz)
-
-            # Crear e imprimie la matriz identidad
-            matriz_seleccionada.crear_matriz_identidad()
-            print("Matriz identidad:")
-            matriz_seleccionada.imprimir_matriz(matriz_seleccionada.matriz_identidad)
+            matriz_seleccionada.imprimir_matrices_para_historial()
         else:
             print("Selección inválida. Intente de nuevo.")
     except ValueError:

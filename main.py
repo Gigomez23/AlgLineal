@@ -11,3 +11,5 @@ from funcionesDeMenu.menu import menuPrincipal
 if __name__ == '__main__':
     menuPrincipal.show()
 
+#todo: fix the clear screen issue
+#todo: fix the historial only showing matriz identidad
