@@ -1,5 +1,5 @@
 """
-Archivo: menu 1.3
+Archivo: menu 1.3.1
 Descripcion: Archivo que contiene el menu y sus metodos.
 Crea el menu y sus opciones.
 """
@@ -16,7 +16,7 @@ menu_format.set_subtitle_align('center')
 menuPrincipal = ConsoleMenu("Calculadora de Matrices", "Digite una opcion para crear y encontrar "
                                                        "la matriz identidad de una matriz "
                                                        "aleatoria o hecha manualmente.",
-                             clear_screen=True, exit_option_text="Salir", exit_menu_char="0")
+                             clear_screen=True, exit_option_text="Salir")
 menuPrincipal.formatter = menu_format
 
 # Se crea las opcoines que se van a presentar en el menu
