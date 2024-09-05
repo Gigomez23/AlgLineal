@@ -1,5 +1,5 @@
 """
-Archivo: clase_sistema_ecuaciones.py 2.0
+Archivo: clase_sistema_ecuaciones.py 2.0.2
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
@@ -122,21 +122,17 @@ def CreadorDeEcuaciones():
 
 
     # Función para pedir al usuario los elementos de la matriz
-        def obtener_matriz(self):
+        def obtener_matriz(self, name, filas, columna):
             """
             Funcion que sirve para ingresar los datos para la matriz y la clase.
             """
-            name = input("Introduce el nombre de la matriz: ")
-            filas = int(input("Introduce el número de filas de la matriz: "))
-            columnas_totales = int(
-                input("Introduce el número de columnas de la matriz aumentada (incluyendo el vector solución): "))
+            self.nombre = name
 
             matriz = []
             print("Introduce los elementos de la matriz fila por fila (separados por espacios):")
             for i in range(filas):
                 fila_matriz = input(f"Fila {i + 1}: ").split()
                 matriz.append([Fraction(x) for x in fila_matriz])
-            self.nombre = name
             self.matriz = matriz
             self.filas = len(self.matriz)
             self.columnas = len(self.matriz[0]) - 1  # La última columna es el vector de soluciones

@@ -1,5 +1,5 @@
 """
-Archivo: menu 1.3.1
+Archivo: menu 1.3.23
 Descripcion: Archivo que contiene el menu y sus metodos.
 Crea el menu y sus opciones.
 """
@@ -8,14 +8,15 @@ from consolemenu.items import *
 from funcionesDeMenu.funcionesMenu import *
 from consolemenu.menu_component import Dimension
 
+#se crea un objeto para formatear el menu
 menu_format = MenuFormatBuilder()
-menu_format.set_title_align('center')                   # Center the menu title (by default it's left-aligned)
+menu_format.set_title_align('center')
 menu_format.set_subtitle_align('center')
 
 # Se crea el menu como objeto
-menuPrincipal = ConsoleMenu("Calculadora de Matrices", "Digite una opcion para crear y encontrar "
-                                                       "la matriz identidad de una matriz "
-                                                       "aleatoria o hecha manualmente.",
+menuPrincipal = ConsoleMenu("Calculadora de Matrices", "Digite una opcion para crear y resolver "
+                                                       "una matriz aumentada o reducida y escalonada con "
+                                                       "una matriz aleatoria o digitar una matriz manualmente. ",
                              clear_screen=True, exit_option_text="Salir")
 menuPrincipal.formatter = menu_format
 

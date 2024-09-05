@@ -45,7 +45,14 @@ def matriz_reducida():
     Funcion que pide al usuario digitar una matriz reducidad y resolver.
     :return:
     """
-    resolver_sistema_de_ecuaciones()
+    try:
+        fila = int(input("Ingrese el numero de filas de la matriz"))
+        columnas = int(input("Ingrese el numero de columnas de la matriz aumentada (incluyendo el vector solucion"))
+        nombre = input("Ingrese el nombre de la matriz: ")
+        resolver_sistema_de_ecuaciones(nombre, fila, columnas)
+    except ValueError:
+        print("Por favor digite un valor numerico como dimension. ")
+
     os.system("pause")
     pass
 

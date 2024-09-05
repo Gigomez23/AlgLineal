@@ -34,12 +34,12 @@ def agregar_matriz_manual(dimension, nombre):
     historial_de_matrices[-1].ingresar_matriz_usuario(dimension, nombre)
     historial_de_matrices[-1].resolver_matriz(imprimir_solucion=True)
 
-def resolver_sistema_de_ecuaciones():
+def resolver_sistema_de_ecuaciones(nombre, fila, columna):
     """
     Funcion del menu para resolver un sistema de ecuaciones.
     """
     historial_de_matrices.append(CreadorDeEcuaciones())
-    historial_de_matrices[-1].obtener_matriz()
+    historial_de_matrices[-1].obtener_matriz(nombre, fila, columna)
     historial_de_matrices[-1].reducir()
     historial_de_matrices[-1].mostrar_matriz()
     historial_de_matrices[-1].mostrar_solucion()
