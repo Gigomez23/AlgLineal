@@ -2,6 +2,7 @@
 Archivo: funciones 1.3
 Descripcion: archivo que gestiona la creacion de los objetos matriz.
 Los agrega a la lista que sirve de historial.
+Este archivo esta defasado y sirve como guia de las funciones.
 """
 from fractions import Fraction
 import random

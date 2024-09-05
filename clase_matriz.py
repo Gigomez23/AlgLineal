@@ -1,5 +1,11 @@
+"""
+Archivo: clase_matriz 2.2
+Descripcion: archivo que contiene los atributos y metodos de la clase Matriz.
+contiene CreadorDeMatriz que funciona como constructor de la clase.
+"""
 import random
 from fractions import Fraction
+import copy
 
 
 def CreadorDeMatriz():
@@ -8,107 +14,138 @@ def CreadorDeMatriz():
             self.nombre = ""
             self.dimensiones = 0
             self.matriz = []
-            self.matriz_identidad = []
-            self.vector_solucion = []
+            self.matriz_original = []
 
         def crear_matriz_aleatoria(self, dimensiones, name):
             """
-            Funcion para crear una matriz con valores aleatorios
+            Función para crear una matriz con valores aleatorios, incluyendo la columna del vector solución.
 
             Args:
-                dimensiones (int): dimension de la matriz
+                dimensiones (int): dimensión de la matriz (sin contar la columna del vector solución).
             """
             self.nombre = name
             self.dimensiones = dimensiones
-            self.matriz = [[random.randint(1, 10) for _ in range(dimensiones)] for _ in range(dimensiones)]
+            self.matriz = [[Fraction(random.randint(1, 10)) for _ in range(dimensiones + 1)] for _ in
+                           range(dimensiones)]
+
+            # Guardar copia original de la matriz
+            self.matriz_original = copy.deepcopy(self.matriz)
 
         def ingresar_matriz_usuario(self, dimensiones, name):
             """
-             Funcion que pide al usuario ingresar los datos.
-             para crear una matriz de forma manual.
+            Función que pide al usuario ingresar los datos para crear una matriz
+            extendida (incluyendo la columna del vector solución).
 
-             Args:
-                 dimensiones (int): dimensione de la matriz
-             """
+            Args:
+                dimensiones (int): dimensión de la matriz (sin contar la columna del vector solución).
+            """
             self.nombre = name
             self.dimensiones = dimensiones
             matriz = []
-            print("Por favor, ingrese los elementos de la matriz fila por fila.")
+            print("Por favor, ingrese los elementos de la matriz (incluyendo la columna del vector solución).")
             for i in range(self.dimensiones):
-                fila = list(map(int, input(
-                    f"Ingrese los elementos de la fila {i + 1} separados por espacio (solo números positivos): ").split()))
-                if len(fila) != self.dimensiones:
-                    print(f"Error: La fila debe tener {self.dimensiones} elementos.")
+                fila = list(map(Fraction, input(
+                    f"Ingrese los elementos de la fila {i + 1} separados por espacio "
+                    f"(incluya el valor de la columna del vector solución): ").split()))
+                if len(fila) != self.dimensiones + 1:
+                    print(
+                        f"Error: La fila debe tener {self.dimensiones + 1} elementos (la última "
+                        f"columna es el vector solución).")
+                    return
                 matriz.append(fila)
+
             self.matriz = matriz
+
+            # Guardar copia original de la matriz
+            self.matriz_original = copy.deepcopy(self.matriz)
 
         def imprimir_matriz(self, matriz):
             """
-             Funcion para imprimir una matriz.
+            Función para imprimir una matriz.
 
-             Args:
-                 matriz (int): lista con los datos de la matriz.
-             """
+            Args:
+                matriz (list): lista con los datos de la matriz.
+            """
             ancho = 10
             for fila in matriz:
-                print(" ".join(f"{str(Fraction(elem).limit_denominator()):^{ancho}}" if isinstance(elem, float)
-                               else f"{str(elem):^{ancho}}" for elem in fila))
+                print(" ".join(f"{str(elem):^{ancho}}" for elem in fila))
             print()
 
         def escalonar_matriz(self):
             """
-                 Funcion para escalonar la matriz.
-             """
+            Función para escalonar la matriz.
+            """
             dimensiones = self.dimensiones
-            matriz = self.matriz
+            matriz_local = self.matriz
 
             for i in range(dimensiones):
-                pivote = matriz[i][i]
+                pivote = matriz_local[i][i]
                 if pivote == 0:
                     for j in range(i + 1, dimensiones):
-                        if matriz[j][i] != 0:
-                            matriz[i], matriz[j] = matriz[j], matriz[i]
+                        if matriz_local[j][i] != 0:
+                            # Intercambiar filas en la matriz
+                            matriz_local[i], matriz_local[j] = matriz_local[j], matriz_local[i]
                             print(f"Intercambio: F{i + 1} <--> F{j + 1}")
-                            self.imprimir_matriz(self.matriz)
-                            pivote = matriz[i][i]
+                            self.imprimir_matriz(matriz_local)
+                            pivote = matriz_local[i][i]
                             break
                     else:
                         print(f"La matriz es inconsistente en la fila {i + 1}.")
                         return False
 
+                # Escalar fila para que el pivote sea 1
                 if pivote != 1:
-                    matriz[i] = [x / pivote for x in matriz[i]]
+                    matriz_local[i] = [x / pivote for x in matriz_local[i]]
                     pivote_fraction = Fraction(pivote)
                     print(f"F{i + 1} --> (1/{pivote_fraction.limit_denominator()}) * F{i + 1}")
-                    self.imprimir_matriz(self.matriz)
+                    self.imprimir_matriz(matriz_local)
 
+                # Eliminar los elementos en las otras filas
                 for j in range(dimensiones):
                     if j != i:
-                        factor = matriz[j][i]
+                        factor = matriz_local[j][i]
                         factor_fraction = Fraction(factor)
-                        matriz[j] = [matriz[j][k] - factor * matriz[i][k] for k in range(dimensiones)]
+                        matriz_local[j] = [matriz_local[j][k] - factor * matriz_local[i][k] for k in
+                                           range(dimensiones + 1)]
                         print(f"F{j + 1} --> F{j + 1} - ({factor_fraction.limit_denominator()}) * F{i + 1}")
-                        self.imprimir_matriz(self.matriz)
+                        self.imprimir_matriz(matriz_local)
             return True
 
-        def crear_matriz_identidad(self):
+        def resolver_matriz(self, imprimir_solucion=True):
             """
-             Funcion para crear la matriz identidad.
-             """
-            self.matriz_identidad = [[1 if i == j else 0 for j in range(self.dimensiones)] for i in
-                                     range(self.dimensiones)]
+            Función para resolver la matriz extendida utilizando escalonamiento.
+            Args:
+                imprimir_solucion (bool): Si es True, imprime el vector solución después de resolver la matriz.
+            """
+            # Trabajar en una copia de la matriz original
+            self.matriz = copy.deepcopy(self.matriz_original)
 
-        def resolver_matriz(self):
-            """
-                 Funcion para resolver la matriz.
-             """
-            print("Matriz inicial:")
+            print("Matriz inicial (incluyendo la columna del vector solución):")
             self.imprimir_matriz(self.matriz)
 
             if self.escalonar_matriz():
-                print("La matriz ha sido transformada a una matriz identidad:")
-                self.imprimir_matriz(self.matriz_identidad)
+                print("La matriz ha sido escalonada:")
+                self.imprimir_matriz(self.matriz)
+
+                if imprimir_solucion:
+                    print("Solución del sistema (Vector Solución Final):")
+                    vector_solucion = [self.matriz[i][-1] for i in range(self.dimensiones)]
+                    self.imprimir_matriz([[x] for x in vector_solucion])
             else:
                 print("La matriz es inconsistente.")
+                print("No se pudo obtener una solución.")
+
+        def imprimir_matrices_para_historial(self):
+            """
+            Función que imprime la matriz original y la matriz escalonada.
+            """
+            print("Matriz Inicial (incluyendo la columna del vector solución): ")
+            self.imprimir_matriz(self.matriz_original)
+
+            print("")
+
+            print("Matriz Escalonada: ")
+            self.imprimir_matriz(self.matriz)
 
     return Matriz()
+

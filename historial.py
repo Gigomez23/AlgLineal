@@ -1,5 +1,5 @@
 """
-Archivo: historial 1.0
+Archivo: historial 1.3
 Descripcion: archivo que gestiona la creacion de los objetos matriz.
 Los agrega a la lista que sirve de historial.
 """
@@ -18,7 +18,7 @@ def agregar_matriz_aleatoria(dimension, nombre):
     """
     historial_de_matrices.append(CreadorDeMatriz())
     historial_de_matrices[-1].crear_matriz_aleatoria(dimension, nombre)
-    historial_de_matrices[-1].resolver_matriz()
+    historial_de_matrices[-1].resolver_matriz(imprimir_solucion=True)
 
 
 def agregar_matriz_manual(dimension, nombre):
@@ -31,7 +31,7 @@ def agregar_matriz_manual(dimension, nombre):
     """
     historial_de_matrices.append(CreadorDeMatriz())
     historial_de_matrices[-1].ingresar_matriz_usuario(dimension, nombre)
-    historial_de_matrices[-1].resolver_matriz()
+    historial_de_matrices[-1].resolver_matriz(imprimir_solucion=True)
 
 
 def mostrar_matrices_y_seleccionar():
@@ -55,13 +55,7 @@ def mostrar_matrices_y_seleccionar():
             print(f"\nMatriz seleccionada: {matriz_seleccionada.nombre}")
 
             # Imprimir la matriz principal
-            print("Matriz principal:")
-            matriz_seleccionada.imprimir_matriz(matriz_seleccionada.matriz)
-
-            # Crear e imprimie la matriz identidad
-            matriz_seleccionada.crear_matriz_identidad()
-            print("Matriz identidad:")
-            matriz_seleccionada.imprimir_matriz(matriz_seleccionada.matriz_identidad)
+            matriz_seleccionada.imprimir_matrices_para_historial()
         else:
             print("Selección inválida. Intente de nuevo.")
     except ValueError:
