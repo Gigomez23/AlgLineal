@@ -73,7 +73,7 @@ def CreadorDeMatriz():
 
         def escalonar_matriz(self):
             """
-            Función para escalonar la matriz.
+            Función para escalonar la matriz. Imprime cada paso del proceso de escalonamiento.
             """
             dimensiones = self.dimensiones
             matriz_local = self.matriz

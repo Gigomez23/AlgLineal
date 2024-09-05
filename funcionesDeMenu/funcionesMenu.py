@@ -1,5 +1,5 @@
 """
-Archivo: funcionesMenu.py 1.5.0
+Archivo: funcionesMenu.py 1.6.0
 Descripcion: archivo con funciones para el menu
 """
 import os
@@ -40,6 +40,14 @@ def matriz_manul():
     os.system("pause")
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def matriz_reducida():
+    """
+    Funcion que pide al usuario digitar una matriz reducidad y resolver.
+    :return:
+    """
+    resolver_sistema_de_ecuaciones()
+    os.system("pause")
+    pass
 
 def imprimir_historial():
     """
