@@ -1,15 +1,17 @@
 """
-Archivo: clase_sistema_ecuaciones.py 2.0.2
+Archivo: clase_sistema_ecuaciones.py 2.2.2
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
 from fractions import Fraction
+
 
 def CreadorDeEcuaciones():
     """
     Funcion que inicializa una instancia del objeto GaussJordan
     :return (obj): clase GaussJordan
     """
+
     class GaussJordan:
         """
         Esta clase contiene varios objetos de matrices reducidas y metodos para resolver.
@@ -19,10 +21,12 @@ def CreadorDeEcuaciones():
             matriz (list): lista de datos que representan las matrices
             filas (int): dato que representa la cantidad de filas en la matriz
             columnas (int): dato que representa la cantidad de columnas en la matriz
+            pasos (int): dato que representa los pasos tomados para resolver.
         """
-        def _init_(self):
+        def __init__(self):
             self.nombre = ""
             self.matriz = []
+            self.pasos = 0
 
         def pivotea(self, fila, columna):
             """
@@ -56,19 +60,26 @@ def CreadorDeEcuaciones():
 
         def reducir(self):
             """
-            Aplica el método de Gauss-Jordan completo a la matriz.
+            Aplica el método de Gauss-Jordan completo a la matriz, mostrando cada paso.
             """
             fila_actual = 0
             for columna_actual in range(self.columnas):
                 # Paso 1: Asegurar que el pivote no sea 0
                 self.pivotea(fila_actual, columna_actual)
 
+                # Mostrar el estado de la matriz tras pivoteo
+                self.mostrar_matriz_en_proceso()
+
                 # Paso 2: Normalizar la fila para que el pivote sea 1
                 if self.matriz[fila_actual][columna_actual] != 0:
                     self.normaliza_fila(fila_actual, columna_actual)
+                    # Mostrar el estado de la matriz tras normalización
+                    self.mostrar_matriz_en_proceso()
 
                     # Paso 3: Hacer ceros en las demás filas en la columna del pivote
                     self.hacer_ceros_columna(fila_actual, columna_actual)
+                    # Mostrar el estado de la matriz tras hacer ceros
+                    self.mostrar_matriz_en_proceso()
 
                     # Pasar a la siguiente fila
                     fila_actual += 1
@@ -89,23 +100,41 @@ def CreadorDeEcuaciones():
                 for j in range(self.columnas):
                     if self.matriz[i][j] == 1:
                         pivote_encontrado = True
-                        soluciones[j] = self.matriz[i][-1]
+                        solucion = self.matriz[i][-1]
+
+                        # Si la constante es 0, la omitimos en la solución
+                        if solucion != 0:
+                            expresion = f"{solucion}"
+                        else:
+                            expresion = ""
+
                         for k in range(j + 1, self.columnas):
-                            if self.matriz[i][k] != 0:
-                                soluciones[j] = f"{self.matriz[i][-1]} - {self.matriz[i][k]}x{k + 1}"
+                            coeficiente = self.matriz[i][k]
+                            if coeficiente != 0:
+                                signo = '+' if coeficiente < 0 else '-'
+                                coeficiente = abs(coeficiente)
+                                expresion += f" {signo} {coeficiente}x{k + 1}"
+                        soluciones[j] = expresion.strip()
                         break
                 if not pivote_encontrado:
-                    variables_libres.append(f"x{i + 1}")
+                    variables_libres.append(f"x{j + 1}")
 
             return soluciones, variables_libres
 
         def mostrar_matriz(self):
-            """
-            Imprime la matriz actual.
-            """
-            print("\nMatriz escalonada reducida:")
+            """Imprime la matriz actual."""
+            print(f"\nPaso {self.pasos}:")
             for fila in self.matriz:
-                print([str(elemento) for elemento in fila])
+                print([str(Fraction(elemento)) for elemento in fila])
+            self.pasos += 1
+
+        def mostrar_matriz_en_proceso(self):
+            pasos_local = self.pasos
+            print(f"\nPaso {pasos_local}:")
+            for fila in self.matriz:
+                print([str(Fraction(elemento)) for elemento in fila])
+            self.pasos += 1
+
 
         def mostrar_solucion(self):
             """
@@ -120,8 +149,10 @@ def CreadorDeEcuaciones():
                 else:
                     print(f"x{i + 1} es libre")
 
+            if variables_libres:
+                print(f"\nVariables libres: {', '.join(variables_libres)}")
 
-    # Función para pedir al usuario los elementos de la matriz
+
         def obtener_matriz(self, name, filas, columna):
             """
             Funcion que sirve para ingresar los datos para la matriz y la clase.
@@ -144,6 +175,5 @@ def CreadorDeEcuaciones():
             """
             self.mostrar_matriz()
             self.mostrar_solucion()
-
 
     return GaussJordan()

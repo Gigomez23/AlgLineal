@@ -46,8 +46,8 @@ def matriz_reducida():
     :return:
     """
     try:
-        fila = int(input("Ingrese el numero de filas de la matriz"))
-        columnas = int(input("Ingrese el numero de columnas de la matriz aumentada (incluyendo el vector solucion"))
+        fila = int(input("Ingrese el numero de filas de la matriz: "))
+        columnas = int(input("Ingrese el numero de columnas de la matriz aumentada (incluyendo el vector solucion): "))
         nombre = input("Ingrese el nombre de la matriz: ")
         resolver_sistema_de_ecuaciones(nombre, fila, columnas)
     except ValueError:

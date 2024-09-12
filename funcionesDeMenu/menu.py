@@ -1,5 +1,5 @@
 """
-Archivo: menu 1.3.23
+Archivo: menu 1.3.4
 Descripcion: Archivo que contiene el menu y sus metodos.
 Crea el menu y sus opciones.
 """
@@ -23,7 +23,8 @@ menuPrincipal.formatter = menu_format
 # Se crea las opcoines que se van a presentar en el menu
 opcion_matriz_aleatoria = FunctionItem("Resolver matriz creada de forma aleatoria.", matriz_aleatoria)
 opcion_matriz_manual = FunctionItem("Resolver matriz aumentada ingresada manualmente.", matriz_manul)
-opcion_sistema_ecuaciones = FunctionItem("Resolver sistema de ecuaciones con matriz reducida. ", matriz_reducida)
+opcion_sistema_ecuaciones = FunctionItem("Resolver sistema de ecuaciones con matriz reducida "
+                                         "por metodo de escalonado. ", matriz_reducida)
 opcion_historial_matriz = FunctionItem("Escoger una matriz del historial.", imprimir_historial)
 
 # se agregan las opciones al menu
