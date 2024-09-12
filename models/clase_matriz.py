@@ -7,9 +7,23 @@ import random
 from fractions import Fraction
 import copy
 
-
 def CreadorDeMatriz():
+    """
+    Funcion que inicializa una instancia del objeto de matriz.
+
+    Returns:
+         (obj): clase Matriz
+    """
     class Matriz:
+        """
+        Esta clase contiene varios objetos de matrices aumentadas cuadradas.
+
+        Args:
+            nombre (str): cadena de caracteres que conforman el nombre para identificar el objeto.
+            dimensiones (int): dato que representa la dimension de la matriz cuadrada
+            matriz (list): lista que representa la matriz
+            matriz_original (list): lista que donde se guarda la matriz original
+        """
         def __init__(self):
             self.nombre = ""
             self.dimensiones = 0
@@ -73,7 +87,7 @@ def CreadorDeMatriz():
 
         def escalonar_matriz(self):
             """
-            Función para escalonar la matriz.
+            Función para escalonar la matriz. Imprime cada paso del proceso de escalonamiento.
             """
             dimensiones = self.dimensiones
             matriz_local = self.matriz
@@ -131,9 +145,21 @@ def CreadorDeMatriz():
                     print("Solución del sistema (Vector Solución Final):")
                     vector_solucion = [self.matriz[i][-1] for i in range(self.dimensiones)]
                     self.imprimir_matriz([[x] for x in vector_solucion])
+                    self.imprimir_soluciones_formateadas(vector_solucion)
             else:
                 print("La matriz es inconsistente.")
                 print("No se pudo obtener una solución.")
+
+        def imprimir_soluciones_formateadas(self, vector_solucion):
+            """
+            Función para imprimir el resultado del sistema en forma de ecuaciones como 'x1 = valor'.
+            """
+            print("\nSoluciones del sistema:")
+            for i, valor in enumerate(vector_solucion):
+                if all(elemento == 0 for elemento in self.matriz[i][:-1]):  # Verificar si la fila es 0
+                    print(f"x{i + 1} es libre")
+                else:
+                    print(f"x{i + 1} = {valor}")
 
         def imprimir_matrices_para_historial(self):
             """
