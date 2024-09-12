@@ -1,17 +1,15 @@
 """
-Archivo: clase_sistema_ecuaciones.py 2.2.2
+Archivo: clase_sistema_ecuaciones.py 2.2.3
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
 from fractions import Fraction
-
 
 def CreadorDeEcuaciones():
     """
     Funcion que inicializa una instancia del objeto GaussJordan
     :return (obj): clase GaussJordan
     """
-
     class GaussJordan:
         """
         Esta clase contiene varios objetos de matrices reducidas y metodos para resolver.
@@ -37,6 +35,8 @@ def CreadorDeEcuaciones():
                     if self.matriz[i][columna] != 0:
                         # Intercambiar filas
                         self.matriz[fila], self.matriz[i] = self.matriz[i], self.matriz[fila]
+                        print(f"F{fila + 1} <--> F{i + 1} (Intercambio de filas)")
+                        self.mostrar_matriz_en_proceso()
                         break
 
         def normaliza_fila(self, fila, columna):
@@ -47,6 +47,9 @@ def CreadorDeEcuaciones():
             if pivote != 0:
                 for j in range(len(self.matriz[0])):
                     self.matriz[fila][j] /= pivote
+                # Mostrar el paso realizado
+                print(f"F{fila + 1} --> (1/{Fraction(pivote).limit_denominator()}) * F{fila + 1}")
+                self.mostrar_matriz_en_proceso()
 
         def hacer_ceros_columna(self, fila, columna):
             """
@@ -57,6 +60,9 @@ def CreadorDeEcuaciones():
                     factor = self.matriz[i][columna]
                     for j in range(len(self.matriz[0])):
                         self.matriz[i][j] -= factor * self.matriz[fila][j]
+                    # Mostrar el paso realizado
+                    print(f"F{i + 1} --> F{i + 1} - ({Fraction(factor).limit_denominator()}) * F{fila + 1}")
+                    self.mostrar_matriz_en_proceso()
 
         def reducir(self):
             """
@@ -67,19 +73,12 @@ def CreadorDeEcuaciones():
                 # Paso 1: Asegurar que el pivote no sea 0
                 self.pivotea(fila_actual, columna_actual)
 
-                # Mostrar el estado de la matriz tras pivoteo
-                self.mostrar_matriz_en_proceso()
-
                 # Paso 2: Normalizar la fila para que el pivote sea 1
                 if self.matriz[fila_actual][columna_actual] != 0:
                     self.normaliza_fila(fila_actual, columna_actual)
-                    # Mostrar el estado de la matriz tras normalización
-                    self.mostrar_matriz_en_proceso()
 
                     # Paso 3: Hacer ceros en las demás filas en la columna del pivote
                     self.hacer_ceros_columna(fila_actual, columna_actual)
-                    # Mostrar el estado de la matriz tras hacer ceros
-                    self.mostrar_matriz_en_proceso()
 
                     # Pasar a la siguiente fila
                     fila_actual += 1
@@ -135,7 +134,6 @@ def CreadorDeEcuaciones():
                 print([str(Fraction(elemento)) for elemento in fila])
             self.pasos += 1
 
-
         def mostrar_solucion(self):
             """
             Muestra las soluciones del sistema.
@@ -151,7 +149,6 @@ def CreadorDeEcuaciones():
 
             if variables_libres:
                 print(f"\nVariables libres: {', '.join(variables_libres)}")
-
 
         def obtener_matriz(self, name, filas, columna):
             """
