@@ -1,10 +1,11 @@
 """
-Archivo: historial 1.4.0
+Archivo: historial 1.5.0
 Descripcion: archivo que gestiona la creacion de los objetos matriz.
 Los agrega a la lista que sirve de historial.
 """
 from models.clase_matriz import *
 from models.clase_sistema_ecuaciones import *
+from models.clase_matriz_operaciones import *
 
 historial_de_matrices = []
 
@@ -44,7 +45,11 @@ def resolver_sistema_de_ecuaciones(nombre, fila, columna):
     historial_de_matrices[-1].mostrar_matriz()
     historial_de_matrices[-1].mostrar_solucion()
 
-
+def resolver_operaciones_de_matriz():
+    """Funcion del menu para inicializar una matriz en base a la operación deseada"""
+    historial_de_matrices.append(CreadorDeOperaciones())
+    historial_de_matrices[-1].ingresar_datos()
+    historial_de_matrices[-1].imprimir_matrices_y_solucion()
 
 def mostrar_matrices_y_seleccionar():
     """

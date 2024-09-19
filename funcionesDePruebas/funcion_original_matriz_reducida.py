@@ -5,10 +5,10 @@ Descripcion: archivo con funciones para el menu
 from fractions import Fraction
 
 
-def mostrar_matriz(matrix, paso):
-    print(f"\nPaso {paso}:")
-    for fila in matrix:
-        print([str(elemento) for elemento in fila])
+# def mostrar_matriz(matrix, paso):
+#     print(f"\nPaso {paso}:")
+#     for fila in matrix:
+#         print([str(elemento) for elemento in fila])
 
 
 def gauss_jordan_elimination(matrix):

@@ -23,8 +23,6 @@ def CreadorDeMatriz():
             dimensiones (int): dato que representa la dimension de la matriz cuadrada
             matriz (list): lista que representa la matriz
             matriz_original (list): lista que donde se guarda la matriz original
-
-        A
         """
         def __init__(self):
             self.nombre = ""

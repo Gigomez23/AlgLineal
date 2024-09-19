@@ -1,5 +1,5 @@
 """
-Archivo: clase_sistema_ecuaciones.py 2.0.2
+Archivo: clase_sistema_ecuaciones.py 2.3.0
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
@@ -19,10 +19,12 @@ def CreadorDeEcuaciones():
             matriz (list): lista de datos que representan las matrices
             filas (int): dato que representa la cantidad de filas en la matriz
             columnas (int): dato que representa la cantidad de columnas en la matriz
+            pasos (int): dato que representa los pasos tomados para resolver.
         """
-        def _init_(self):
+        def __init__(self):
             self.nombre = ""
             self.matriz = []
+            self.pasos = 0
 
         def pivotea(self, fila, columna):
             """
@@ -33,6 +35,8 @@ def CreadorDeEcuaciones():
                     if self.matriz[i][columna] != 0:
                         # Intercambiar filas
                         self.matriz[fila], self.matriz[i] = self.matriz[i], self.matriz[fila]
+                        print(f"F{fila + 1} <--> F{i + 1} (Intercambio de filas)")
+                        self.mostrar_matriz_en_proceso()
                         break
 
         def normaliza_fila(self, fila, columna):
@@ -43,6 +47,9 @@ def CreadorDeEcuaciones():
             if pivote != 0:
                 for j in range(len(self.matriz[0])):
                     self.matriz[fila][j] /= pivote
+                # Mostrar el paso realizado
+                print(f"F{fila + 1} --> (1/{Fraction(pivote).limit_denominator()}) * F{fila + 1}")
+                self.mostrar_matriz_en_proceso()
 
         def hacer_ceros_columna(self, fila, columna):
             """
@@ -53,21 +60,31 @@ def CreadorDeEcuaciones():
                     factor = self.matriz[i][columna]
                     for j in range(len(self.matriz[0])):
                         self.matriz[i][j] -= factor * self.matriz[fila][j]
+                    # Mostrar el paso realizado
+                    print(f"F{i + 1} --> F{i + 1} - ({Fraction(factor).limit_denominator()}) * F{fila + 1}")
+                    self.mostrar_matriz_en_proceso()
 
         def reducir(self):
             """
-            Aplica el método de Gauss-Jordan completo a la matriz.
+            Aplica el método de Gauss-Jordan completo a la matriz, mostrando cada paso.
+            Si se detecta una inconsistencia, se detiene el proceso y se informa.
             """
             fila_actual = 0
             for columna_actual in range(self.columnas):
                 # Paso 1: Asegurar que el pivote no sea 0
                 self.pivotea(fila_actual, columna_actual)
 
-                # Paso 2: Normalizar la fila para que el pivote sea 1
+                # Paso 2: Verificar si hay inconsistencia (fila de ceros con término independiente no cero)
+                if all(self.matriz[fila_actual][j] == 0 for j in range(self.columnas)) and self.matriz[fila_actual][
+                    -1] != 0:
+                    print(f"El sistema es inconsistente en la fila {fila_actual + 1}. No tiene solución.")
+                    return "inconsistente"  # Indica que es inconsistente
+
+                # Paso 3: Normalizar la fila para que el pivote sea 1
                 if self.matriz[fila_actual][columna_actual] != 0:
                     self.normaliza_fila(fila_actual, columna_actual)
 
-                    # Paso 3: Hacer ceros en las demás filas en la columna del pivote
+                    # Paso 4: Hacer ceros en las demás filas en la columna del pivote
                     self.hacer_ceros_columna(fila_actual, columna_actual)
 
                     # Pasar a la siguiente fila
@@ -76,6 +93,48 @@ def CreadorDeEcuaciones():
                 # Si hemos procesado todas las filas, terminamos
                 if fila_actual >= self.filas:
                     break
+
+            # Verificar si hay más variables que ecuaciones o filas de ceros
+            if fila_actual < self.columnas:
+                return "infinitas"  # Indica que tiene soluciones infinitas
+            return "unica"  # Indica que tiene una solución única
+
+        def mostrar_solucion(self):
+            """
+            Muestra el estado final del sistema: soluciones infinitas, inconsistente o única solución.
+            """
+            # Reducir la matriz primero
+            resultado = self.reducir()
+
+            # Verificar y mostrar el estado del sistema
+            if resultado == "inconsistente":
+                print("El sistema no tiene solución debido a una inconsistencia.")
+            elif resultado == "infinitas":
+                print("El sistema tiene infinitas soluciones.")
+                soluciones, variables_libres = self.obtener_solucion()
+                self.mostrar_soluciones(soluciones, variables_libres)
+            elif resultado == "unica":
+                print("El sistema tiene una solución única.")
+                soluciones, variables_libres = self.obtener_solucion()
+                self.mostrar_soluciones(soluciones, variables_libres)
+
+        def mostrar_soluciones(self, soluciones, variables_libres):
+            """
+            Muestra las soluciones del sistema, indicando si hay variables libres y explicando por qué.
+            """
+            print("\nSoluciones:")
+            for i, solucion in enumerate(soluciones):
+                if solucion:
+                    print(f"x{i + 1} = {solucion}")
+                else:
+                    print(
+                        f"x{i + 1} es libre. Esto significa que no hay un pivote en su columna, por lo tanto, puede tomar cualquier valor.")
+
+            if variables_libres:
+                print(f"\nVariables libres: {', '.join(variables_libres)}")
+                for variable in variables_libres:
+                    print(
+                        f"La variable {variable} es libre porque su columna no tiene un pivote (1 en su columna y ceros en las demás filas), lo que indica que puede tomar cualquier valor sin afectar la consistencia del sistema.")
 
         def obtener_solucion(self):
             """
@@ -89,39 +148,57 @@ def CreadorDeEcuaciones():
                 for j in range(self.columnas):
                     if self.matriz[i][j] == 1:
                         pivote_encontrado = True
-                        soluciones[j] = self.matriz[i][-1]
+                        solucion = self.matriz[i][-1]
+
+                        # Si la constante es 0, la omitimos en la solución
+                        if solucion != 0:
+                            expresion = f"{solucion}"
+                        else:
+                            expresion = ""
+
                         for k in range(j + 1, self.columnas):
-                            if self.matriz[i][k] != 0:
-                                soluciones[j] = f"{self.matriz[i][-1]} - {self.matriz[i][k]}x{k + 1}"
+                            coeficiente = self.matriz[i][k]
+                            if coeficiente != 0:
+                                signo = '+' if coeficiente < 0 else '-'
+                                coeficiente = abs(coeficiente)
+                                expresion += f" {signo} {coeficiente}x{k + 1}"
+                        soluciones[j] = expresion.strip()
                         break
                 if not pivote_encontrado:
-                    variables_libres.append(f"x{i + 1}")
+                    variables_libres.append(f"x{j + 1}")
 
             return soluciones, variables_libres
 
         def mostrar_matriz(self):
-            """
-            Imprime la matriz actual.
-            """
-            print("\nMatriz escalonada reducida:")
+            """Imprime la matriz actual."""
+            print(f"\nPaso {self.pasos}:")
             for fila in self.matriz:
-                print([str(elemento) for elemento in fila])
+                print([str(Fraction(elemento)) for elemento in fila])
+            self.pasos += 1
 
-        def mostrar_solucion(self):
-            """
-            Muestra las soluciones del sistema.
-            """
-            soluciones, variables_libres = self.obtener_solucion()
+        def mostrar_matriz_en_proceso(self):
+            pasos_local = self.pasos
+            print(f"\nPaso {pasos_local}:")
+            for fila in self.matriz:
+                print([str(Fraction(elemento)) for elemento in fila])
+            self.pasos += 1
 
-            print("\nSoluciones:")
-            for i, solucion in enumerate(soluciones):
-                if solucion:
-                    print(f"x{i + 1} = {solucion}")
-                else:
-                    print(f"x{i + 1} es libre")
+        # def mostrar_solucion(self):
+        #     """
+        #     Muestra las soluciones del sistema.
+        #     """
+        #     soluciones, variables_libres = self.obtener_solucion()
+        #
+        #     print("\nSoluciones:")
+        #     for i, solucion in enumerate(soluciones):
+        #         if solucion:
+        #             print(f"x{i + 1} = {solucion}")
+        #         else:
+        #             print(f"x{i + 1} es libre")
+        #
+        #     if variables_libres:
+        #         print(f"\nVariables libres: {', '.join(variables_libres)}")
 
-
-    # Función para pedir al usuario los elementos de la matriz
         def obtener_matriz(self, name, filas, columna):
             """
             Funcion que sirve para ingresar los datos para la matriz y la clase.
@@ -144,6 +221,5 @@ def CreadorDeEcuaciones():
             """
             self.mostrar_matriz()
             self.mostrar_solucion()
-
 
     return GaussJordan()

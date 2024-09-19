@@ -1,6 +1,7 @@
 """
-Archivo: funcionesMenu.py 1.6.0
+Archivo: funcionesMenu.py 1.7.0
 Descripcion: archivo con funciones para el menu
+todo: pass todo a metodo dentro de la clase
 """
 import os
 from consolemenu import clear_terminal
@@ -14,8 +15,8 @@ def matriz_aleatoria():
     """
     clear_terminal()
     try:
-        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
         titulo_matriz = input("Ingrese el nombre de la matriz: ")
+        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
         agregar_matriz_aleatoria(dimension, titulo_matriz)
     except ValueError:
         print("Por favor digite un valor numerico como dimensión. ")
@@ -31,8 +32,8 @@ def matriz_manul():
     """
     clear_terminal()
     try:
-        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
         titulo_matriz = input("Ingrese el nombre de la matriz: ")
+        dimension = int(input("Ingrese el tamaño de la matriz cuadrada: "))
         agregar_matriz_manual(dimension, titulo_matriz)
     except ValueError:
         print("Por favor digite un valor numerico como dimension. ")
@@ -46,15 +47,18 @@ def matriz_reducida():
     :return:
     """
     try:
-        fila = int(input("Ingrese el numero de filas de la matriz"))
-        columnas = int(input("Ingrese el numero de columnas de la matriz aumentada (incluyendo el vector solucion"))
         nombre = input("Ingrese el nombre de la matriz: ")
+        fila = int(input("Ingrese el numero de filas de la matriz: "))
+        columnas = int(input("Ingrese el numero de columnas de la matriz aumentada (incluyendo el vector solucion): "))
         resolver_sistema_de_ecuaciones(nombre, fila, columnas)
     except ValueError:
         print("Por favor digite un valor numerico como dimension. ")
 
     os.system("pause")
-    pass
+
+def matriz_operacion():
+    resolver_operaciones_de_matriz()
+    os.system("pause")
 
 def imprimir_historial():
     """
