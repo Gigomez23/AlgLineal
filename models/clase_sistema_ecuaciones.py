@@ -1,225 +1,117 @@
 """
-Archivo: clase_sistema_ecuaciones.py 2.3.0
+Archivo: clase_sistema_ecuaciones.py 3.0.5
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
 from fractions import Fraction
 
 def CreadorDeEcuaciones():
-    """
-    Funcion que inicializa una instancia del objeto GaussJordan
-    :return (obj): clase GaussJordan
-    """
     class GaussJordan:
-        """
-        Esta clase contiene varios objetos de matrices reducidas y metodos para resolver.
-
-        Args:
-            nombre (str): cadena de caracteres que conforman el nombre para identificar la matriz
-            matriz (list): lista de datos que representan las matrices
-            filas (int): dato que representa la cantidad de filas en la matriz
-            columnas (int): dato que representa la cantidad de columnas en la matriz
-            pasos (int): dato que representa los pasos tomados para resolver.
-        """
         def __init__(self):
             self.nombre = ""
             self.matriz = []
+            self.filas = 0
+            self.columnas = 0
             self.pasos = 0
 
-        def pivotea(self, fila, columna):
-            """
-            Asegura que el elemento en matriz[fila][columna] sea un pivote no nulo.
-            """
+        def pivotea(self, fila, columna, mostrar_paso):
             if self.matriz[fila][columna] == 0:
                 for i in range(fila + 1, self.filas):
                     if self.matriz[i][columna] != 0:
-                        # Intercambiar filas
                         self.matriz[fila], self.matriz[i] = self.matriz[i], self.matriz[fila]
-                        print(f"F{fila + 1} <--> F{i + 1} (Intercambio de filas)")
-                        self.mostrar_matriz_en_proceso()
+                        mostrar_paso(f"(f{fila + 1} <-> f{i + 1})")
                         break
 
-        def normaliza_fila(self, fila, columna):
-            """
-            Normaliza la fila para que el pivote sea 1.
-            """
+        def normaliza_fila(self, fila, columna, mostrar_paso):
             pivote = self.matriz[fila][columna]
             if pivote != 0:
                 for j in range(len(self.matriz[0])):
                     self.matriz[fila][j] /= pivote
-                # Mostrar el paso realizado
-                print(f"F{fila + 1} --> (1/{Fraction(pivote).limit_denominator()}) * F{fila + 1}")
-                self.mostrar_matriz_en_proceso()
+                mostrar_paso(f"(f{fila + 1} -> f{fila + 1} / {str(Fraction(pivote))})")
 
-        def hacer_ceros_columna(self, fila, columna):
-            """
-            Hace ceros en la columna del pivote actual para las otras filas.
-            """
+        def hacer_ceros_columna(self, fila, columna, mostrar_paso):
             for i in range(self.filas):
                 if i != fila:
                     factor = self.matriz[i][columna]
-                    for j in range(len(self.matriz[0])):
-                        self.matriz[i][j] -= factor * self.matriz[fila][j]
-                    # Mostrar el paso realizado
-                    print(f"F{i + 1} --> F{i + 1} - ({Fraction(factor).limit_denominator()}) * F{fila + 1}")
-                    self.mostrar_matriz_en_proceso()
+                    if factor != 0:
+                        for j in range(len(self.matriz[0])):
+                            self.matriz[i][j] -= factor * self.matriz[fila][j]
+                        mostrar_paso(f"(f{i + 1} -> f{i + 1} - {str(Fraction(factor))} * f{fila + 1})")
 
-        def reducir(self):
-            """
-            Aplica el método de Gauss-Jordan completo a la matriz, mostrando cada paso.
-            Si se detecta una inconsistencia, se detiene el proceso y se informa.
-            """
+        def reducir(self, mostrar_paso):
             fila_actual = 0
             for columna_actual in range(self.columnas):
-                # Paso 1: Asegurar que el pivote no sea 0
-                self.pivotea(fila_actual, columna_actual)
+                self.pivotea(fila_actual, columna_actual, mostrar_paso)
 
-                # Paso 2: Verificar si hay inconsistencia (fila de ceros con término independiente no cero)
-                if all(self.matriz[fila_actual][j] == 0 for j in range(self.columnas)) and self.matriz[fila_actual][
-                    -1] != 0:
-                    print(f"El sistema es inconsistente en la fila {fila_actual + 1}. No tiene solución.")
-                    return "inconsistente"  # Indica que es inconsistente
+                mostrar_paso(f"Matriz después de verificar pivote en la columna {columna_actual + 1}:\n")
+                mostrar_paso(self.formato_matriz())
 
-                # Paso 3: Normalizar la fila para que el pivote sea 1
+                if all(self.matriz[fila_actual][j] == 0 for j in range(self.columnas)) and self.matriz[fila_actual][-1] != 0:
+                    return "inconsistente"
+
                 if self.matriz[fila_actual][columna_actual] != 0:
-                    self.normaliza_fila(fila_actual, columna_actual)
-
-                    # Paso 4: Hacer ceros en las demás filas en la columna del pivote
-                    self.hacer_ceros_columna(fila_actual, columna_actual)
-
-                    # Pasar a la siguiente fila
+                    self.normaliza_fila(fila_actual, columna_actual, mostrar_paso)
+                    self.hacer_ceros_columna(fila_actual, columna_actual, mostrar_paso)
                     fila_actual += 1
 
-                # Si hemos procesado todas las filas, terminamos
                 if fila_actual >= self.filas:
                     break
 
-            # Verificar si hay más variables que ecuaciones o filas de ceros
+                mostrar_paso(f"Matriz después de modificar la columna {columna_actual + 1}:\n")
+                mostrar_paso(self.formato_matriz())
+                self.pasos += 1
+
             if fila_actual < self.columnas:
-                return "infinitas"  # Indica que tiene soluciones infinitas
-            return "unica"  # Indica que tiene una solución única
+                return "infinitas"
+            return "unica"
 
-        def mostrar_solucion(self):
-            """
-            Muestra el estado final del sistema: soluciones infinitas, inconsistente o única solución.
-            """
-            # Reducir la matriz primero
-            resultado = self.reducir()
+        def formato_matriz(self):
+            return "\n".join([" ".join([str(Fraction(x)) for x in fila]) for fila in self.matriz]) + "\n"
 
-            # Verificar y mostrar el estado del sistema
+        def mostrar_solucion(self, mostrar_paso):
+            resultado = self.reducir(mostrar_paso)
             if resultado == "inconsistente":
-                print("El sistema no tiene solución debido a una inconsistencia.")
+                mostrar_paso("El sistema es inconsistente y no tiene solución.\n")
             elif resultado == "infinitas":
-                print("El sistema tiene infinitas soluciones.")
-                soluciones, variables_libres = self.obtener_solucion()
-                self.mostrar_soluciones(soluciones, variables_libres)
+                self.mostrar_variables_libres(mostrar_paso)
             elif resultado == "unica":
-                print("El sistema tiene una solución única.")
-                soluciones, variables_libres = self.obtener_solucion()
-                self.mostrar_soluciones(soluciones, variables_libres)
+                self.mostrar_variables(mostrar_paso)
 
-        def mostrar_soluciones(self, soluciones, variables_libres):
+        def mostrar_variables(self, mostrar_paso):
+            variables = ["x" + str(i + 1) for i in range(self.columnas)]
+            soluciones = [fila[-1] for fila in self.matriz]
+            mostrar_paso("Solución única:\n")
+            for i, sol in enumerate(soluciones):
+                mostrar_paso(f"{variables[i]} = {str(Fraction(sol))}\n")
+
+        def mostrar_variables_libres(self, mostrar_paso):
             """
-            Muestra las soluciones del sistema, indicando si hay variables libres y explicando por qué.
+            Muestra las soluciones cuando hay variables libres en el sistema,
+            incluyendo la expresión de las variables dependientes.
             """
-            print("\nSoluciones:")
-            for i, solucion in enumerate(soluciones):
-                if solucion:
-                    print(f"x{i + 1} = {solucion}")
+            variables = ["x" + str(i + 1) for i in range(self.columnas)]
+            libres = []
+            dependientes = {}
+
+            for i, fila in enumerate(self.matriz):
+                if all(x == 0 for x in fila[:-1]) and fila[-1] != 0:
+                    mostrar_paso("El sistema es inconsistente y no tiene solución.\n")
+                    return
+                if all(x == 0 for x in fila[:-1]):
+                    libres.append(variables[i])
                 else:
-                    print(
-                        f"x{i + 1} es libre. Esto significa que no hay un pivote en su columna, por lo tanto, puede tomar cualquier valor.")
+                    # Guardar la expresión de la variable dependiente
+                    dependencia = f"{variables[i]} = {str(Fraction(fila[-1]))}"
+                    for j in range(len(fila) - 1):
+                        if fila[j] != 0:
+                            dependencia += f" - {str(Fraction(-fila[j]))} * {variables[j]}"
+                    dependientes[variables[i]] = dependencia
 
-            if variables_libres:
-                print(f"\nVariables libres: {', '.join(variables_libres)}")
-                for variable in variables_libres:
-                    print(
-                        f"La variable {variable} es libre porque su columna no tiene un pivote (1 en su columna y ceros en las demás filas), lo que indica que puede tomar cualquier valor sin afectar la consistencia del sistema.")
-
-        def obtener_solucion(self):
-            """
-            Obtiene las soluciones del sistema, manejando las variables libres si es necesario.
-            """
-            soluciones = [None] * self.columnas
-            variables_libres = []
-
-            for i in range(self.filas):
-                pivote_encontrado = False
-                for j in range(self.columnas):
-                    if self.matriz[i][j] == 1:
-                        pivote_encontrado = True
-                        solucion = self.matriz[i][-1]
-
-                        # Si la constante es 0, la omitimos en la solución
-                        if solucion != 0:
-                            expresion = f"{solucion}"
-                        else:
-                            expresion = ""
-
-                        for k in range(j + 1, self.columnas):
-                            coeficiente = self.matriz[i][k]
-                            if coeficiente != 0:
-                                signo = '+' if coeficiente < 0 else '-'
-                                coeficiente = abs(coeficiente)
-                                expresion += f" {signo} {coeficiente}x{k + 1}"
-                        soluciones[j] = expresion.strip()
-                        break
-                if not pivote_encontrado:
-                    variables_libres.append(f"x{j + 1}")
-
-            return soluciones, variables_libres
-
-        def mostrar_matriz(self):
-            """Imprime la matriz actual."""
-            print(f"\nPaso {self.pasos}:")
-            for fila in self.matriz:
-                print([str(Fraction(elemento)) for elemento in fila])
-            self.pasos += 1
-
-        def mostrar_matriz_en_proceso(self):
-            pasos_local = self.pasos
-            print(f"\nPaso {pasos_local}:")
-            for fila in self.matriz:
-                print([str(Fraction(elemento)) for elemento in fila])
-            self.pasos += 1
-
-        # def mostrar_solucion(self):
-        #     """
-        #     Muestra las soluciones del sistema.
-        #     """
-        #     soluciones, variables_libres = self.obtener_solucion()
-        #
-        #     print("\nSoluciones:")
-        #     for i, solucion in enumerate(soluciones):
-        #         if solucion:
-        #             print(f"x{i + 1} = {solucion}")
-        #         else:
-        #             print(f"x{i + 1} es libre")
-        #
-        #     if variables_libres:
-        #         print(f"\nVariables libres: {', '.join(variables_libres)}")
-
-        def obtener_matriz(self, name, filas, columna):
-            """
-            Funcion que sirve para ingresar los datos para la matriz y la clase.
-            """
-            self.nombre = name
-
-            matriz = []
-            print("Introduce los elementos de la matriz fila por fila (separados por espacios):")
-            for i in range(filas):
-                fila_matriz = input(f"Fila {i + 1}: ").split()
-                matriz.append([Fraction(x) for x in fila_matriz])
-            self.matriz = matriz
-            self.filas = len(self.matriz)
-            self.columnas = len(self.matriz[0]) - 1  # La última columna es el vector de soluciones
-
-        def imprimir_matrices_para_historial(self):
-            """
-            Funcion que digita la matriz y la solucion cuando sea seleccionado
-            desde el gestor de historial.
-            """
-            self.mostrar_matriz()
-            self.mostrar_solucion()
+            mostrar_paso("Soluciones con variables libres:\n")
+            if dependientes:
+                for var, exp in dependientes.items():
+                    mostrar_paso(f"{var} = {exp}\n")
+            if libres:
+                mostrar_paso(f"Variables libres: {', '.join(libres)}\n")
 
     return GaussJordan()
