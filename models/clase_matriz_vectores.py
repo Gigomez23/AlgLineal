@@ -48,5 +48,6 @@ def CreadorDeOperacionMatrizVector():
                 resultado_separado = [resultado_u[i] + resultado_v[i] for i in range(self.filas_A)]
                 for i, valor in enumerate(resultado_separado):
                     text_salida.insert("end", f"Fila {i + 1}: {valor}\n")
+                text_salida.insert("end", "\nSe cumple la propiedad conmutativa de A(u + v) = Au + Av.")
 
     return MatrizVectores()
