@@ -1,5 +1,5 @@
 """
-Archivo: main_gui.py 1.2.5
+Archivo: main_gui.py 1.3.5
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 
@@ -9,6 +9,7 @@ from GUI.calculadoras.gauss_jordan_calc import GaussJordanFrame
 from GUI.calculadoras.ecuacion_matricial_matrizxvector_calc import MultiplicacionMatricesFrame
 from GUI.calculadoras.multi_fila_x_columna_calc import VectorMultiplicacionFrame
 from GUI.calculadoras.operacion_con_vectores_calc import VectorOperacionesFrame
+from GUI.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
 
 # Clase principal de la aplicación
 class App(CTk):
@@ -48,8 +49,8 @@ class App(CTk):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Resolver Ecuaciones', 'Multiplicar Matriz x Vector',
-                    'Multiplica Vector Fila x Columna', 'Operaciones de Vectores'],
+            values=['Resolver Ecuaciones Lineales', 'Multiplicar Matriz x Vector', 'Multiplicar Matriz x Vectores',
+                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores'],
             anchor="w",
             width=250,
             hover=True,
@@ -67,15 +68,16 @@ class App(CTk):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Resolver Ecuaciones': GaussJordanFrame(self.frame_cambiable),
+            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable),
             'Multiplicar Matriz x Vector': MultiplicacionMatricesFrame(self.frame_cambiable),
-            'Multiplica Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
+            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable),
+            'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
             'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self)
             # Agrega el argumento main_app
         }
 
         # Muestra el frame por defecto
-        self.cambiar_frame('Resolver Ecuaciones')
+        self.cambiar_frame('Resolver Ecuaciones Lineales')
 
     def cambiar_frame(self, opcion_seleccionada):
         """Cambia el frame según la opción seleccionada en el menú."""
