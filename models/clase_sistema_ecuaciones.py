@@ -1,5 +1,5 @@
 """
-Archivo: clase_sistema_ecuaciones.py 3.0.5
+Archivo: clase_sistema_ecuaciones.py 3.0.8
 Descripcion: archivo que contiene los atributos y metodos de la clase GaussJordan.
 contiene CreadorDeEcuaciones() que funciona como constructor de la clase.
 """
@@ -46,7 +46,8 @@ def CreadorDeEcuaciones():
                 mostrar_paso(f"Matriz después de verificar pivote en la columna {columna_actual + 1}:\n")
                 mostrar_paso(self.formato_matriz())
 
-                if all(self.matriz[fila_actual][j] == 0 for j in range(self.columnas)) and self.matriz[fila_actual][-1] != 0:
+                if (all(self.matriz[fila_actual][j] == 0 for j in range(self.columnas))
+                        and self.matriz[fila_actual][-1] != 0):
                     return "inconsistente"
 
                 if self.matriz[fila_actual][columna_actual] != 0:
@@ -69,7 +70,11 @@ def CreadorDeEcuaciones():
             return "\n".join([" ".join([str(Fraction(x)) for x in fila]) for fila in self.matriz]) + "\n"
 
         def mostrar_solucion(self, mostrar_paso):
+            """
+            Determina el tipo de solución y muestra la solución correspondiente.
+            """
             resultado = self.reducir(mostrar_paso)
+
             if resultado == "inconsistente":
                 mostrar_paso("El sistema es inconsistente y no tiene solución.\n")
             elif resultado == "infinitas":
@@ -78,6 +83,9 @@ def CreadorDeEcuaciones():
                 self.mostrar_variables(mostrar_paso)
 
         def mostrar_variables(self, mostrar_paso):
+            """
+            Muestra la solución única del sistema.
+            """
             variables = ["x" + str(i + 1) for i in range(self.columnas)]
             soluciones = [fila[-1] for fila in self.matriz]
             mostrar_paso("Solución única:\n")
@@ -93,25 +101,38 @@ def CreadorDeEcuaciones():
             libres = []
             dependientes = {}
 
-            for i, fila in enumerate(self.matriz):
-                if all(x == 0 for x in fila[:-1]) and fila[-1] != 0:
-                    mostrar_paso("El sistema es inconsistente y no tiene solución.\n")
-                    return
-                if all(x == 0 for x in fila[:-1]):
-                    libres.append(variables[i])
-                else:
-                    # Guardar la expresión de la variable dependiente
-                    dependencia = f"{variables[i]} = {str(Fraction(fila[-1]))}"
-                    for j in range(len(fila) - 1):
-                        if fila[j] != 0:
-                            dependencia += f" - {str(Fraction(-fila[j]))} * {variables[j]}"
-                    dependientes[variables[i]] = dependencia
+            for j in range(self.filas):
+                pivote = -1
+                for i in range(self.columnas):
+                    if self.matriz[j][i] != 0:
+                        pivote = i
+                        break
+                if pivote == -1:
+                    continue  # Esta fila no tiene pivote, así que no afecta las soluciones
+                dependencia = f"{variables[pivote]} = {str(Fraction(self.matriz[j][-1]))}"
+                for k in range(pivote + 1, self.columnas):
+                    coeficiente = Fraction(-self.matriz[j][k])
+                    if coeficiente != 0:
+                        if coeficiente == 1:
+                            dependencia += f" + {variables[k]}"
+                        elif coeficiente == -1:
+                            dependencia += f" - {variables[k]}"
+                        else:
+                            signo = " + " if coeficiente > 0 else " - "
+                            dependencia += f"{signo}{abs(coeficiente)} * {variables[k]}"
+                dependientes[variables[pivote]] = dependencia
 
-            mostrar_paso("Soluciones con variables libres:\n")
-            if dependientes:
-                for var, exp in dependientes.items():
-                    mostrar_paso(f"{var} = {exp}\n")
-            if libres:
-                mostrar_paso(f"Variables libres: {', '.join(libres)}\n")
+            # Identificar las variables libres (aquellas que no tienen pivote)
+            todos_pivotes = set(dependientes.keys())
+            libres = [var for var in variables if var not in todos_pivotes]
+
+            mostrar_paso("Soluciones:\n")
+            # Mostrar las soluciones de las variables dependientes
+            for var in sorted(dependientes.keys(), key=lambda v: int(v[1:])):
+                mostrar_paso(f"{dependientes[var]}\n")
+            # Mostrar las variables libres
+            for var in sorted(libres, key=lambda v: int(v[1:])):
+                mostrar_paso(f"{var} es libre\n")
 
     return GaussJordan()
+

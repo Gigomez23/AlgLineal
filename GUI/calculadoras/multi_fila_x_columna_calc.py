@@ -1,3 +1,7 @@
+"""
+Archivo: multi_fila_x_columna_calc.py 1.1.0
+Descripcion: Archivo que contiene el diseño del frame para operaciones de vector x vector.
+"""
 import customtkinter as ctk
 from fractions import Fraction
 from tkinter import messagebox
@@ -19,6 +23,7 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
         self.entry_fila = ctk.CTkEntry(self, width=400)
         self.entry_fila.pack(pady=10)
 
+
         self.label_columna = ctk.CTkLabel(self, text="Introduce el vector columna (separado por comas):")
         self.label_columna.pack(pady=10)
         self.entry_columna = ctk.CTkEntry(self, width=400)
@@ -31,9 +36,13 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
         self.result_text.pack(pady=10)
         self.result_text.configure(state="disabled")  # Hacer que el textbox sea de solo lectura
 
+        self.button_clear = ctk.CTkButton(self, text="Limpiar", command=self.limpiar_entradas)
+        self.button_clear.pack(pady=10)
+
     def calcular_multiplicacion(self):
         """
-        Función que calcula la multiplicación entre el vector fila y el vector columna y muestra el proceso y el resultado.
+        Función que calcula la multiplicación entre el vector fila y el vector columna
+        y muestra el proceso y el resultado.
         """
         try:
             fila_str = self.entry_fila.get().strip()
@@ -66,6 +75,14 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
 
         except Exception as e:
             messagebox.showerror("Error", f"Error en el cálculo: {e}")
+
+    def limpiar_entradas(self):
+        """Limpia los campos de entrada y el texto de salida."""
+        self.entry_fila.delete(0, ctk.END)
+        self.entry_columna.delete(0, ctk.END)
+        self.result_text.configure(state="normal")  # Habilitar la edición para limpiar resultados
+        self.result_text.delete(1.0, ctk.END)
+        self.result_text.configure(state="disabled")  # Volver a dejarlo como solo lectura
 
 
 # Uso en una aplicación más grande

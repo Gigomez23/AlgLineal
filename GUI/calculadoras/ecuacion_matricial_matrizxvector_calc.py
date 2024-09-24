@@ -27,11 +27,11 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         # --- Frame Izquierdo: Entradas ---
         # Entradas para la matriz A
-        self.label_nombre = ctk.CTkLabel(self.frame_izquierdo, text="Nombre del problema:")
-        self.label_nombre.grid(row=0, column=0, padx=10, pady=10)
-
-        self.entry_nombre = ctk.CTkEntry(self.frame_izquierdo)
-        self.entry_nombre.grid(row=0, column=1, padx=10, pady=10)
+        # self.label_nombre = ctk.CTkLabel(self.frame_izquierdo, text="Nombre del problema:")
+        # self.label_nombre.grid(row=0, column=0, padx=10, pady=10)
+        #
+        # self.entry_nombre = ctk.CTkEntry(self.frame_izquierdo)
+        # self.entry_nombre.grid(row=0, column=1, padx=10, pady=10)
 
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
                                            text="Matriz A (fila por fila, separada por espacios):")
@@ -58,7 +58,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.btn_mostrar_pasos.grid(row=5, column=1, padx=10, pady=10)
 
         # --- Frame Derecho: Salida y Botón de Limpiar ---
-        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Salida:")
+        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:")
         self.label_salida.grid(row=0, column=0, padx=10, pady=10)
 
         self.text_salida_frame = ctk.CTkFrame(self.frame_derecho)
@@ -78,7 +78,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def calcular_multiplicacion(self):
         """Calcula la multiplicación Ax = b y muestra el resultado sin pasos"""
-        nombre = self.entry_nombre.get()
+        # nombre = self.entry_nombre.get()
 
         # Obtener la matriz A y calcular filas y columnas automáticamente
         matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").split("\n")
@@ -96,7 +96,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                  f"No se puede multiplicar A de tamaño ({filas_A}x{columnas_A}) con b de tamaño ({filas_b}).\nEl número de columnas de A debe ser igual al número de filas de b.")
             return
 
-        self.matriz_operaciones.nombre = nombre
+        # self.matriz_operaciones.nombre = nombre
         self.matriz_operaciones.A = matriz_A
         self.matriz_operaciones.b = matriz_b
         self.matriz_operaciones.filas_A = filas_A
@@ -109,7 +109,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def mostrar_resultado_con_pasos(self):
         """Muestra el resultado de la multiplicación y los pasos"""
-        nombre = self.entry_nombre.get()
+        # nombre = self.entry_nombre.get()
 
         matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").split("\n")
         matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
@@ -126,7 +126,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                  f"No se puede multiplicar A de tamaño ({filas_A}x{columnas_A}) con b de tamaño ({filas_b}).\nEl número de columnas de A debe ser igual al número de filas de b.")
             return
 
-        self.matriz_operaciones.nombre = nombre
+        # self.matriz_operaciones.nombre = nombre
         self.matriz_operaciones.A = matriz_A
         self.matriz_operaciones.b = matriz_b
         self.matriz_operaciones.filas_A = filas_A
@@ -139,7 +139,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def clear_inputs(self):
         """Limpia todas las entradas y la salida"""
-        self.entry_nombre.delete(0, 'end')
+        # self.entry_nombre.delete(0, 'end')
         self.text_matriz_A.delete("1.0", "end")
         self.text_matriz_b.delete("1.0", "end")
         self.text_salida.delete("1.0", "end")
