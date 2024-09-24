@@ -14,3 +14,5 @@ if __name__ == "__main__":
     root.title("Calculadora Algebra Lineal")
     root.configure(fg_color=['gray92', 'gray14'])
     root.mainloop()
+
+    #just a test
