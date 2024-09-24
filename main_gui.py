@@ -13,34 +13,29 @@ from GUI.calculadoras.operacion_con_vectores_calc import VectorOperacionesFrame
 # Clase principal de la aplicación
 class App(CTk):
     def __init__(self, *args, **kwargs):
-        """Inicializa la aplicación principal.
-
-        Args:
-            *args: Argumentos posicionales.
-            **kwargs: Argumentos de palabra clave.
-        """
+        """Inicializa la aplicación principal."""
         super().__init__(*args, **kwargs)
 
         # Establecer el ícono de la ventana
         self.iconbitmap("GUI/archivos_adicionales/logo_uam.ico")
 
-        # Frame superior (barra superior)
-        self.frame_top_bar = CTkFrame(master=self, width=0, height=50)
-        self.frame_top_bar.pack_propagate(False)
-        self.frame_top_bar.pack(fill="x")  # Ocupa todo el ancho de la ventana
-
-        # Menú desplegable en la barra superior
-        self.om_menu_de_opciones = CTkOptionMenu(
-            master=self.frame_top_bar,
-            anchor="e",
-            values=['Calculadora', 'Historial', 'Salir'],
-            font=CTkFont(family="Consolas", slant="roman", size=14)
-        )
-        self.om_menu_de_opciones.pack(padx=(5, 0), side="left")
+        # # Frame superior (barra superior)
+        # self.frame_top_bar = CTkFrame(master=self, width=0, height=50)
+        # self.frame_top_bar.pack_propagate(False)
+        # self.frame_top_bar.pack(fill="x")
+        #
+        # # Menú desplegable en la barra superior
+        # self.om_menu_de_opciones = CTkOptionMenu(
+        #     master=self.frame_top_bar,
+        #     anchor="e",
+        #     values=['Calculadora', 'Historial', 'Salir'],
+        #     font=CTkFont(family="Consolas", slant="roman", size=14)
+        # )
+        # self.om_menu_de_opciones.pack(padx=(5, 0), side="left")
 
         # Frame de encabezado para el texto y menú de selección
         self.frame_encabezado = CTkFrame(master=self)
-        self.frame_encabezado.pack(fill="x", padx=10, pady=10)  # Espacio entre el frame y la ventana
+        self.frame_encabezado.pack(fill="x", padx=10, pady=10)
 
         # Label para seleccionar el tipo de cálculo
         self.label_seleccion = CTkLabel(
@@ -48,7 +43,7 @@ class App(CTk):
             text="Seleccione el tipo de calculadora:",
             font=CTkFont(family="Consolas", size=14)
         )
-        self.label_seleccion.pack(side="left", padx=(0, 10), anchor="w")  # Alineado a la izquierda
+        self.label_seleccion.pack(side="left", padx=(0, 10), anchor="w")
 
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
@@ -58,55 +53,59 @@ class App(CTk):
             anchor="w",
             width=250,
             hover=True,
-            command=self.cambiar_frame  # Llama a la función cuando cambia la opción
+            command=self.cambiar_frame  # Cambia al método que selecciona el frame
         )
-        self.btn_menu_tipo_calculadora.pack(side="right", padx=(0, 10))  # Alineado a la derecha
+        self.btn_menu_tipo_calculadora.pack(side="right", padx=(0, 10))
 
         # Frame principal de la calculadora
-        self.frame_calculadora = CTkFrame(master=self)  # No se define el tamaño
-        self.frame_calculadora.pack(fill="both", expand=True, padx=10, pady=10)  # Añade espacio entre el frame y la ventana
+        self.frame_calculadora = CTkFrame(master=self)
+        self.frame_calculadora.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Frame interno que será cambiable dentro del frame principal
         self.frame_cambiable = CTkFrame(master=self.frame_calculadora)
-        self.frame_cambiable.pack(fill="both", expand=True)  # También llenar el espacio disponible
-
-        # Botón para guardar en el historial
-        self.ct_guardar_en_historial = CTkButton(master=self, text="Guardar")
-        self.ct_guardar_en_historial.pack(expand=True, padx=(630, 0), pady=(0, 20))
+        self.frame_cambiable.pack(fill="both", expand=True)
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
             'Resolver Ecuaciones': GaussJordanFrame(self.frame_cambiable),
             'Multiplicar Matriz x Vector': MultiplicacionMatricesFrame(self.frame_cambiable),
             'Multiplica Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
-            'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable)
+            'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self)
+            # Agrega el argumento main_app
         }
 
         # Muestra el frame por defecto
         self.cambiar_frame('Resolver Ecuaciones')
 
     def cambiar_frame(self, opcion_seleccionada):
-        """Cambia el frame según la opción seleccionada en el menú.
-
-        Args:
-            opcion_seleccionada (str): La opción seleccionada del menú.
-        """
+        """Cambia el frame según la opción seleccionada en el menú."""
         # Elimina el contenido anterior del frame cambiable
         for widget in self.frame_cambiable.winfo_children():
-            widget.pack_forget()  # Oculta los frames anteriores
+            widget.pack_forget()
 
         # Añade el nuevo frame según la opción seleccionada
         nuevo_frame = self.frames.get(opcion_seleccionada)
         if nuevo_frame:
-            nuevo_frame.pack(expand=True, fill="both")  # Muestra el nuevo frame seleccionado
+            nuevo_frame.pack(expand=True, fill="both")
+
+    def cambiar_frame_vector(self, frame_class, *args):
+        """Cambia el frame actual a una nueva instancia del frame_class proporcionado."""
+        # Elimina el contenido anterior del frame cambiable
+        for widget in self.frame_cambiable.winfo_children():
+            widget.pack_forget()
+
+        # Crea una nueva instancia del frame_class proporcionado
+        nuevo_frame = frame_class(self.frame_cambiable, self, *args)
+        nuevo_frame.pack(padx=20, pady=20, fill="both", expand=True)
+
 
 # Configuraciones de la ventana principal
-set_default_color_theme("green")  # Establece el tema de color a verde
+set_default_color_theme("green")
 
 if __name__ == "__main__":
     # Inicializa la aplicación
     root = App()
-    root.geometry("1000x800")  # Define el tamaño de la ventana
-    root.title("Calculadora Algebra Lineal")  # Título de la ventana
-    root.configure(fg_color=['gray92', 'gray14'])  # Configura el color de fondo
-    root.mainloop()  # Inicia el bucle principal de la aplicación
+    root.geometry("1000x800")
+    root.title("Calculadora Algebra Lineal")
+    root.configure(fg_color=['gray92', 'gray14'])
+    root.mainloop()

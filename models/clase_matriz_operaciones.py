@@ -3,6 +3,8 @@ Archivo: clase_matriz_operaciones.py 2.0.5
 Descripción: Archivo que resuelve segun la leyes de las matrices la multiplicacion de una matriz con
 un vector.
 """
+from fractions import Fraction
+
 def CreadorDeOperaciones():
     class MatrizOperaciones:
         def __init__(self):
