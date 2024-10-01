@@ -1,5 +1,5 @@
 """
-Programa Versión:  3.1.0
+Programa Versión:  3.2.6
 Descripcion: archivo main
 Clase: Algebra Lineal
 Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
@@ -14,3 +14,5 @@ if __name__ == "__main__":
     root.title("Calculadora Algebra Lineal")
     root.configure(fg_color=['gray92', 'gray14'])
     root.mainloop()
+
+    #just a test

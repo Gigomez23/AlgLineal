@@ -1,9 +1,9 @@
 """
-Archivo: Au_Ax_calc.py 1.0.0
+Archivo: Au_Ax_calc.py 1.1.0
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from fractions import Fraction
-import tkinter.messagebox as messagebox
+from CTkMessagebox import CTkMessagebox
 import customtkinter as ctk
 from models.clase_matriz_vectores import *
 
@@ -27,7 +27,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
         # --- Frame Izquierdo: Entradas ---
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Matriz A (fila por fila, separada por espacios):")
+                                           text="Matriz A (fila separadas por enter, "
+                                                "valores separados por espacios):")
         self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
         self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
@@ -92,21 +93,48 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         """Calcula la multiplicación según el método seleccionado"""
         metodo = self.metodo_var.get()
 
-        # Obtener la matriz A y calcular filas y columnas automáticamente
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").split("\n")
-        matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+        # Obtener el contenido de los campos de texto
+        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
+        vector_u_text = self.text_vector_u.get("1.0", "end-1c").strip()
+        vector_v_text = self.text_vector_v.get("1.0", "end-1c").strip()
 
-        filas_A = len(matriz_A)
-        columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
+        # Verificar si algún campo de entrada está vacío
+        if not matriz_A_text or not vector_u_text or not vector_v_text:
+            CTkMessagebox(title="Error de entrada", message="Todos los campos deben estar llenos.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
+            return
 
-        # Obtener vectores u y v
-        vector_u_text = self.text_vector_u.get("1.0", "end-1c").split()
-        vector_u = [Fraction(x) for x in vector_u_text]
-        vector_v_text = self.text_vector_v.get("1.0", "end-1c").split()
-        vector_v = [Fraction(x) for x in vector_v_text]
+        try:
+            # Obtener la matriz A y calcular filas y columnas automáticamente
+            matriz_A_text = matriz_A_text.split("\n")
+            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
 
-        if len(vector_u) != columnas_A or len(vector_v) != columnas_A:
-            messagebox.showerror("Error", "El tamaño de los vectores no coincide con el número de columnas de la matriz A.")
+            filas_A = len(matriz_A)
+            columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
+
+            # Obtener vectores u y v
+            vector_u = [Fraction(x) for x in vector_u_text.split()]
+            vector_v = [Fraction(x) for x in vector_v_text.split()]
+
+            # Validar si el tamaño de los vectores coincide con el número de columnas de la matriz A
+            if len(vector_u) != columnas_A or len(vector_v) != columnas_A:
+                raise ValueError("El tamaño de los vectores no coincide con el número de columnas de la matriz A.")
+
+        except ValueError as e:
+            # Mensaje de error por tamaño de vectores o fracciones no válidas
+            CTkMessagebox(title="Error de formato", message=str(e), icon="warning", option_1="Entendido",
+                          button_hover_color="green")
+            return
+        except ZeroDivisionError:
+            # Mensaje de error si el usuario intenta dividir por 0
+            CTkMessagebox(title="Error de división", message="No se puede dividir por cero.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
+            return
+        except Exception:
+            # Mensaje de error por entradas no numéricas
+            CTkMessagebox(title="Error de entrada",
+                          message="Por favor, ingresa solo números válidos (sin letras ni símbolos).", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
             return
 
         # Almacenar datos en la instancia de operaciones
