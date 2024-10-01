@@ -3,8 +3,7 @@ Archivo: operacion_con_vectores_calc.py 1.0.11
 Descripción: Archivo que contiene el diseño del frame para operaciones con vectores.
 """
 import customtkinter as ctk
-from fractions import Fraction
-from tkinter import messagebox
+from CTkMessagebox import CTkMessagebox
 from models.clase_vector import *
 #todo: acomodar mejor el diseño para que se vea bien en la pantalla
 
@@ -53,7 +52,8 @@ class VectorOperacionesFrame(ctk.CTkFrame):
             if self.dimension <= 0 or self.num_vectores < 2:
                 raise ValueError("Dimensión o número de vectores inválidos.")
         except ValueError as e:
-            messagebox.showerror("Error", f"Entrada inválida: {e}")
+            CTkMessagebox(title="Error de formato", message=f"Entrada inválida: {e}",
+                          icon="warning", option_1="Entendido", button_hover_color="green")
             return
 
         for widget in self.winfo_children():
@@ -174,7 +174,8 @@ class VectorOperacionesFrame(ctk.CTkFrame):
             self.result_text.configure(state="disabled")
 
         except Exception as e:
-            messagebox.showerror("Error", f"Error en el cálculo: {e}")
+            CTkMessagebox(title="Advertencia", message=f"Error en el cálculo: {e}",
+                          icon="warning", option_1="Entendido", button_hover_color="green")
 
 
 # Uso en una aplicación más grande

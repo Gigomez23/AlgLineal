@@ -1,11 +1,10 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 1.0.5
+Archivo: ecuacion_matricial_matrizxvector_calc.py 1.1.1
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
-from fractions import Fraction
-import tkinter.messagebox as messagebox
 import customtkinter as ctk
 from models.clase_matriz_operaciones import *
+from CTkMessagebox import CTkMessagebox
 
 
 class MultiplicacionMatricesFrame(ctk.CTkFrame):
@@ -34,7 +33,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         # self.entry_nombre.grid(row=0, column=1, padx=10, pady=10)
 
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Matriz A (fila por fila, separada por espacios):")
+                                           text="Matriz A (filas separadas por enter, "
+                                                "valores separados por espacios):")
         self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
@@ -78,25 +78,49 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def calcular_multiplicacion(self):
         """Calcula la multiplicación Ax = b y muestra el resultado sin pasos"""
-        # nombre = self.entry_nombre.get()
+        # Obtener el contenido de las entradas de texto
+        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
+        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").strip()
 
-        # Obtener la matriz A y calcular filas y columnas automáticamente
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").split("\n")
-        matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
-
-        filas_A = len(matriz_A)
-        columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
-
-        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").split()
-        matriz_b = [Fraction(x) for x in matriz_b_text]
-        filas_b = len(matriz_b)
-
-        if columnas_A != filas_b:
-            messagebox.showerror("Error de Dimensiones",
-                                 f"No se puede multiplicar A de tamaño ({filas_A}x{columnas_A}) con b de tamaño ({filas_b}).\nEl número de columnas de A debe ser igual al número de filas de b.")
+        # Verificar si alguno de los campos de entrada está vacío
+        if not matriz_A_text or not matriz_b_text:
+            CTkMessagebox(title="Error de entrada", message="Todos los campos deben estar llenos.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
             return
 
-        # self.matriz_operaciones.nombre = nombre
+        try:
+            # Obtener la matriz A y calcular filas y columnas automáticamente
+            matriz_A_text = matriz_A_text.split("\n")
+            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+
+            filas_A = len(matriz_A)
+            columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
+
+            matriz_b_text = matriz_b_text.split()
+            matriz_b = [Fraction(x) for x in matriz_b_text]
+            filas_b = len(matriz_b)
+
+            if columnas_A != filas_b:
+                CTkMessagebox(title="Error de formato", message=f"No se puede multiplicar A de tamaño "
+                                                                f"({filas_A}x{columnas_A}) con b de tamaño ({filas_b})."
+                                                                f"\nEl número de columnas de A debe ser igual al número "
+                                                                f"de filas de b.",
+                              icon="warning", option_1="Entendido", button_hover_color="green")
+                return
+
+        except ValueError as e:
+            # Error si se intenta ingresar letras en lugar de números
+            CTkMessagebox(title="Error de formato", message="Por favor, ingresa solo números válidos (sin letras).",
+                          icon="warning", option_1="Entendido", button_hover_color="green")
+            return
+
+        except ZeroDivisionError:
+            # Error si se intenta dividir por 0
+            CTkMessagebox(title="Error de división", message="No se puede dividir por cero.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
+            return
+
+        # Si todo está correcto, proceder con la operación
         self.matriz_operaciones.A = matriz_A
         self.matriz_operaciones.b = matriz_b
         self.matriz_operaciones.filas_A = filas_A
@@ -109,24 +133,49 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def mostrar_resultado_con_pasos(self):
         """Muestra el resultado de la multiplicación y los pasos"""
-        # nombre = self.entry_nombre.get()
+        # Obtener el contenido de las entradas de texto
+        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
+        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").strip()
 
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").split("\n")
-        matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
-
-        filas_A = len(matriz_A)
-        columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
-
-        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").split()
-        matriz_b = [Fraction(x) for x in matriz_b_text]
-        filas_b = len(matriz_b)
-
-        if columnas_A != filas_b:
-            messagebox.showerror("Error de Dimensiones",
-                                 f"No se puede multiplicar A de tamaño ({filas_A}x{columnas_A}) con b de tamaño ({filas_b}).\nEl número de columnas de A debe ser igual al número de filas de b.")
+        # Verificar si alguno de los campos de entrada está vacío
+        if not matriz_A_text or not matriz_b_text:
+            CTkMessagebox(title="Error de entrada", message="Todos los campos deben estar llenos.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
             return
 
-        # self.matriz_operaciones.nombre = nombre
+        try:
+            # Obtener la matriz A y calcular filas y columnas automáticamente
+            matriz_A_text = matriz_A_text.split("\n")
+            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+
+            filas_A = len(matriz_A)
+            columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
+
+            matriz_b_text = matriz_b_text.split()
+            matriz_b = [Fraction(x) for x in matriz_b_text]
+            filas_b = len(matriz_b)
+
+            if columnas_A != filas_b:
+                CTkMessagebox(title="Error de Dimensiones", message=f"No se puede multiplicar A de tamaño "
+                                                                    f"({filas_A}x{columnas_A}) con b de tamaño ({filas_b})."
+                                                                    f"\nEl número de columnas de A debe ser "
+                                                                    f"igual al número de filas de b.",
+                              icon="warning", option_1="Entendido", button_hover_color="green")
+                return
+
+        except ValueError as e:
+            # Error si se intenta ingresar letras en lugar de números
+            CTkMessagebox(title="Error de formato", message="Por favor, ingresa solo números válidos (sin letras).",
+                          icon="warning", option_1="Entendido", button_hover_color="green")
+            return
+
+        except ZeroDivisionError:
+            # Error si se intenta dividir por 0
+            CTkMessagebox(title="Error de división", message="No se puede dividir por cero.", icon="warning",
+                          option_1="Entendido", button_hover_color="green")
+            return
+
+        # Si todo está correcto, proceder con la operación
         self.matriz_operaciones.A = matriz_A
         self.matriz_operaciones.b = matriz_b
         self.matriz_operaciones.filas_A = filas_A
