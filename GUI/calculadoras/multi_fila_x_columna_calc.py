@@ -4,7 +4,7 @@ Descripcion: Archivo que contiene el diseño del frame para operaciones de vecto
 """
 import customtkinter as ctk
 from fractions import Fraction
-from tkinter import messagebox
+from CTkMessagebox import CTkMessagebox
 
 
 class VectorMultiplicacionFrame(ctk.CTkFrame):
@@ -74,7 +74,8 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
             self.result_text.configure(state="disabled")  # Volver a dejarlo como solo lectura
 
         except Exception as e:
-            messagebox.showerror("Error", f"Error en el cálculo: {e}")
+            CTkMessagebox(title="Error", message=f"Error en el cálculo: {e}",
+                          icon="cancel", option_1="Entendido", button_hover_color="green")
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada y el texto de salida."""
