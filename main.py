@@ -1,12 +1,11 @@
 """
-Programa Versión:  3.2.6
+Programa Versión:  3.2.7
 Descripcion: archivo main
 Clase: Algebra Lineal
 Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
 """
-
-#todo: verificar todas las instrucciones
 from main_gui import App
+
 
 if __name__ == "__main__":
     root = App()
