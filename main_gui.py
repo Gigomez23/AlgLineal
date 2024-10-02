@@ -50,7 +50,7 @@ class App(CTk):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Resolver Ecuaciones Lineales', 'Multiplicar Matriz x Vector', 'Multiplicar Matriz x Vectores',
+            values=['Resolver Ecuaciones Lineales', 'Ecuación Matricial', 'Multiplicar Matriz x Vectores',
                     'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices'],
             anchor="w",
             width=250,
@@ -70,7 +70,7 @@ class App(CTk):
         # Inicializa los frames diferentes para las opciones
         self.frames = {
             'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable),
-            'Multiplicar Matriz x Vector': MultiplicacionMatricesFrame(self.frame_cambiable),
+            'Ecuación Matricial': MultiplicacionMatricesFrame(self.frame_cambiable),
             'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable),
             'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
             'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self),

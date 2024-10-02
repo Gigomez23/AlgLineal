@@ -1,5 +1,5 @@
 """
-Archivo: jauss_jorda_calc.py 1.1.1
+Archivo: jauss_jorda_calc.py 1.1.2
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
@@ -7,8 +7,7 @@ import customtkinter as ctk
 from models.clase_sistema_ecuaciones import *
 from CTkMessagebox import CTkMessagebox
 from fractions import Fraction
-
-
+#todo: fix this
 class GaussJordanFrame(ctk.CTkFrame):
     """
     Frame para realizar la reducción de matrices usando el método de Gauss-Jordan.
@@ -33,8 +32,8 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Matriz (separada por espacios, cada fila en una línea separadas "
-                                              "por enter):")
+                                         text="Matriz (filas separadas "
+                                              "por enter, valores separados por espacios):")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # Aumentar la altura del Textbox
