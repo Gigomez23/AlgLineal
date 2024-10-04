@@ -1,5 +1,5 @@
 """
-Archivo: jauss_jorda_calc.py 1.1.2
+Archivo: jauss_jorda_calc.py 1.5.2
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
@@ -7,14 +7,14 @@ import customtkinter as ctk
 from models.clase_sistema_ecuaciones import *
 from CTkMessagebox import CTkMessagebox
 from fractions import Fraction
-#todo: fix this
+from CTkTable import CTkTable
+
+
 class GaussJordanFrame(ctk.CTkFrame):
     """
     Frame para realizar la reducción de matrices usando el método de Gauss-Jordan.
-
-    Args:
-        parent (CTk): El widget padre que contendrá este frame.
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.gauss_jordan = CreadorDeEcuaciones()
@@ -34,23 +34,19 @@ class GaussJordanFrame(ctk.CTkFrame):
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
                                          text="Matriz (filas separadas "
                                               "por enter, valores separados por espacios):")
-        self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         # Aumentar la altura del Textbox
         self.text_matriz = ctk.CTkTextbox(self.entrada_frame, width=400, height=150)
-        self.text_matriz.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
-        # Botones para operaciones
-        self.btn_reducir = ctk.CTkButton(self.entrada_frame, text="Reducir", command=self.reducir_matriz)
-        self.btn_reducir.grid(row=3, column=0, padx=10, pady=10)
-
-        self.btn_mostrar_solucion = ctk.CTkButton(self.entrada_frame, text="Mostrar Solución",
-                                                  command=self.mostrar_solucion)
-        self.btn_mostrar_solucion.grid(row=3, column=1, padx=10, pady=10)
+        # Botón único para resolver
+        self.btn_resolver = ctk.CTkButton(self.entrada_frame, text="Resolver", command=self.resolver_matriz)
+        self.btn_resolver.grid(row=3, column=0, padx=10, pady=10, sticky="")
 
         # Frame para resultados
         self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Solución:")
-        self.label_salida.grid(row=0, column=0, padx=10, pady=10)
+        self.label_salida.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
         self.text_salida_frame = ctk.CTkFrame(self.resultado_frame)
         self.text_salida_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
@@ -62,48 +58,22 @@ class GaussJordanFrame(ctk.CTkFrame):
         self.scrollbar.pack(side="right", fill="y")
         self.text_salida.configure(yscrollcommand=self.scrollbar.set)
 
-        # Botón para limpiar entradas, ahora en el frame de resultados
+        # Botón para limpiar entradas
         self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
-        self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10)
+        self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10, sticky="")
 
-    def reducir_matriz(self):
-        """Realiza la reducción de la matriz introducida por el usuario."""
-        matriz_text = self.text_matriz.get("1.0", "end-1c")
 
-        if not matriz_text.strip():
-            CTkMessagebox(title="Error", message="Las entradas de la matriz están vacías.", icon="warning",
-                          option_1="Entendido", button_hover_color="green")
-            return
+        # Variables para los frames y tablas adicionales
+        self.frame_matriz1 = None
+        self.frame_matriz2 = None
+        self.tabla_matriz1 = None
+        self.tabla_matriz2 = None
+        self.tabla_reducida = None
+        self.tabla_entrada = None
+        self.tabla_salida = None
 
-        matriz_filas = matriz_text.split("\n")
-        matriz = []
-        try:
-            for fila in matriz_filas:
-                if fila.strip():
-                    matriz.append([Fraction(x) for x in fila.split()])
-
-            if not matriz:
-                raise ValueError("Matriz vacía")
-
-        except ValueError:
-            CTkMessagebox(title="Error", message="Las entradas de la matriz contienen caracteres inválidos.",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
-            return
-
-        self.gauss_jordan.matriz = matriz
-        self.gauss_jordan.filas = len(matriz)
-        self.gauss_jordan.columnas = len(matriz[0]) - 1
-
-        self.text_salida.delete("1.0", "end")
-        self.gauss_jordan.pasos = 0
-        self.gauss_jordan.reducir(self.mostrar_paso)
-
-    def mostrar_paso(self, texto):
-        """Muestra un paso del proceso de reducción en el textbox de salida."""
-        self.text_salida.insert("end", texto + "\n")
-
-    def mostrar_solucion(self):
-        """Muestra la solución de la matriz reducida."""
+    def resolver_matriz(self):
+        """Realiza la reducción de la matriz y muestra la solución."""
         matriz_text = self.text_matriz.get("1.0", "end-1c")
 
         if not matriz_text.strip():
@@ -114,28 +84,111 @@ class GaussJordanFrame(ctk.CTkFrame):
         try:
             matriz_filas = matriz_text.split("\n")
             matriz = []
+            num_columnas = None  # Almacenar el número de columnas de la primera fila
+
             for fila in matriz_filas:
                 if fila.strip():
-                    matriz.append([Fraction(x) for x in fila.split()])
+                    valores_fila = [Fraction(x) for x in fila.split()]
+
+                    if num_columnas is None:
+                        num_columnas = len(valores_fila)  # Guardar la cantidad de columnas de la primera fila
+                    elif len(valores_fila) != num_columnas:
+                        raise ValueError("Por favor revise los valores ingresado, pueda que falte un valor.")
+
+                    matriz.append(valores_fila)
+
             if not matriz:
                 raise ValueError("Matriz vacía")
 
-        except ValueError:
-            CTkMessagebox(title="Error", message="Las entradas de la matriz contienen caracteres inválidos.",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
+        except ValueError as e:
+            CTkMessagebox(title="Error", message=f"Error: {str(e)}", icon="warning", option_1="Entendido",
+                          button_hover_color="green")
             return
 
         self.gauss_jordan.matriz = matriz
+        self.gauss_jordan.matriz_original = [fila.copy() for fila in matriz]  # Guardar una copia de la matriz original
         self.gauss_jordan.filas = len(matriz)
         self.gauss_jordan.columnas = len(matriz[0]) - 1
 
         self.text_salida.delete("1.0", "end")
+        self.gauss_jordan.pasos = 0
         self.gauss_jordan.mostrar_solucion(self.mostrar_paso)
 
+        # Crear los frames con las tablas al presionar resolver
+        self.crear_tablas()
+
+    def crear_tablas(self):
+        """Crea los frames con CTkTable para mostrar las matrices."""
+        if self.frame_matriz1 or self.frame_matriz2:
+            self.limpiar_tablas()
+
+        # Frame para la primera matriz (input)
+        self.frame_matriz1 = ctk.CTkFrame(self)
+        self.frame_matriz1.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        # Frame para la segunda matriz (output)
+        self.frame_matriz2 = ctk.CTkFrame(self)
+        self.frame_matriz2.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
+
+        # labels para frames
+        self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz1, text="Matriz ingresada:")
+        self.tabla_matriz1.pack(padx=10, pady=10)
+        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución:")
+        self.tabla_matriz2.pack(padx=10, pady=10)
+
+        # tablas para la frame 1 que contiene los datos de entrada
+        datos_tabla_entrada = self.gauss_jordan.matriz_original  # Usamos la matriz original
+        self.tabla_entrada = CTkTable(self.frame_matriz1, values=datos_tabla_entrada)
+        self.tabla_entrada.pack(padx=10, pady=10)
+
+        #label para matriz reducida
+        self.label_matriz_reducida = ctk.CTkLabel(self.frame_matriz1, text="Matriz Reducida")
+        self.label_matriz_reducida.pack(padx=10, pady=10)
+
+        #tabla para matriz reduciad en frame 1
+        datos_tabla_reducida = self.gauss_jordan.matriz
+        self.tabla_reducida = CTkTable(self.frame_matriz1, values=datos_tabla_reducida)
+        self.tabla_reducida.pack(padx=10, pady=10)
+
+
+        # tablas para la frame 2 que contiene los datos de salida
+        datos_tabla_salida = self.gauss_jordan.solucion
+        self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
+        self.tabla_salida.pack(padx=10, pady=10)
+
+    def mostrar_paso(self, texto):
+        """Muestra un paso del proceso de reducción en el textbox de salida."""
+        self.text_salida.insert("end", texto + "\n")
+
     def limpiar_entradas(self):
-        """Limpia los campos de entrada y la salida."""
+        """Limpia los campos de entrada, la salida y las tablas."""
         self.text_matriz.delete("1.0", "end")
         self.text_salida.delete("1.0", "end")
+        self.gauss_jordan.solucion = []  # Limpiar soluciones previas
+        self.limpiar_tablas()
+
+    def limpiar_tablas(self):
+        """Elimina los frames con las tablas y reinicia las soluciones."""
+        # Limpiar la lista de soluciones
+        self.gauss_jordan.solucion = []
+
+        # Destruir los frames de las tablas si existen
+        if self.frame_matriz1:
+            self.frame_matriz1.destroy()
+            self.frame_matriz1 = None
+        if self.frame_matriz2:
+            self.frame_matriz2.destroy()
+            self.frame_matriz2 = None
+
+        # Reiniciar las tablas de entrada, salida y matriz reducida
+        if self.tabla_entrada:
+            self.tabla_entrada.destroy()
+            self.tabla_entrada = None
+        if self.tabla_salida:
+            self.tabla_salida.destroy()
+            self.tabla_salida = None
+        if self.tabla_reducida:
+            self.tabla_reducida.destroy()
+            self.tabla_reducida = None
 
 
 # Uso del frame

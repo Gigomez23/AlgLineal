@@ -3,6 +3,8 @@ from CTkMessagebox import CTkMessagebox
 from CTkTable import *
 from models.clase_matriz_op_ari import *
 from Additiona_functions.convertir_formato_lista import convertir_a_formato_lista
+from fractions import Fraction  # Asegúrate de importar Fraction
+
 
 class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
     def __init__(self, parent):
@@ -70,11 +72,11 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.tabla_frame1 = ctk.CTkFrame(self)
         self.tabla_frame2 = ctk.CTkFrame(self)
 
-    def obtener_matrices(self):
-        """Función que extrae la matriz de lo que fue digitado al usuario
+    def obtener_matrices(self, operacion):
+        """Función que extrae y valida las matrices según la operación seleccionada.
 
-        :return
-            bool
+        :param operacion: str - La operación a realizar ("sumar", "restar", "multiplicar")
+        :return: bool
         """
         matriz1_text = self.text_matriz1.get("1.0", "end-1c")
         matriz2_text = self.text_matriz2.get("1.0", "end-1c")
@@ -86,10 +88,14 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             self.operaciones.matriz1 = [[Fraction(x) for x in fila.split()] for fila in matriz1_filas if fila.strip()]
             self.operaciones.matriz2 = [[Fraction(x) for x in fila.split()] for fila in matriz2_filas if fila.strip()]
 
-            if not self.validar_dimensiones_para_operaciones():
-                raise ValueError("Las matrices deben tener las mismas dimensiones para suma/resta.")
+            if operacion in ["sumar", "restar"]:
+                if not self.validar_dimensiones_para_operaciones():
+                    raise ValueError("Las matrices deben tener las mismas dimensiones para suma/resta.")
+            elif operacion == "multiplicar":
+                if not self.validar_dimensiones_para_multiplicacion():
+                    raise ValueError("El número de columnas de la Matriz 1 debe coincidir con el número de filas de la Matriz 2 para multiplicación.")
         except ValueError as e:
-            CTkMessagebox(title="Error de formato", message=f"Error en el formato de las matrices: {str(e)}",
+            CTkMessagebox(title="Error de formato", message=f"Error: {str(e)}",
                           icon="warning", option_1="Entendido", button_hover_color="green")
             return False
 
@@ -108,14 +114,16 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         return True
 
     def validar_dimensiones_para_multiplicacion(self):
-        """Función que valída las dimensiones para la multiplicación
+        """Función que valida las dimensiones para la multiplicación
         :return
             bool
         """
+        if not self.operaciones.matriz1 or not self.operaciones.matriz2:
+            return False
         return len(self.operaciones.matriz1[0]) == len(self.operaciones.matriz2)
 
     def calcular_operacion(self):
-        """Función que selecciona el cálculo que desea el usuario."""
+        """Función que selecciona y realiza el cálculo según la operación seleccionada."""
         matriz1_text = self.text_matriz1.get("1.0", "end-1c").strip()
         matriz2_text = self.text_matriz2.get("1.0", "end-1c").strip()
 
@@ -125,25 +133,22 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
                           icon="warning", option_1="Entendido", button_hover_color="green")
             return
 
-        if self.obtener_matrices():
-            operacion = self.operacion_seleccionada.get()
+        operacion = self.operacion_seleccionada.get()
 
-            if operacion == "sumar":
-                self.operaciones.suma_matrices()
-            elif operacion == "restar":
-                self.operaciones.resta_matrices()
-            elif operacion == "multiplicar":
-                if self.validar_dimensiones_para_multiplicacion():
+        if self.obtener_matrices(operacion):
+            try:
+                if operacion == "sumar":
+                    self.operaciones.suma_matrices()
+                elif operacion == "restar":
+                    self.operaciones.resta_matrices()
+                elif operacion == "multiplicar":
                     self.operaciones.multiplicar_matrices()
-                else:
-                    CTkMessagebox(title="Error de dimensiones",
-                                  message=f"El número de columnas de la Matriz 1 debe coincidir con el número de "
-                                          f"filas de la Matriz 2 para multiplicación.",
-                                  icon="warning", option_1="Entendido", button_hover_color="green")
-                    return
 
-            self.mostrar_resultado()
-            self.mostrar_tablas()  # Muestra las tablas vacías
+                self.mostrar_resultado()
+                self.mostrar_tablas()  # Muestra las tablas vacías
+            except Exception as e:
+                CTkMessagebox(title="Error en la operación", message=f"Ocurrió un error durante la operación: {str(e)}",
+                              icon="error", option_1="Entendido", button_hover_color="red")
 
     def mostrar_resultado(self):
         """Función muestra los resultados en el textbox de salida."""
@@ -158,7 +163,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             self.tabla_frame1.grid(row=3, column=0, padx=10, pady=20)
             self.tabla_frame2.grid(row=3, column=1, padx=10, pady=10)
 
-            #Se crea los labels para cada frame de las tablas
+            # Se crean los labels para cada frame de las tablas
             self.label_tabla_entrada = ctk.CTkLabel(self.tabla_frame1,
                                               text="Matrices de entrada: ")
             self.label_tabla_entrada.pack(pady=10, padx=10)
@@ -175,7 +180,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             self.tabla2 = CTkTable(self.tabla_frame1, values=datos_tabla_2)
             self.tabla2.pack(padx=10, pady=10)
 
-            #tabla de solución
+            # Tabla de solución
             datos_tabla_solucion = self.operaciones.resultado
             self.tabla_solucion = CTkTable(self.tabla_frame2, values=datos_tabla_solucion)
             self.tabla_solucion.pack(padx=10, pady=10)
