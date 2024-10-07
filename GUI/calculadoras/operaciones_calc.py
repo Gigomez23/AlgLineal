@@ -1,9 +1,13 @@
+"""
+Archivo: operaciones_calc.py 2.0.0
+Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
+"""
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 from CTkTable import *
 from models.clase_matriz_op_ari import *
 from Additiona_functions.convertir_formato_lista import convertir_a_formato_lista
-from fractions import Fraction  # Asegúrate de importar Fraction
+from fractions import Fraction
 
 
 class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
@@ -193,6 +197,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.text_matriz1.delete("1.0", "end")
         self.text_matriz2.delete("1.0", "end")
         self.text_salida.delete("1.0", "end")
+        self.label_tabla_entrada.destroy()
+        self.label_tabla_solucion.destroy()
 
         # Eliminar las tablas si están mostradas
         if self.tablas_mostradas:
