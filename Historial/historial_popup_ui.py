@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from CTkListbox import *
 from Historial.historial_visualizar_popup import *
+from fractions import Fraction
 from Historial.escoger_matriz import HistorialImportarPopup
 
 
@@ -50,17 +51,26 @@ class HistorialPopup(ctk.CTkToplevel):
     def importar_matriz(self):
         """Función que importa la matriz seleccionada desde el frame HistorialImportarPopup"""
         seleccion = self.listbox_matrices.curselection()
-        if seleccion:
-            popup_importar = HistorialImportarPopup(self, self.historial, seleccion)
-            popup_importar.grab_set()
-            self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
+        # if seleccion:
+        popup_importar = HistorialImportarPopup(self, self.historial, seleccion)
+        popup_importar.grab_set()
+        self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
 
-            # Verificar si se ha importado una matriz
-            if popup_importar.matriz_importar is not None:
-                matriz_importada = popup_importar.matriz_importar
-                # Actualiza el campo de entrada con la matriz importada
-                self.campo_entrada.delete(1.0, ctk.END)  # Borra el contenido actual del campo
-                self.campo_entrada.insert(ctk.END, str(matriz_importada))  # Inserta la matriz importada
+        # Verificar si se ha importado una matriz
+        if popup_importar.matriz_importar is not None:
+            matriz_importada = popup_importar.matriz_importar
+
+            # Formatear la matriz para mostrar en el cuadro de texto
+            matriz_formateada = ""
+            for fila in matriz_importada:
+                fila_formateada = " ".join(
+                    [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else str(Fraction(numero)) for
+                     numero in fila])
+                matriz_formateada += fila_formateada + "\n"
+
+            # Actualiza el campo de entrada con la matriz formateada
+            self.campo_entrada.delete(1.0, ctk.END)  # Borra el contenido actual del campo
+            self.campo_entrada.insert(ctk.END, matriz_formateada)  # Inserta la matriz formateada
 
     def cerrar_popup(self):
         """Cierra la ventana emergente."""

@@ -265,8 +265,6 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
 
 
-
-
 if __name__ == "__main__":
     root = ctk.CTk()
     app_frame = OperacionesAritmeticasMatrizFrame(root)
