@@ -1,5 +1,5 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 1.1.1
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.0.1
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 import customtkinter as ctk
@@ -170,10 +170,12 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
             matriz_A_text = matriz_A_text.split("\n")
             matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
 
+            self.matriz_entrada = matriz_A
             filas_A = len(matriz_A)
             columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
 
             matriz_b_text = matriz_b_text.split()
+            self.vector_entrada = matriz_b_text
             matriz_b = [Fraction(x) for x in matriz_b_text]
             filas_b = len(matriz_b)
 
@@ -236,7 +238,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.tabla_matriz.pack(padx=10, pady=10)
 
         # label para vector ingresado
-        self.label_vector_ingresada = ctk.CTkLabel(self.frame_matriz1, text="Matriz Vector Ingresado")
+        self.label_vector_ingresada = ctk.CTkLabel(self.frame_matriz1, text="Vector Ingresado:")
         self.label_vector_ingresada.pack(padx=10, pady=10)
 
         # tabla para el vector ingresado

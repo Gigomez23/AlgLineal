@@ -1,5 +1,5 @@
 """
-Archivo: main_gui.py 1.5.5
+Archivo: main_gui.py 1.6.5
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 
