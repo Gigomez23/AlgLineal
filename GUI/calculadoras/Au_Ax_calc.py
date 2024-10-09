@@ -1,5 +1,5 @@
 """
-Archivo: Au_Ax_calc.py 1.1.0
+Archivo: Au_Ax_calc.py 1.3.0
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from fractions import Fraction
@@ -8,12 +8,14 @@ import customtkinter as ctk
 from CTkTable import CTkTable
 from models.clase_matriz_vectores import *
 from Additiona_functions.convertir_formato_lista import *
+from Historial.historial_popup_ui import *
 
 
 class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, historial):
         super().__init__(parent)
         self.matriz_operaciones = CreadorDeOperacionMatrizVector()
+        self.historial = historial
 
         # Crear el frame izquierdo para las entradas
         self.frame_izquierdo = ctk.CTkFrame(self)
@@ -33,22 +35,37 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
                                                 "valores separados por espacios):")
         self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
+        # boton para importar en primera entrada
+        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+                                                        command=self.abrir_historial1)
+        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+
         self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
-        self.text_matriz_A.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
         self.label_vector_u = ctk.CTkLabel(self.frame_izquierdo,
                                            text="Vector u (valores separados por espacios):")
-        self.label_vector_u.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.label_vector_u.grid(row=4, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+
+        # boton para importar en segunda entrada
+        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+                                                        command=self.abrir_historial2)
+        self.btn_importar_hist_entrada1.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
 
         self.text_vector_u = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
-        self.text_vector_u.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+        self.text_vector_u.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         self.label_vector_v = ctk.CTkLabel(self.frame_izquierdo,
                                            text="Vector v (valores separados por espacios):")
-        self.label_vector_v.grid(row=5, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.label_vector_v.grid(row=7, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+
+        # boton para importar en primera entrada
+        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+                                                        command=self.abrir_historial3)
+        self.btn_importar_hist_entrada1.grid(row=8, column=0, padx=10, pady=10, columnspan=2)
 
         self.text_vector_v = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
-        self.text_vector_v.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
+        self.text_vector_v.grid(row=9, column=0, padx=10, pady=10, columnspan=2)
 
         # --- Frame Derecho: Controles y Salida ---
         self.label_metodo = ctk.CTkLabel(self.frame_derecho, text="Método de Resolución:")
@@ -234,7 +251,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.tabla_salida.pack(padx=10, pady=10)
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar") # todo: agregar funcion de Guardar
+        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar",
+                                         command=self.accionar_guardado_en_historial)
         self.btn_guardar.pack(padx=10, pady=10)
 
     def limpiar_tablas(self):
@@ -272,6 +290,32 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.text_vector_v.delete("1.0", "end")
         self.text_salida.delete("1.0", "end")
         self.limpiar_tablas()
+
+    def accionar_guardado_en_historial(self):
+        tabla_u = lista_a_matriz(self.matriz_operaciones.u)
+        tabla_v = lista_a_matriz(self.matriz_operaciones.v)
+        datos_tabla_salida = lista_a_matriz(self.matriz_operaciones.solucion)
+        self.guardar_en_historial(self.matriz_operaciones.A, tabla_u, tabla_v, datos_tabla_salida)
+
+    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
+        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='tres')
+        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
+                      icon="check", fade_in_duration=2)
+
+    def abrir_historial1(self):
+        """Abre el pop-up del historial."""
+        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_A)
+        historial_popup.grab_set()  # Foco en el pop-up
+
+    def abrir_historial2(self):
+        """Abre el pop-up del historial."""
+        historial_popup = HistorialPopup(self, self.historial, self.text_vector_u)
+        historial_popup.grab_set()  # Foco en el pop-up
+
+    def abrir_historial3(self):
+        """Abre el pop-up del historial."""
+        historial_popup = HistorialPopup(self, self.historial, self.text_vector_v)
+        historial_popup.grab_set()  # Foco en el pop-up
 
 
 # Ejemplo de uso del frame en una aplicación principal de tkinter

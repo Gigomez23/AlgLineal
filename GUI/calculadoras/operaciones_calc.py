@@ -218,7 +218,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             # boton para guardar
             self.btn_guardar = ctk.CTkButton(self.tabla_frame2, text="Guardar",
                                              command=self.accionar_guardado_en_historial)
-            self.btn_guardar.grid(row=2, column=1, padx=10, pady=10)
+            self.btn_guardar.pack(padx=10, pady=10)
 
     def limpiar_entradas(self):
         """Limpia las entradas y elimina las tablas."""
@@ -245,11 +245,13 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             self.tablas_mostradas = False
 
     def accionar_guardado_en_historial(self):
-        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, self.matriz_solucion)
+        matriz3 = []
+        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, matriz3, self.matriz_solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, solucion)
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!", icon="check", fade_in_duration=2)
+    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
+        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos')
+        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
+                      icon="check", fade_in_duration=2)
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""

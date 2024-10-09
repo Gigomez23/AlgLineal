@@ -1,18 +1,20 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 2.0.1
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.2
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 import customtkinter as ctk
 from models.clase_matriz_operaciones import *
 from Additiona_functions.convertir_formato_lista import *
+from Historial.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
 
 
 class MultiplicacionMatricesFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, historial):
         super().__init__(parent)
         self.matriz_operaciones = CreadorDeOperaciones()
+        self.historial = historial
         self.matriz_entrada = []
         self.vector_entrada = []
         self.matriz_salida = []
@@ -36,25 +38,35 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                                 "valores separados por espacios):")
         self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
+        # boton para importar en primera entrada
+        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+                                                        command=self.abrir_historial1)
+        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+
         self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
-        self.text_matriz_A.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
         # Entradas para la matriz b
         self.label_matriz_b = ctk.CTkLabel(self.frame_izquierdo,
                                            text="Vector/matriz b (valores separados por espacios):")
-        self.label_matriz_b.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz_b.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+
+        # botón para importar en segunda entrada
+        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+                                                        command=self.abrir_historial2)
+        self.btn_importar_hist_entrada1.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
 
         self.text_matriz_b = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
-        self.text_matriz_b.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_b.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         # Botones debajo de las entradas
         self.btn_calcular = ctk.CTkButton(self.frame_izquierdo, text="Calcular Ax = b",
                                           command=self.calcular_multiplicacion)
-        self.btn_calcular.grid(row=5, column=0, padx=10, pady=10)
+        self.btn_calcular.grid(row=7, column=0, padx=10, pady=10)
 
         self.btn_mostrar_pasos = ctk.CTkButton(self.frame_izquierdo, text="Mostrar Resultado con Pasos",
                                                command=self.mostrar_resultado_con_pasos)
-        self.btn_mostrar_pasos.grid(row=5, column=1, padx=10, pady=10)
+        self.btn_mostrar_pasos.grid(row=7, column=1, padx=10, pady=10)
 
         # --- Frame Derecho: Salida y Botón de Limpiar ---
         self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:")
@@ -252,7 +264,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.tabla_salida.pack(padx=10, pady=10)
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar") # todo: agregar funcion de Guardar
+        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar",
+                                         command=self.accionar_guardado_en_historial)
         self.btn_guardar.pack(padx=10, pady=10)
 
     def limpiar_tablas(self):
@@ -286,6 +299,26 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.text_matriz_b.delete("1.0", "end")
         self.text_salida.delete("1.0", "end")
         self.limpiar_tablas()
+
+    def accionar_guardado_en_historial(self):
+        matriz3 = []
+        datos_tabla_salida = lista_a_matriz(self.matriz_operaciones.solucion)
+        self.guardar_en_historial(self.matriz_entrada, self.vector_entrada, matriz3, datos_tabla_salida)
+
+    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
+        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos')
+        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
+                      icon="check", fade_in_duration=2)
+
+    def abrir_historial1(self):
+        """Abre el pop-up del historial."""
+        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_A)
+        historial_popup.grab_set()  # Foco en el pop-up
+
+    def abrir_historial2(self):
+        """Abre el pop-up del historial."""
+        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_b)
+        historial_popup.grab_set()  # Foco en el pop-up
 
 
 if __name__ == "__main__":

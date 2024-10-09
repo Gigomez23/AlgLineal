@@ -1,5 +1,5 @@
 """
-Archivo: historial_visualizar_popup.py 1.0.0
+Archivo: historial_visualizar_popup2.py 1.0.0
 Descripción: Este archivo contiene la interfáz gráfica para visualizar las matrices que componen
 un problema del historial.
 """
@@ -7,7 +7,7 @@ import customtkinter as ctk
 from CTkTable import *
 
 
-class HistorialVisualizacionPopup(ctk.CTkToplevel):
+class HistorialVisualizacionPopup2(ctk.CTkToplevel):
     def __init__(self, parent, historial, indice, *args, **kwargs):
         """
         Ventana emergente que muestra las matrices de entrada y solución en CTkTable.
@@ -35,6 +35,16 @@ class HistorialVisualizacionPopup(ctk.CTkToplevel):
 
         self.frame3 = ctk.CTkFrame(self)
         self.frame3.grid(row=0, column=2, padx=10, pady=10)
+
+        # Crear los labels
+        self.label_importar1 = ctk.CTkLabel(self.frame1, text="Entrada 1:")
+        self.label_importar1.pack(padx=10, pady=10)
+
+        self.label_importar2 = ctk.CTkLabel(self.frame2, text="Entrada 2:")
+        self.label_importar2.pack(padx=10, pady=10)
+
+        self.label_importar3 = ctk.CTkLabel(self.frame3, text="Solución:")
+        self.label_importar3.pack(padx=10, pady=10)
 
         # se crean las tablas
         datos_tabla_1 = self.matriz1

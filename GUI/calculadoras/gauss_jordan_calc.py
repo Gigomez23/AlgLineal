@@ -204,10 +204,12 @@ class GaussJordanFrame(ctk.CTkFrame):
             self.tabla_reducida = None
 
     def accionar_guardado(self):
-        self.guardar_en_historial(self.gauss_jordan.matriz_original, self.gauss_jordan.matriz, self.gauss_jordan.solucion)
+        matriz3 = []
+        self.guardar_en_historial(self.gauss_jordan.matriz_original, self.gauss_jordan.matriz,
+                                  matriz3, self.gauss_jordan.solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, solucion)
+    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
+        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos")
         CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
                       icon="check", fade_in_duration=2)
 
