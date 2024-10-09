@@ -1,5 +1,5 @@
 """
-Archivo: main_gui.py 1.3.5
+Archivo: main_gui.py 1.5.5
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 
@@ -61,7 +61,7 @@ class App(CTk):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable),
+            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable, self.historial),
             'Ecuación Matricial': MultiplicacionMatricesFrame(self.frame_cambiable),
             'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable),
             'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),

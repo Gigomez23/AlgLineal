@@ -101,7 +101,7 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         # Verificar si algún campo de entrada está vacío
         if not matriz_A_text or not vector_u_text or not vector_v_text:
             CTkMessagebox(title="Error de entrada", message="Todos los campos deben estar llenos.", icon="warning",
-                          option_1="Entendido", button_hover_color="green")
+                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
 
         try:
@@ -123,18 +123,18 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         except ValueError as e:
             # Mensaje de error por tamaño de vectores o fracciones no válidas
             CTkMessagebox(title="Error de formato", message=str(e), icon="warning", option_1="Entendido",
-                          button_hover_color="green")
+                          button_hover_color="green", fade_in_duration=2)
             return
         except ZeroDivisionError:
             # Mensaje de error si el usuario intenta dividir por 0
             CTkMessagebox(title="Error de división", message="No se puede dividir por cero.", icon="warning",
-                          option_1="Entendido", button_hover_color="green")
+                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
         except Exception:
             # Mensaje de error por entradas no numéricas
             CTkMessagebox(title="Error de entrada",
                           message="Por favor, ingresa solo números válidos (sin letras ni símbolos).", icon="warning",
-                          option_1="Entendido", button_hover_color="green")
+                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
 
         # Almacenar datos en la instancia de operaciones

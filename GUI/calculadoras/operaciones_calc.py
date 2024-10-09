@@ -1,5 +1,5 @@
 """
-Archivo: operaciones_calc.py 2.0.0
+Archivo: operaciones_calc.py 2.2.0
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
 """
 import customtkinter as ctk
@@ -22,7 +22,6 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.matriz_entrada1 = []
         self.matriz_entrada2 = []
         self.matriz_solucion = []
-        self.importar_historial = False
 
         # Frame para entradas
         self.entrada_frame = ctk.CTkFrame(self)
@@ -124,7 +123,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
                                      "el número de filas de la Matriz 2 para multiplicación.")
         except ValueError as e:
             CTkMessagebox(title="Error de formato", message=f"Error: {str(e)}",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
+                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return False
 
         return True
@@ -158,7 +157,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         # Verificar si los campos están vacíos
         if not matriz1_text or not matriz2_text:
             CTkMessagebox(title="Advertencia", message="Por favor, ingrese ambas matrices antes de calcular.",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
+                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
 
         operacion = self.operacion_seleccionada.get()
@@ -176,7 +175,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
                 self.mostrar_tablas()  # Muestra las tablas vacías
             except Exception as e:
                 CTkMessagebox(title="Error en la operación", message=f"Ocurrió un error durante la operación: {str(e)}",
-                              icon="error", option_1="Entendido", button_hover_color="red")
+                              icon="error", option_1="Entendido", button_hover_color="red", fade_in_duration=2)
 
     def mostrar_resultado(self):
         """Función muestra los resultados en el textbox de salida."""
@@ -216,8 +215,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
             self.tablas_mostradas = True
 
-            # todo: fix position
-            self.btn_guardar = ctk.CTkButton(self, text="Guardar",
+            # boton para guardar
+            self.btn_guardar = ctk.CTkButton(self.tabla_frame2, text="Guardar",
                                              command=self.accionar_guardado_en_historial)
             self.btn_guardar.grid(row=2, column=1, padx=10, pady=10)
 
@@ -250,7 +249,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
     def guardar_en_historial(self, matriz1, matriz2, solucion):
         self.historial.agregar_problema(matriz1,matriz2, solucion)
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!", icon="check")
+        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!", icon="check", fade_in_duration=2)
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""

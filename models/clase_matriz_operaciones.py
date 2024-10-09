@@ -11,6 +11,7 @@ def CreadorDeOperaciones():
             self.nombre = ""
             self.A = []
             self.b = []
+            self.solucion = []
             self.filas_A = 0
             self.columnas_A = 0
             self.filas_b = 0
@@ -46,5 +47,6 @@ def CreadorDeOperaciones():
             text_salida.insert("end", "\nResultado de Ax = b:\n")
             for i, valor in enumerate(resultado):
                 text_salida.insert("end", f"Fila {i + 1}: {valor}\n")
+                self.solucion.insert(i, valor)
 
     return MatrizOperaciones()
