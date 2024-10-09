@@ -5,6 +5,7 @@ por método escalonado o de Gauss-Jordan.
 """
 import customtkinter as ctk
 from models.clase_sistema_ecuaciones import *
+from Historial.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
 from fractions import Fraction
 from CTkTable import CTkTable
@@ -15,9 +16,10 @@ class GaussJordanFrame(ctk.CTkFrame):
     Frame para realizar la reducción de matrices usando el método de Gauss-Jordan.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, historial):
         super().__init__(parent)
         self.gauss_jordan = CreadorDeEcuaciones()
+        self.historial = historial
 
         # Frame para entradas
         self.entrada_frame = ctk.CTkFrame(self)
@@ -36,13 +38,16 @@ class GaussJordanFrame(ctk.CTkFrame):
                                               "por enter, valores separados por espacios):")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
+        self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
+        self.btn_importar_hist.grid(row=2, column=0, padx=10, pady=10)
+
         # Aumentar la altura del Textbox
         self.text_matriz = ctk.CTkTextbox(self.entrada_frame, width=400, height=150)
-        self.text_matriz.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
+        self.text_matriz.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
         # Botón único para resolver
         self.btn_resolver = ctk.CTkButton(self.entrada_frame, text="Resolver", command=self.resolver_matriz)
-        self.btn_resolver.grid(row=3, column=0, padx=10, pady=10, sticky="")
+        self.btn_resolver.grid(row=4, column=0, padx=10, pady=10, sticky="")
 
         # Frame para resultados
         self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Solución:")
@@ -78,7 +83,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         if not matriz_text.strip():
             CTkMessagebox(title="Error", message="Las entradas de la matriz están vacías.", icon="warning",
-                          option_1="Entendido", button_hover_color="green")
+                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
 
         try:
@@ -102,7 +107,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         except ValueError as e:
             CTkMessagebox(title="Error", message=f"Error: {str(e)}", icon="warning", option_1="Entendido",
-                          button_hover_color="green")
+                          button_hover_color="green", fade_in_duration=2)
             return
 
         self.gauss_jordan.matriz = matriz
@@ -144,16 +149,24 @@ class GaussJordanFrame(ctk.CTkFrame):
         self.label_matriz_reducida = ctk.CTkLabel(self.frame_matriz1, text="Matriz Reducida")
         self.label_matriz_reducida.pack(padx=10, pady=10)
 
-        #tabla para matriz reduciad en frame 1
+        # tabla para matriz reduciad en frame 1
         datos_tabla_reducida = self.gauss_jordan.matriz
         self.tabla_reducida = CTkTable(self.frame_matriz1, values=datos_tabla_reducida)
         self.tabla_reducida.pack(padx=10, pady=10)
 
-
         # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = self.gauss_jordan.solucion
-        self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
-        self.tabla_salida.pack(padx=10, pady=10)
+        if not datos_tabla_salida:
+            datos_vacios = [["El sistema es inconsistente"]]
+            self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_vacios)
+            self.tabla_salida.pack(padx=10, pady=10)
+        else:
+            self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
+            self.tabla_salida.pack(padx=10, pady=10)
+
+        #botón de guardado
+        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar", command=self.accionar_guardado)
+        self.btn_guardar.pack(padx=10, pady=10)
 
     def mostrar_paso(self, texto):
         """Muestra un paso del proceso de reducción en el textbox de salida."""
@@ -189,6 +202,21 @@ class GaussJordanFrame(ctk.CTkFrame):
         if self.tabla_reducida:
             self.tabla_reducida.destroy()
             self.tabla_reducida = None
+
+    def accionar_guardado(self):
+        matriz3 = []
+        self.guardar_en_historial(self.gauss_jordan.matriz_original, self.gauss_jordan.matriz,
+                                  matriz3, self.gauss_jordan.solucion)
+
+    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
+        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos")
+        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
+                      icon="check", fade_in_duration=2)
+
+    def abrir_historial(self):
+        """Abre el pop-up del historial"""
+        historial_popup = HistorialPopup(self, self.historial, self.text_matriz)
+        historial_popup.grab_set()
 
 
 # Uso del frame

@@ -22,7 +22,8 @@ def CreadorDeMatricesAritmeticas():
                 for j in range(len(self.matriz1[0])):
                     suma = self.matriz1[i][j] + self.matriz2[i][j]
                     fila_resultado.append(suma)
-                    self.procedimiento += f"Elemento [{i+1}, {j+1}] = {self.matriz1[i][j]} + {self.matriz2[i][j]} = {suma}\n"
+                    self.procedimiento += (f"Elemento [{i+1}, {j+1}] = {self.matriz1[i][j]} + "
+                                           f"{self.matriz2[i][j]} = {suma}\n")
                 self.resultado.append(fila_resultado)
 
         def resta_matrices(self):
