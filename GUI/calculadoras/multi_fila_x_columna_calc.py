@@ -75,7 +75,7 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
 
         except Exception as e:
             CTkMessagebox(title="Error", message=f"Error en el cálculo: {e}",
-                          icon="cancel", option_1="Entendido", button_hover_color="green")
+                          icon="cancel", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada y el texto de salida."""

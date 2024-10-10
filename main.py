@@ -1,12 +1,11 @@
 """
-Programa Versión:  3.2.6
+Programa Versión:  3.6.0
 Descripcion: archivo main
 Clase: Algebra Lineal
 Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
 """
-
-#todo: verificar todas las instrucciones
 from main_gui import App
+
 
 if __name__ == "__main__":
     root = App()
@@ -14,5 +13,3 @@ if __name__ == "__main__":
     root.title("Calculadora Algebra Lineal")
     root.configure(fg_color=['gray92', 'gray14'])
     root.mainloop()
-
-    #just a test

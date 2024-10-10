@@ -1,5 +1,5 @@
 """
-Archivo: main_gui.py 1.3.5
+Archivo: main_gui.py 1.8.5
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 
@@ -11,29 +11,22 @@ from GUI.calculadoras.multi_fila_x_columna_calc import VectorMultiplicacionFrame
 from GUI.calculadoras.operacion_con_vectores_calc import VectorOperacionesFrame
 from GUI.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
 from GUI.calculadoras.operaciones_calc import OperacionesAritmeticasMatrizFrame
+from GUI.calculadoras.transpuesta_inversa_calc import MatrizCalculatorInvTranFrame
+from Historial.matriz_historial import Historial
+from Historial.importar_matriz import Importar
+
 
 # Clase principal de la aplicación
 class App(CTk):
     def __init__(self, *args, **kwargs):
         """Inicializa la aplicación principal."""
         super().__init__(*args, **kwargs)
+        # Se inicializa el historial
+        self.historial = Historial()
+        self.datos_importados = Importar()
 
         # Establecer el ícono de la ventana
         self.iconbitmap("GUI/archivos_adicionales/logo_uam.ico")
-
-        # # Frame superior (barra superior)
-        # self.frame_top_bar = CTkFrame(master=self, width=0, height=50)
-        # self.frame_top_bar.pack_propagate(False)
-        # self.frame_top_bar.pack(fill="x")
-        #
-        # # Menú desplegable en la barra superior
-        # self.om_menu_de_opciones = CTkOptionMenu(
-        #     master=self.frame_top_bar,
-        #     anchor="e",
-        #     values=['Calculadora', 'Historial', 'Salir'],
-        #     font=CTkFont(family="Consolas", slant="roman", size=14)
-        # )
-        # self.om_menu_de_opciones.pack(padx=(5, 0), side="left")
 
         # Frame de encabezado para el texto y menú de selección
         self.frame_encabezado = CTkFrame(master=self)
@@ -50,8 +43,8 @@ class App(CTk):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Resolver Ecuaciones Lineales', 'Multiplicar Matriz x Vector', 'Multiplicar Matriz x Vectores',
-                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices'],
+            values=['Resolver Ecuaciones Lineales', 'Ecuación Matricial', 'Multiplicar Matriz x Vectores',
+                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz"],
             anchor="w",
             width=250,
             hover=True,
@@ -69,12 +62,13 @@ class App(CTk):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable),
-            'Multiplicar Matriz x Vector': MultiplicacionMatricesFrame(self.frame_cambiable),
-            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable),
+            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable, self.historial),
+            'Ecuación Matricial': MultiplicacionMatricesFrame(self.frame_cambiable, self.historial),
+            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable, self.historial),
             'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
             'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self),
-            'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable)
+            'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial),
+            'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial)
             # Agrega el argumento main_app
         }
 

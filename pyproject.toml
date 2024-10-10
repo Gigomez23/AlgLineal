@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "algebralineal"
+version = "1.0.0"
+description = "Calculadora de Ecuaciones Lineales, Matrices y Vectores."
+authors = ["Grupo B Algebra Linea"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+customtkinter = "^5.2.2"
+CTkTable = "^1.1"
+CTkMessagebox = "^2.7"
+Fraction = "^2.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

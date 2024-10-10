@@ -1,3 +1,7 @@
+"""
+Archivo: clase_matriz_op_ari.py 1.10.0
+Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
+"""
 from fractions import Fraction
 
 
@@ -10,20 +14,29 @@ def CreadorDeMatricesAritmeticas():
             self.procedimiento = ""
 
         def suma_matrices(self):
-            """Función que suma las matrices"""
-            self.resultado = [
-                [self.matriz1[i][j] + self.matriz2[i][j] for j in range(len(self.matriz1[0]))]
-                for i in range(len(self.matriz1))
-            ]
-            self.procedimiento = "Suma de matrices realizada."
+            """Función que suma las matrices y muestra el procedimiento"""
+            self.resultado = []
+            self.procedimiento = "Procedimiento para la suma de matrices:\n"
+            for i in range(len(self.matriz1)):
+                fila_resultado = []
+                for j in range(len(self.matriz1[0])):
+                    suma = self.matriz1[i][j] + self.matriz2[i][j]
+                    fila_resultado.append(suma)
+                    self.procedimiento += (f"Elemento [{i+1}, {j+1}] = {self.matriz1[i][j]} + "
+                                           f"{self.matriz2[i][j]} = {suma}\n")
+                self.resultado.append(fila_resultado)
 
         def resta_matrices(self):
-            """función que resta las matrices"""
-            self.resultado = [
-                [self.matriz1[i][j] - self.matriz2[i][j] for j in range(len(self.matriz1[0]))]
-                for i in range(len(self.matriz1))
-            ]
-            self.procedimiento = "Resta de matrices realizada."
+            """Función que resta las matrices y muestra el procedimiento"""
+            self.resultado = []
+            self.procedimiento = "Procedimiento para la resta de matrices:\n"
+            for i in range(len(self.matriz1)):
+                fila_resultado = []
+                for j in range(len(self.matriz1[0])):
+                    resta = self.matriz1[i][j] - self.matriz2[i][j]
+                    fila_resultado.append(resta)
+                    self.procedimiento += f"Elemento [{i+1}, {j+1}] = {self.matriz1[i][j]} - {self.matriz2[i][j]} = {resta}\n"
+                self.resultado.append(fila_resultado)
 
         def multiplicar_matrices(self):
             """Función que multiplica las matrices"""
