@@ -11,6 +11,7 @@ from GUI.calculadoras.multi_fila_x_columna_calc import VectorMultiplicacionFrame
 from GUI.calculadoras.operacion_con_vectores_calc import VectorOperacionesFrame
 from GUI.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
 from GUI.calculadoras.operaciones_calc import OperacionesAritmeticasMatrizFrame
+from GUI.calculadoras.transpuesta_inversa_calc import MatrizCalculatorInvTranFrame
 from Historial.matriz_historial import Historial
 from Historial.importar_matriz import Importar
 
@@ -43,7 +44,7 @@ class App(CTk):
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
             values=['Resolver Ecuaciones Lineales', 'Ecuación Matricial', 'Multiplicar Matriz x Vectores',
-                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices'],
+                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz"],
             anchor="w",
             width=250,
             hover=True,
@@ -66,7 +67,8 @@ class App(CTk):
             'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable, self.historial),
             'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
             'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self),
-            'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial)
+            'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial),
+            'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial)
             # Agrega el argumento main_app
         }
 

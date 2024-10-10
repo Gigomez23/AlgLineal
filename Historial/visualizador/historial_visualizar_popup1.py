@@ -37,3 +37,11 @@ class HistorialVisualizacionPopup1(ctk.CTkToplevel):
         self.label_importar2 = ctk.CTkLabel(self.frame2, text="Solución:")
         self.label_importar2.pack(padx=10, pady=10)
 
+        # se crean las tablas
+        datos_tabla_1 = self.matriz1
+        self.tabla1 = CTkTable(self.frame1, values=datos_tabla_1)
+        self.tabla1.pack(padx=10, pady=10)
+
+        datos_tabla_solucion = self.matriz_solucion
+        self.tabla_solucion = CTkTable(self.frame2, values=datos_tabla_solucion)
+        self.tabla_solucion.pack(padx=10, pady=10)
