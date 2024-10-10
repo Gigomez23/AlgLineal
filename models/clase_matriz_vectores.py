@@ -1,13 +1,16 @@
 """
-Archivo: clase_matriz_vectores.py.py 1.0.0
+Archivo: clase_matriz_vectores.py.py 1.1.0
 Descripción: Archivo con la clase para resolver un problema de tipo Au + Av
 """
+
+
 def CreadorDeOperacionMatrizVector():
     class MatrizVectores:
         def __init__(self):
             self.A = []
             self.u = []
             self.v = []
+            self.solucion = []
             self.filas_A = 0
             self.columnas_A = 0
 
@@ -37,6 +40,7 @@ def CreadorDeOperacionMatrizVector():
                 text_salida.insert("end", "\nResultado de A(u + v):\n")
                 for i, valor in enumerate(resultado_directo):
                     text_salida.insert("end", f"Fila {i + 1}: {valor}\n")
+                    self.solucion.insert(i, valor)
 
             if metodo == "separado" or metodo == "ambos":
                 # Resolver A(u) y A(v) por separado

@@ -1,5 +1,6 @@
 from fractions import Fraction
 
+
 def convertir_a_formato_lista(matriz_texto):
     """
     Convierte una matriz de texto en una lista de listas.
@@ -25,3 +26,42 @@ def convertir_a_formato_lista(matriz_texto):
     except ValueError as e:
         # Manejar errores si no se pueden convertir los valores a fracción o entero
         raise ValueError(f"Error al convertir la matriz: {str(e)}")
+
+
+# def lista_a_array_strings(fraccion_lista):
+#     """
+#     Convierte una lista de fracciones en un array de strings que contienen los numeradores.
+#
+#     Args:
+#         fraccion_lista (list): Lista con objetos Fraction.
+#
+#     Returns:
+#         list: Lista de strings que contienen los numeradores de las fracciones.
+#     """
+#     # Extrae los numeradores de las fracciones y los convierte en strings
+#     resultado = [str(fr.numerator) for fr in fraccion_lista]
+#
+#     return resultado
+
+def lista_a_matriz(fraccion_lista):
+    """
+    Convierte una lista de fracciones en una matriz (lista de listas) donde cada fracción ocupa una fila.
+
+    Args:
+        fraccion_lista (list): Lista con objetos Fraction.
+
+    Returns:
+        list: Matriz donde cada fila contiene el valor de una fracción en formato str.
+    """
+    # Extrae los valores de las fracciones como números y crea una matriz
+    resultado = [[str(fr)] for fr in
+                 fraccion_lista]  # Cada fracción se convierte a flotante y se coloca en su propia fila
+
+    return resultado
+
+
+
+
+
+
+

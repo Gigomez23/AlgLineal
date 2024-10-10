@@ -53,7 +53,7 @@ class VectorOperacionesFrame(ctk.CTkFrame):
                 raise ValueError("Dimensión o número de vectores inválidos.")
         except ValueError as e:
             CTkMessagebox(title="Error de formato", message=f"Entrada inválida: {e}",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
+                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
             return
 
         for widget in self.winfo_children():
@@ -175,7 +175,7 @@ class VectorOperacionesFrame(ctk.CTkFrame):
 
         except Exception as e:
             CTkMessagebox(title="Advertencia", message=f"Error en el cálculo: {e}",
-                          icon="warning", option_1="Entendido", button_hover_color="green")
+                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
 
 
 # Uso en una aplicación más grande
