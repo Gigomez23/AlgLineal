@@ -1,5 +1,10 @@
+"""
+Archivo: escoger_matriz2.py 1.3.0
+Descripción: popup que muesta dos matriz de entrada y una de solución para poder importar.
+"""
 import customtkinter as ctk
 from CTkTable import *
+from CTkToolTip import *
 
 
 class HistorialImportarPopup2(ctk.CTkToplevel):
@@ -60,12 +65,18 @@ class HistorialImportarPopup2(ctk.CTkToplevel):
         # Crear los botones
         self.btn_importar_matriz1 = ctk.CTkButton(self.frame1, text="Importar", command=self.importar_matriz1)
         self.btn_importar_matriz1.pack(padx=10, pady=10)
+        self.tooltip_importar1 = CTkToolTip(self.btn_importar_matriz1,
+                                            message="Importar datos de entrada 1")
 
         self.btn_importar_matriz2 = ctk.CTkButton(self.frame2, text="Importar", command=self.importar_matriz2)
         self.btn_importar_matriz2.pack(padx=10, pady=10)
+        self.tooltip_importar2 = CTkToolTip(self.btn_importar_matriz2,
+                                            message="Importar datos de entrada 2")
 
         self.btn_importar_solucion = ctk.CTkButton(self.frame3, text="Importar", command=self.importar_matriz_solucion)
         self.btn_importar_solucion.pack(padx=10, pady=10)
+        self.tooltip_importar_solucion = CTkToolTip(self.btn_importar_solucion,
+                                                    message="Importar datos de solución")
 
     def importar_matriz1(self):
         self.matriz_importar = self.matriz1
