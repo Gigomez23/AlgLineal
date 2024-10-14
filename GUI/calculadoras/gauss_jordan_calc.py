@@ -4,6 +4,8 @@ Descripción: Este archivo contiene el diseño del frame para la calculadora de 
 por método escalonado o de Gauss-Jordan.
 """
 import customtkinter as ctk
+from ctkcomponents import *
+from CTkToolTip import *
 from models.clase_sistema_ecuaciones import *
 from Historial.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
@@ -40,6 +42,8 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
         self.btn_importar_hist.grid(row=2, column=0, padx=10, pady=10)
+        self.tooltip_importar = CTkToolTip(self.btn_importar_hist,
+                                            message="Importar un vector del historial")
 
         # Aumentar la altura del Textbox
         self.text_matriz = ctk.CTkTextbox(self.entrada_frame, width=400, height=150)
@@ -167,6 +171,8 @@ class GaussJordanFrame(ctk.CTkFrame):
         #botón de guardado
         self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar", command=self.accionar_guardado)
         self.btn_guardar.pack(padx=10, pady=10)
+        self.tooltip_guardar = CTkToolTip(self.btn_guardar,
+                                            message="Guardar en historial")
 
     def mostrar_paso(self, texto):
         """Muestra un paso del proceso de reducción en el textbox de salida."""
@@ -209,9 +215,10 @@ class GaussJordanFrame(ctk.CTkFrame):
                                   matriz3, self.gauss_jordan.solucion)
 
     def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos")
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
-                      icon="check", fade_in_duration=2)
+        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos", clasificacion="matriz")
+        CTkNotification(master=self, state="info",
+                        message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
+                        side="right_bottom")
 
     def abrir_historial(self):
         """Abre el pop-up del historial"""

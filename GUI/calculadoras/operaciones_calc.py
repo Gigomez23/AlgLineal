@@ -4,7 +4,9 @@ Descripción: Este archivo contiene la interfáz gráfica de la calculadora de o
 """
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+from ctkcomponents import *
 from CTkTable import *
+from CTkToolTip import *
 from models.clase_matriz_op_ari import *
 from Additiona_functions.convertir_formato_lista import convertir_a_formato_lista
 from Historial.historial_popup_ui import *
@@ -42,6 +44,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.entrada_frame, text="Importar",
                                                  command=self.abrir_historial1)
         self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
+                                            message="Importar una matriz del historial")
 
         self.text_matriz1 = ctk.CTkTextbox(self.entrada_frame, width=400, height=100)
         self.text_matriz1.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
@@ -53,6 +57,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.btn_importar_hist_entrada2 = ctk.CTkButton(self.entrada_frame, text="Importar",
                                                  command=self.abrir_historial2)
         self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
+                                            message="Importar una matriz del historial")
 
         self.text_matriz2 = ctk.CTkTextbox(self.entrada_frame, width=400, height=100)
         self.text_matriz2.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
@@ -219,6 +225,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
             self.btn_guardar = ctk.CTkButton(self.tabla_frame2, text="Guardar",
                                              command=self.accionar_guardado_en_historial)
             self.btn_guardar.pack(padx=10, pady=10)
+            self.tooltip_guardar = CTkToolTip(self.btn_guardar,
+                                                message="Guardar en historial")
 
     def limpiar_entradas(self):
         """Limpia las entradas y elimina las tablas."""
@@ -249,9 +257,10 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, matriz3, self.matriz_solucion)
 
     def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos')
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
-                      icon="check", fade_in_duration=2)
+        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos', clasificacion="matriz")
+        CTkNotification(master=self, state="info",
+                        message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
+                        side="right_bottom")
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""
