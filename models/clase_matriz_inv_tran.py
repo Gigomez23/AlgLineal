@@ -1,3 +1,7 @@
+"""
+Archivo: clase_matriz_inv_tran.py 1.10.0
+Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
+"""
 from fractions import Fraction
 
 

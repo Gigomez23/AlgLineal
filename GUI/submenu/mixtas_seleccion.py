@@ -1,7 +1,6 @@
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
 from GUI.calculadoras.ecuacion_matricial_matrizxvector_calc import MultiplicacionMatricesFrame
 from GUI.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
-from GUI.calculadoras.determinante_frame import DeterminanteFrame
 
 
 # Clase principal convertida a Frame
@@ -28,7 +27,7 @@ class CalculadoraMixtaFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Ecuación Matricial', 'Multiplicar Matriz x Vectores', 'Operacion Determinantes'],
+            values=['Ecuación Matricial', 'Multiplicar Matriz x Vectores'],
             anchor="w",
             width=250,
             hover=True,
@@ -47,8 +46,7 @@ class CalculadoraMixtaFrame(CTkFrame):
         # Inicializa los frames diferentes para las opciones
         self.frames = {
             'Ecuación Matricial': MultiplicacionMatricesFrame(self.frame_cambiable, self.historial),
-            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable, self.historial),
-            'Operacion Determinantes': DeterminanteFrame(self.frame_cambiable)
+            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable, self.historial)
         }
 
         # Muestra el frame por defecto

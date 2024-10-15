@@ -1,5 +1,5 @@
 """
-Archivo: historial_popup_ui.py 2.0.0
+Archivo: historial_popup_ui.py 2.0.1
 Descripción: Archivo contiene la interfaz grafica para el manejo de historial como popup
 contiene un listbox con el historial y opciones para visualizar o importar.
 """
@@ -55,6 +55,8 @@ class HistorialPopup(ctk.CTkToplevel):
         # Botón para cerrar la ventana emergente
         self.btn_cerrar = ctk.CTkButton(self, text="Cerrar", command=self.cerrar_popup)
         self.btn_cerrar.grid(row=2, column=2, padx=10, pady=10, sticky="ew")
+
+
 
     def importar_matriz(self):
         """Función que importa la matriz seleccionada desde el frame HistorialImportarPopup"""

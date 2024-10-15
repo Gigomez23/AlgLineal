@@ -38,7 +38,6 @@ class App(CTk):
                                       command=lambda: self.mostrar_contenido('vectores'))
         self.btn_vectores.pack(pady=10)
 
-        # todo: desarollar frame de Historial
         self.btn_historial = CTkButton(self.frame_menu, text="Historial", command=lambda: self.mostrar_contenido('historial'))
         self.btn_historial.pack(pady=10)
 
