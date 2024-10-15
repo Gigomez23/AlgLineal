@@ -52,7 +52,7 @@ class HistorialMatrizFrame(CTkFrame):
             problema_frame.grid_columnconfigure(0, weight=1)
 
 
-    def visualizar_problema(self, nombre_problema, frame):
+    def visualizar_problema(self, nombre_problema):
         """
         Muestra una ventana emergente con los detalles del problema seleccionado,
         buscando el problema por su nombre.
