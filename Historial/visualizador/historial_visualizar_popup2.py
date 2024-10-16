@@ -1,7 +1,6 @@
 """
-Archivo: historial_visualizar_popup2.py 1.0.0
-Descripción: Este archivo contiene la interfáz gráfica para visualizar las matrices que componen
-un problema del historial.
+Archivo: historial_visualizar_popup2.py 1.3.0
+Descripción: popup que muestra dos matrices de entrada y una de solución.
 """
 import customtkinter as ctk
 from CTkTable import *

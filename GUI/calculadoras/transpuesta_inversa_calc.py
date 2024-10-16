@@ -1,5 +1,11 @@
+"""
+Archivo: transpuesta_inversa_calc.py 1.1.0
+Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
+"""
 import customtkinter as ctk
 from tkinter import messagebox
+from ctkcomponents import *
+from CTkToolTip import *
 from models.clase_matriz_inv_tran import *
 from Historial.historial_popup_ui import *
 from CTkTable import CTkTable
@@ -31,6 +37,8 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
 
         self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial)
         self.btn_importar_hist.pack(pady=10)
+        self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist,
+                                            message="Importar una matriz del historial")
 
         self.input_textbox = ctk.CTkTextbox(self.left_frame, height=120, width=250)
         self.input_textbox.pack(pady=10)
@@ -142,6 +150,8 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         #botón de guardado
         self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar", command=self.accionar_guardado)
         self.btn_guardar.pack(padx=10, pady=10)
+        self.tooltip_guardar = CTkToolTip(self.btn_guardar,
+                                            message="Guardar en historial")
 
     def limpiar(self):
         """
@@ -185,7 +195,6 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
             "matriz_entrada": matriz_entrada,
             "matriz_solucion": matriz_solucion
         })
-        print(f"Guardado en historial: {tipo}")
 
     def accionar_guardado(self):
         matriz2 = []
@@ -194,9 +203,10 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
                                   matriz3, self.historial_local[0]['matriz_solucion'])
 
     def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="uno")
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
-                      icon="check", fade_in_duration=2)
+        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="uno", clasificacion="matriz")
+        CTkNotification(master=self, state="info",
+                        message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
+                        side="right_bottom")
 
     def abrir_historial(self):
         """Abre el pop-up del historial"""

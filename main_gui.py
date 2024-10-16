@@ -1,109 +1,88 @@
 """
-Archivo: main_gui.py 1.8.5
+Archivo: main_gui.py 2.0.0
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
-
-from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
-from PIL import Image  # Importa PIL para posibles manipulaciones de imágenes
-from GUI.calculadoras.gauss_jordan_calc import GaussJordanFrame
-from GUI.calculadoras.ecuacion_matricial_matrizxvector_calc import MultiplicacionMatricesFrame
-from GUI.calculadoras.multi_fila_x_columna_calc import VectorMultiplicacionFrame
-from GUI.calculadoras.operacion_con_vectores_calc import VectorOperacionesFrame
-from GUI.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
-from GUI.calculadoras.operaciones_calc import OperacionesAritmeticasMatrizFrame
-from GUI.calculadoras.transpuesta_inversa_calc import MatrizCalculatorInvTranFrame
+from customtkinter import *
 from Historial.matriz_historial import Historial
-from Historial.importar_matriz import Importar
+from GUI.submenu.matrices_seleccion import CalculadoraMatricesFrame
+from GUI.submenu.vectores_seleccion import CalculadoraVectoresFrame
+from GUI.submenu.mixtas_seleccion import CalculadoraMixtaFrame
+from GUI.submenu.historial_general_ui import HistorialGeneralFrame
 
 
-# Clase principal de la aplicación
 class App(CTk):
     def __init__(self, *args, **kwargs):
-        """Inicializa la aplicación principal."""
         super().__init__(*args, **kwargs)
-        # Se inicializa el historial
+
         self.historial = Historial()
-        self.datos_importados = Importar()
 
         # Establecer el ícono de la ventana
         self.iconbitmap("GUI/archivos_adicionales/logo_uam.ico")
 
-        # Frame de encabezado para el texto y menú de selección
-        self.frame_encabezado = CTkFrame(master=self)
-        self.frame_encabezado.pack(fill="x", padx=10, pady=10)
+        # Frame principal que contendrá el menú y el área de visualización
+        self.frame_principal = CTkFrame(self)
+        self.frame_principal.pack(fill="both", expand=True)
 
-        # Label para seleccionar el tipo de cálculo
-        self.label_seleccion = CTkLabel(
-            master=self.frame_encabezado,
-            text="Seleccione el tipo de calculadora:",
-            font=CTkFont(family="Consolas", size=14)
-        )
-        self.label_seleccion.pack(side="left", padx=(0, 10), anchor="w")
+        # Frame para el menú de navegación
+        self.frame_menu = CTkFrame(self.frame_principal, width=200)
+        self.frame_menu.pack(side="left", fill="y", padx=10, pady=10)
 
-        # Menú de selección del tipo de calculadora
-        self.btn_menu_tipo_calculadora = CTkOptionMenu(
-            master=self.frame_encabezado,
-            values=['Resolver Ecuaciones Lineales', 'Ecuación Matricial', 'Multiplicar Matriz x Vectores',
-                    'Multiplicar Vector Fila x Columna', 'Operaciones de Vectores', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz"],
-            anchor="w",
-            width=250,
-            hover=True,
-            command=self.cambiar_frame  # Cambia al método que selecciona el frame
-        )
-        self.btn_menu_tipo_calculadora.pack(side="right", padx=(0, 10))
+        # label para menu
+        self.label_menu = CTkLabel(self.frame_menu, text="Seleccione el tipo \nde operación:",
+                                   font=CTkFont(family="Consolas", size=14))
+        self.label_menu.pack(padx=5, pady=10)
 
-        # Frame principal de la calculadora
-        self.frame_calculadora = CTkFrame(master=self)
-        self.frame_calculadora.pack(fill="both", expand=True, padx=10, pady=10)
+        # Botones del menú
+        self.btn_matrices = CTkButton(self.frame_menu, text="Calculadora de Matrices",
+                                      command=lambda: self.mostrar_contenido('matrices'))
+        self.btn_matrices.pack(pady=10, padx=5)
 
-        # Frame interno que será cambiable dentro del frame principal
-        self.frame_cambiable = CTkFrame(master=self.frame_calculadora)
-        self.frame_cambiable.pack(fill="both", expand=True)
+        self.btn_mixta = CTkButton(self.frame_menu, text="Calculadora Mixta",
+                                   command=lambda: self.mostrar_contenido('mixta'))
+        self.btn_mixta.pack(pady=10, padx=5)
 
-        # Inicializa los frames diferentes para las opciones
-        self.frames = {
-            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable, self.historial),
-            'Ecuación Matricial': MultiplicacionMatricesFrame(self.frame_cambiable, self.historial),
-            'Multiplicar Matriz x Vectores': CalculadoraDeMatrizxVectoresFrame(self.frame_cambiable, self.historial),
-            'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
-            'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self),
-            'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial),
-            'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial)
-            # Agrega el argumento main_app
-        }
+        self.btn_vectores = CTkButton(self.frame_menu, text="Calculadora de Vectores",
+                                      command=lambda: self.mostrar_contenido('vectores'))
+        self.btn_vectores.pack(pady=10, padx=5)
 
-        # Muestra el frame por defecto
-        self.cambiar_frame('Resolver Ecuaciones Lineales')
+        self.btn_historial = CTkButton(self.frame_menu, text="Historial",
+                                       command=lambda: self.mostrar_contenido('historial'))
+        self.btn_historial.pack(pady=10, padx=5)
 
-    def cambiar_frame(self, opcion_seleccionada):
-        """Cambia el frame según la opción seleccionada en el menú."""
-        # Elimina el contenido anterior del frame cambiable
-        for widget in self.frame_cambiable.winfo_children():
-            widget.pack_forget()
+        # Frame para el contenido principal
+        self.frame_contenido = CTkFrame(self.frame_principal)
+        self.frame_contenido.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Añade el nuevo frame según la opción seleccionada
-        nuevo_frame = self.frames.get(opcion_seleccionada)
-        if nuevo_frame:
-            nuevo_frame.pack(expand=True, fill="both")
+        # Inicializa la primera calculadora directamente
+        self.mostrar_contenido('matrices')
 
-    def cambiar_frame_vector(self, frame_class, *args):
-        """Cambia el frame actual a una nueva instancia del frame_class proporcionado."""
-        # Elimina el contenido anterior del frame cambiable
-        for widget in self.frame_cambiable.winfo_children():
-            widget.pack_forget()
+    def mostrar_contenido(self, opcion):
+        """Función para cambiar el contenido principal basado en la opción seleccionada."""
+        # Eliminar el contenido anterior
+        for widget in self.frame_contenido.winfo_children():
+            widget.destroy()
 
-        # Crea una nueva instancia del frame_class proporcionado
-        nuevo_frame = frame_class(self.frame_cambiable, self, *args)
-        nuevo_frame.pack(padx=20, pady=20, fill="both", expand=True)
+        # Muestra el frame correspondiente según la opción
+        if opcion == 'vectores':
+            frame = CalculadoraVectoresFrame(self.frame_contenido, self.historial)
+            frame.pack(fill="both", expand=True)
+        elif opcion == 'matrices':
+            frame = CalculadoraMatricesFrame(self.frame_contenido, self.historial)
+            frame.pack(fill="both", expand=True)
+        elif opcion == 'mixta':
+            frame = CalculadoraMixtaFrame(self.frame_contenido, self.historial)
+            frame.pack(fill="both", expand=True)
+        elif opcion == 'historial':
+            frame = HistorialGeneralFrame(self.frame_contenido,
+                                          self.historial)  # Asumiendo que el historial ya es un frame
+            frame.pack(fill="both", expand=True)
 
 
-# Configuraciones de la ventana principal
 set_default_color_theme("green")
 
+# Configuración de la ventana
 if __name__ == "__main__":
-    # Inicializa la aplicación
     root = App()
-    root.geometry("1000x800")
-    root.title("Calculadora Algebra Lineal")
-    root.configure(fg_color=['gray92', 'gray14'])
+    root.geometry("1200x800")
+    root.title("Calculadora de Álgebra Lineal")
     root.mainloop()

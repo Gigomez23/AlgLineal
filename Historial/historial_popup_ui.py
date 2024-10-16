@@ -1,11 +1,12 @@
 """
-Archivo: historial_popup_ui.py 2.0.0
+Archivo: historial_popup_ui.py 2.0.1
 Descripción: Archivo contiene la interfaz grafica para el manejo de historial como popup
 contiene un listbox con el historial y opciones para visualizar o importar.
 """
 import customtkinter as ctk
 from CTkListbox import *
 from CTkMessagebox import CTkMessagebox
+from CTkToolTip import *
 from fractions import Fraction
 from Historial.visualizador.historial_visualizar_popup1 import HistorialVisualizacionPopup1
 from Historial.visualizador.historial_visualizar_popup2 import HistorialVisualizacionPopup2
@@ -31,12 +32,11 @@ class HistorialPopup(ctk.CTkToplevel):
         self.campo_entrada = campo_entrada  # Añadimos el campo de entrada
         self.matriz_importar = []
 
-
         self.label_historial = ctk.CTkLabel(self, text="Historial de matrices")
         self.label_historial.grid(row=0, column=0, columnspan=2, pady=20)
 
         # Listbox para mostrar el historial de matrices
-        self.listbox_matrices = CTkListbox(self, height=30, width=200)
+        self.listbox_matrices = CTkListbox(self, height=80, width=200)
         self.listbox_matrices.grid(row=1, column=0, columnspan=2, padx=50, pady=10)
 
         # Insertar matrices del historial en la lista
@@ -55,6 +55,8 @@ class HistorialPopup(ctk.CTkToplevel):
         # Botón para cerrar la ventana emergente
         self.btn_cerrar = ctk.CTkButton(self, text="Cerrar", command=self.cerrar_popup)
         self.btn_cerrar.grid(row=2, column=2, padx=10, pady=10, sticky="ew")
+
+
 
     def importar_matriz(self):
         """Función que importa la matriz seleccionada desde el frame HistorialImportarPopup"""
@@ -78,8 +80,8 @@ class HistorialPopup(ctk.CTkToplevel):
                     matriz_formateada = ""
                     for fila in matriz_importada:
                         fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else str(Fraction(numero)) for
-                             numero in fila])
+                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else
+                             str(Fraction(numero)) for numero in fila])
                         matriz_formateada += fila_formateada + "\n"
 
                     # Actualiza el campo de entrada con la matriz formateada
@@ -98,7 +100,8 @@ class HistorialPopup(ctk.CTkToplevel):
                     matriz_formateada = ""
                     for fila in matriz_importada:
                         fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else str(Fraction(numero))
+                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1
+                             else str(Fraction(numero))
                              for
                              numero in fila])
                         matriz_formateada += fila_formateada + "\n"
@@ -119,7 +122,8 @@ class HistorialPopup(ctk.CTkToplevel):
                     matriz_formateada = ""
                     for fila in matriz_importada:
                         fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else str(Fraction(numero))
+                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1
+                             else str(Fraction(numero))
                              for
                              numero in fila])
                         matriz_formateada += fila_formateada + "\n"

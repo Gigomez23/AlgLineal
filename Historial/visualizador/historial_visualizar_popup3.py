@@ -1,3 +1,7 @@
+"""
+Archivo: historial_visualizar_popup3.py 1.3.0
+Descripción: popup que muestra tres matrices de entrada y una de solución.
+"""
 import customtkinter as ctk
 from CTkTable import *
 

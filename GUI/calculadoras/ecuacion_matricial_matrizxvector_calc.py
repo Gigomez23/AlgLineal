@@ -3,6 +3,8 @@ Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.2
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 import customtkinter as ctk
+from ctkcomponents import *
+from CTkToolTip import *
 from models.clase_matriz_operaciones import *
 from Additiona_functions.convertir_formato_lista import *
 from Historial.historial_popup_ui import *
@@ -43,6 +45,11 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                                         command=self.abrir_historial1)
         self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
 
+        # tooltip de importar
+        self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
+                                            message="Importar una matriz del historial")
+
+        # textbox para primera entrada
         self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
         self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
@@ -52,9 +59,13 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.label_matriz_b.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
 
         # botón para importar en segunda entrada
-        self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
+        self.btn_importar_hist_entrada2 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
                                                         command=self.abrir_historial2)
-        self.btn_importar_hist_entrada1.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+
+        # tooltip para botón de importar
+        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
+                                            message="Importar un vector del historial")
 
         self.text_matriz_b = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
         self.text_matriz_b.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
@@ -64,9 +75,14 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                           command=self.calcular_multiplicacion)
         self.btn_calcular.grid(row=7, column=0, padx=10, pady=10)
 
+        self.tooltip_calcular = CTkToolTip(self.btn_calcular,
+                                            message="Encontrar solución")
+
         self.btn_mostrar_pasos = ctk.CTkButton(self.frame_izquierdo, text="Mostrar Resultado con Pasos",
                                                command=self.mostrar_resultado_con_pasos)
         self.btn_mostrar_pasos.grid(row=7, column=1, padx=10, pady=10)
+        self.tooltip_pasos = CTkToolTip(self.btn_mostrar_pasos,
+                                            message="Mostrar solución con pasos. ")
 
         # --- Frame Derecho: Salida y Botón de Limpiar ---
         self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:")
@@ -267,6 +283,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar",
                                          command=self.accionar_guardado_en_historial)
         self.btn_guardar.pack(padx=10, pady=10)
+        self.tooltip_guardar = CTkToolTip(self.btn_importar_hist_entrada2,
+                                            message="Guardar en historial")
 
     def limpiar_tablas(self):
         """Elimina los frames con las tablas y reinicia las soluciones."""
@@ -306,9 +324,10 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.guardar_en_historial(self.matriz_entrada, self.vector_entrada, matriz3, datos_tabla_salida)
 
     def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos')
-        CTkMessagebox(title="Guardado!", message="El Problema ha sido guardado exitosamente!",
-                      icon="check", fade_in_duration=2)
+        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos', clasificacion="mixto")
+        CTkNotification(master=self, state="info",
+                        message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
+                        side="right_bottom")
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""
