@@ -9,7 +9,7 @@ from CTkToolTip import *
 from ctkcomponents import *
 from CTkTable import CTkTable
 from models.clase_matriz_vectores import *
-from Additiona_functions.convertir_formato_lista import *
+from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup_ui import *
 
 

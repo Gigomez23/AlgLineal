@@ -6,7 +6,7 @@ import customtkinter as ctk
 from ctkcomponents import *
 from CTkToolTip import *
 from models.clase_matriz_operaciones import *
-from Additiona_functions.convertir_formato_lista import *
+from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable

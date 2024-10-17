@@ -8,7 +8,7 @@ from ctkcomponents import *
 from CTkTable import *
 from CTkToolTip import *
 from models.clase_matriz_op_ari import *
-from Additiona_functions.convertir_formato_lista import convertir_a_formato_lista
+from funciones_adicionales.convertir_formato_lista import convertir_a_formato_lista
 from Historial.historial_popup_ui import *
 from fractions import Fraction
 

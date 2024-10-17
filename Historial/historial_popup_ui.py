@@ -17,20 +17,20 @@ from Historial.importador.escoger_matriz3 import HistorialImportarPopup3
 
 
 class HistorialPopup(ctk.CTkToplevel):
-    def __init__(self, parent, historial, campo_entrada, *args, **kwargs):
+    def __init__(self, parent, historial, matriz_entrada, *args, **kwargs):
         """
         Ventana emergente que muestra el historial de matrices y permite importar una matriz seleccionada.
 
         Args:
             parent: El widget padre donde se inserta la ventana.
             historial: Lista de matrices guardadas en el historial.
+            matriz_entrada: Referencia al array donde se guardará la matriz importada.
         """
         super().__init__(parent, *args, **kwargs)
-        self.title("Historial de Matrices")  # Título de la ventana emergente
+        self.title("Historial de Matrices")
 
         self.historial = historial
-        self.campo_entrada = campo_entrada  # Añadimos el campo de entrada
-        self.matriz_importar = []
+        self.matriz_entrada = matriz_entrada  # Referencia a la matriz de entrada
 
         self.label_historial = ctk.CTkLabel(self, text="Historial de matrices")
         self.label_historial.grid(row=0, column=0, columnspan=2, pady=20)
@@ -47,109 +47,91 @@ class HistorialPopup(ctk.CTkToplevel):
         self.btn_importar = ctk.CTkButton(self, text="Importar", command=self.importar_matriz)
         self.btn_importar.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
-        # botón para visualizar la opción seleccionada
-        self.btn_visualizar = ctk.CTkButton(self, text="Visualizar",
-                                            command=self.abrir_visualizacion_problema)
+        # Botón para visualizar la opción seleccionada
+        self.btn_visualizar = ctk.CTkButton(self, text="Visualizar", command=self.abrir_visualizacion_problema)
         self.btn_visualizar.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
         # Botón para cerrar la ventana emergente
         self.btn_cerrar = ctk.CTkButton(self, text="Cerrar", command=self.cerrar_popup)
         self.btn_cerrar.grid(row=2, column=2, padx=10, pady=10, sticky="ew")
 
-
-
     def importar_matriz(self):
-        """Función que importa la matriz seleccionada desde el frame HistorialImportarPopup"""
+        """Función que importa la matriz seleccionada desde el historial."""
         seleccion = self.listbox_matrices.curselection()
         if seleccion is None:
-            CTkMessagebox(title="Advertencia", message="No tiene nada seleccionado, "
-                                                       "por favor seleccione uno de los "
-                                                       "problemas del historial para importar.",
-                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
+            CTkMessagebox(
+                title="Advertencia",
+                message="No tiene nada seleccionado. Por favor seleccione un problema para importar.",
+                icon="warning",
+                option_1="Entendido",
+                button_hover_color="green",
+                fade_in_duration=2
+            )
+            return
+
+        indice = seleccion
+        tipo = self.historial.problemas[indice]["tipo"]
+
+        # Determina el popup a utilizar según el tipo de matriz
+        if tipo == "uno":
+            popup_importar = HistorialImportarPopup1(self, self.historial, indice)
+        elif tipo == "dos":
+            popup_importar = HistorialImportarPopup2(self, self.historial, indice)
+        elif tipo == "tres":
+            popup_importar = HistorialImportarPopup3(self, self.historial, indice)
         else:
-            if self.historial.problemas[seleccion]["tipo"] == "uno":
-                popup_importar = HistorialImportarPopup1(self, self.historial, seleccion)
-                popup_importar.grab_set()
-                self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
+            CTkMessagebox(
+                title="Error",
+                message="Tipo de matriz desconocido.",
+                icon="error",
+                option_1="Ok"
+            )
+            return
 
-                # Verificar si se ha importado una matriz
-                if popup_importar.matriz_importar is not None:
-                    matriz_importada = popup_importar.matriz_importar
+        popup_importar.grab_set()
 
-                    # Formatear la matriz para mostrar en el cuadro de texto
-                    matriz_formateada = ""
-                    for fila in matriz_importada:
-                        fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1 else
-                             str(Fraction(numero)) for numero in fila])
-                        matriz_formateada += fila_formateada + "\n"
-
-                    # Actualiza el campo de entrada con la matriz formateada
-                    self.campo_entrada.delete(1.0, ctk.END)  # Borra el contenido actual del campo
-                    self.campo_entrada.insert(ctk.END, matriz_formateada)  # Inserta la matriz formateada
-            elif self.historial.problemas[seleccion]["tipo"] == "dos":
-                popup_importar = HistorialImportarPopup2(self, self.historial, seleccion)
-                popup_importar.grab_set()
-                self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
-
-                # Verificar si se ha importado una matriz
-                if popup_importar.matriz_importar is not None:
-                    matriz_importada = popup_importar.matriz_importar
-
-                    # Formatear la matriz para mostrar en el cuadro de texto
-                    matriz_formateada = ""
-                    for fila in matriz_importada:
-                        fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1
-                             else str(Fraction(numero))
-                             for
-                             numero in fila])
-                        matriz_formateada += fila_formateada + "\n"
-
-                    # Actualiza el campo de entrada con la matriz formateada
-                    self.campo_entrada.delete(1.0, ctk.END)  # Borra el contenido actual del campo
-                    self.campo_entrada.insert(ctk.END, matriz_formateada)  # Inserta la matriz formateada
-            elif self.historial.problemas[seleccion]["tipo"] == "tres":
-                popup_importar = HistorialImportarPopup3(self, self.historial, seleccion)
-                popup_importar.grab_set()
-                self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
-
-                # Verificar si se ha importado una matriz
-                if popup_importar.matriz_importar is not None:
-                    matriz_importada = popup_importar.matriz_importar
-
-                    # Formatear la matriz para mostrar en el cuadro de texto
-                    matriz_formateada = ""
-                    for fila in matriz_importada:
-                        fila_formateada = " ".join(
-                            [str(Fraction(numero).numerator) if Fraction(numero).denominator == 1
-                             else str(Fraction(numero))
-                             for
-                             numero in fila])
-                        matriz_formateada += fila_formateada + "\n"
-
-                    # Actualiza el campo de entrada con la matriz formateada
-                    self.campo_entrada.delete(1.0, ctk.END)  # Borra el contenido actual del campo
-                    self.campo_entrada.insert(ctk.END, matriz_formateada)  # Inserta la matriz formateada
+        self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
+        self.matriz_entrada = popup_importar.matriz_importar
 
     def cerrar_popup(self):
         """Cierra la ventana emergente."""
-        self.destroy()  # Cierra la ventana pop-up
+        self.destroy()
 
     def abrir_visualizacion_problema(self):
-        """Función que solo muestra los valores dentro del problema del historial segun el tipo"""
-        indice = self.listbox_matrices.curselection()
-        if indice is None:
-            CTkMessagebox(title="Advertencia", message="No tiene nada seleccionado, "
-                                                       "por favor seleccione uno de los problemas del historial.",
-                          icon="warning", option_1="Entendido", button_hover_color="green", fade_in_duration=2)
+        """Muestra los valores del problema seleccionado según el tipo."""
+        seleccion = self.listbox_matrices.curselection()
+        if seleccion is None:
+            CTkMessagebox(
+                title="Advertencia",
+                message="No tiene nada seleccionado. Por favor seleccione un problema.",
+                icon="warning",
+                option_1="Entendido",
+                button_hover_color="green",
+                fade_in_duration=2
+            )
+            return
+
+        indice = seleccion[0]
+        tipo = self.historial.problemas[indice]["tipo"]
+
+        # Determina el popup de visualización según el tipo de matriz
+        if tipo == "uno":
+            popup_visualizacion = HistorialVisualizacionPopup1(self, self.historial, indice)
+        elif tipo == "dos":
+            popup_visualizacion = HistorialVisualizacionPopup2(self, self.historial, indice)
+        elif tipo == "tres":
+            popup_visualizacion = HistorialVisualizacionPopup3(self, self.historial, indice)
         else:
-            if self.historial.problemas[indice]["tipo"] == "uno":
-                popup_visualizacion = HistorialVisualizacionPopup1(self, self.historial, indice)
-                popup_visualizacion.grab_set()
-            elif self.historial.problemas[indice]["tipo"] == "dos":
-                popup_visualizacion = HistorialVisualizacionPopup2(self, self.historial, indice)
-                popup_visualizacion.grab_set()
-            elif self.historial.problemas[indice]["tipo"] == "tres":
-                popup_visualizacion = HistorialVisualizacionPopup3(self, self.historial, indice)
-                popup_visualizacion.grab_set()
+            CTkMessagebox(
+                title="Error",
+                message="Tipo de problema desconocido.",
+                icon="error",
+                option_1="Ok"
+            )
+            return
+
+        popup_visualizacion.grab_set()
+
+    def retornar_matriz_importada(self):
+        return self.matriz_entrada
+

@@ -1,5 +1,5 @@
 """
-Archivo: escoger_matriz2.py 1.3.0
+Archivo: escoger_matriz2.py 1.3.1
 Descripción: popup que muesta dos matriz de entrada y una de solución para poder importar.
 """
 import customtkinter as ctk
@@ -27,7 +27,7 @@ class HistorialImportarPopup2(ctk.CTkToplevel):
         self.matriz1 = self.problema[indice]["matriz entrada 1"]
         self.matriz2 = self.problema[indice]["matriz entrada 2"]
         self.matriz_solucion = self.problema[indice]["solucion"]
-        self.matriz_importar = None  # Inicializado a None
+        self.matriz_importar = []  # Inicializado a None
 
         # Crear los frames
         self.frame1 = ctk.CTkFrame(self)

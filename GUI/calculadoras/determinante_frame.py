@@ -1,5 +1,5 @@
 """
-Archivo: determinante_frame.py 1.2.0
+Archivo: determinante_frame.py 1.3.0
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de determinantes.
 """
 import customtkinter as ctk
@@ -9,8 +9,9 @@ from CTkTable import CTkTable
 from CTkToolTip import *
 from ctkcomponents import *
 from models.operaciones_determinante import *
-from Additiona_functions.convertir_formato_lista import *
+from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup_ui import *
+from GUI.entrada_matriz_frame import *
 
 
 class DeterminanteFrame(ctk.CTkFrame):
@@ -25,7 +26,6 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.operaciones_determinante = CreadorDeOperacionDeterminantes()
         self.historial = historial
 
-
         # Frame para entradas
         self.entrada_frame = ctk.CTkFrame(self)
         self.entrada_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -38,7 +38,8 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Componentes del frame de entrada
-        self.label_matriz = ctk.CTkLabel(self.entrada_frame, text="Matriz (separada por espacios, cada fila separa por enter):")
+        self.label_matriz = ctk.CTkLabel(self.entrada_frame,
+                                         text="Matriz (separada por espacios, cada fila separadas por enter):")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # botón importar
@@ -48,9 +49,9 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist,
                                             message="Importar una matriz del historial")
 
-        # Textbox para ingresar la matriz
-        self.text_matriz = ctk.CTkTextbox(self.entrada_frame, width=400, height=150)
-        self.text_matriz.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        # frame para entrada
+        self.text_matriz = FrameEntradaMatriz(self.entrada_frame)
+        self.text_matriz.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
         # Botón para calcular
         self.btn_calcular = ctk.CTkButton(self.entrada_frame, text="Calcular", command=self.calcular_determinante)
@@ -75,48 +76,10 @@ class DeterminanteFrame(ctk.CTkFrame):
 
     def calcular_determinante(self):
         """Realiza el cálculo del determinante de la matriz introducida por el usuario."""
-        matriz_text = self.text_matriz.get("1.0", "end-1c")
-
-        if not matriz_text.strip():
-            CTkMessagebox(
-                title="Error",
-                message="Las entradas de la matriz están vacías.",
-                icon="warning",
-                option_1="Entendido",
-                button_hover_color="green"
-            )
-            return
-
-        try:
-            matriz_filas = matriz_text.split("\n")
-            matriz = []
-
-            # Verificar que todas las filas tengan el mismo número de columnas
-            num_columnas = None
-            for fila in matriz_filas:
-                if fila.strip():
-                    valores_fila = [Fraction(x) for x in fila.split()]
-                    if num_columnas is None:
-                        num_columnas = len(valores_fila)
-                    elif len(valores_fila) != num_columnas:
-                        raise ValueError("Las filas de la matriz no tienen el mismo número de columnas.")
-                    matriz.append(valores_fila)
-
-            if len(matriz) != num_columnas:
-                raise ValueError("La matriz debe ser cuadrada.")
-
-        except ValueError as e:
-            CTkMessagebox(
-                title="Error",
-                message=str(e),
-                icon="warning",
-                option_1="Entendido",
-                button_hover_color="green"
-            )
-            return
+        matriz_text = self.text_matriz.obtener_matriz_como_array()
 
         # Pasar la matriz a la clase de OperacionesDeterminante
-        self.operaciones_determinante.ingresar_datos(matriz)
+        self.operaciones_determinante.ingresar_datos(matriz_text)
         det = self.operaciones_determinante.calcular_determinante()
 
         # Mostrar el resultado
@@ -142,7 +105,7 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz1, text="Matriz ingresada:")
         self.tabla_matriz1.pack(padx=10, pady=10)
 
-        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución:")
+        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución Det A:")
         self.tabla_matriz2.pack(padx=10, pady=10)
 
         # tablas para la frame 1 que contiene los datos de entrada
@@ -181,7 +144,7 @@ class DeterminanteFrame(ctk.CTkFrame):
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada y salida."""
-        self.text_matriz.delete("1.0", "end")
+        self.text_matriz.limpiar_entradas()
         self.text_salida.delete("1.0", "end")
         self.limpiar_tablas()
 
@@ -200,8 +163,19 @@ class DeterminanteFrame(ctk.CTkFrame):
 
     def abrir_historial(self):
         """Abre el pop-up del historial"""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz)
-        historial_popup.grab_set()
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada(historial_popup)
+
+    def cargar_matriz_importada(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz.importar_desde_historial(matriz)
+        print(matriz)
+
 
 if __name__ == "__main__":
     root = ctk.CTk()
