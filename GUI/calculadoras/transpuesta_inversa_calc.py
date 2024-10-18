@@ -1,5 +1,5 @@
 """
-Archivo: transpuesta_inversa_calc.py 1.1.0
+Archivo: transpuesta_inversa_calc.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
 """
 import customtkinter as ctk
@@ -33,7 +33,7 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.input_label = ctk.CTkLabel(self.left_frame,
-                                        text="Ingresa la matriz (filas separadas por enter, elementos por espacio):")
+                                        text="Ingrese la matriz aumentada (separada por espacios):")
         self.input_label.pack(pady=10)
 
         self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial)
@@ -223,7 +223,6 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
         matriz = historial_popup.retornar_matriz_importada()
         self.text_matriz.importar_desde_historial(matriz)
-        print(matriz)
 
 
 if __name__ == "__main__":
@@ -235,8 +234,10 @@ if __name__ == "__main__":
     app = ctk.CTk()
     app.geometry("800x400")
 
+    historial = []
+
     # Crear el frame de la calculadora de matrices e iniciarla
-    matriz_calculator_frame = MatrizCalculatorInvTranFrame(app)
+    matriz_calculator_frame = MatrizCalculatorInvTranFrame(app, historial)
     matriz_calculator_frame.pack(fill="both", expand=True)
 
     app.mainloop()

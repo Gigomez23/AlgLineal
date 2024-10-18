@@ -1,5 +1,5 @@
 """
-Archivo: Au_Ax_calc.py 1.3.0
+Archivo: Au_Ax_calc.py 1.3.1
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from fractions import Fraction
@@ -340,8 +340,9 @@ if __name__ == "__main__":
     root = ctk.CTk()
     root.geometry("800x400")
     root.title("Calculadora de Ecuaciones Matriciales")
+    historial = []
 
-    frame = CalculadoraDeMatrizxVectoresFrame(root)
+    frame = CalculadoraDeMatrizxVectoresFrame(root, historial)
     frame.pack(fill="both", expand=True)
 
     root.mainloop()

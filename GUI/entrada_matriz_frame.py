@@ -1,37 +1,44 @@
+"""
+Archivo: entrada_matriz_frame.py 1.0.5
+Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras con matrices.
+"""
 import customtkinter as ctk
 from fractions import Fraction
 from customtkinter import CTkButton
+from CTkMessagebox import CTkMessagebox
 from funciones_adicionales.dropdown_menu import CTkFloatingWindow
 from funciones_adicionales.convertir_formato_lista import *
+#todo: fix el frame secundario dependiente
 
 
 class FrameEntradaMatriz(ctk.CTkFrame):
-    def __init__(self, padre):
+    def __init__(self, padre, mostrar_dimensiones=True):
         super().__init__(padre)
 
-        # Frame superior para las entradas de dimensiones y botón
-        self.frame_dimensiones = ctk.CTkFrame(self)
-        self.frame_dimensiones.pack(pady=10)
+        if mostrar_dimensiones:
+            # Frame superior para las entradas de dimensiones y botón
+            self.frame_dimensiones = ctk.CTkFrame(self)
+            self.frame_dimensiones.pack(pady=10)
 
-        # Etiquetas y entradas para filas y columnas (alineadas horizontalmente)
-        self.etiqueta_filas = ctk.CTkLabel(self.frame_dimensiones, text="Filas:")
-        self.etiqueta_filas.grid(row=0, column=0, padx=5)
+            # Etiquetas y entradas para filas y columnas (alineadas horizontalmente)
+            self.etiqueta_filas = ctk.CTkLabel(self.frame_dimensiones, text="Filas:")
+            self.etiqueta_filas.grid(row=0, column=0, padx=5)
 
-        self.entrada_filas = ctk.CTkEntry(self.frame_dimensiones, width=50)
-        self.entrada_filas.grid(row=0, column=1, padx=5)
-        self.entrada_filas.insert(0, "3")
+            self.entrada_filas = ctk.CTkEntry(self.frame_dimensiones, width=50)
+            self.entrada_filas.grid(row=0, column=1, padx=5)
+            self.entrada_filas.insert(0, "3")
 
-        self.etiqueta_columnas = ctk.CTkLabel(self.frame_dimensiones, text="Columnas:")
-        self.etiqueta_columnas.grid(row=0, column=2, padx=5)
+            self.etiqueta_columnas = ctk.CTkLabel(self.frame_dimensiones, text="Columnas:")
+            self.etiqueta_columnas.grid(row=0, column=2, padx=5)
 
-        self.entrada_columnas = ctk.CTkEntry(self.frame_dimensiones, width=50)
-        self.entrada_columnas.grid(row=0, column=3, padx=5)
-        self.entrada_columnas.insert(0, "3")
+            self.entrada_columnas = ctk.CTkEntry(self.frame_dimensiones, width=50)
+            self.entrada_columnas.grid(row=0, column=3, padx=5)
+            self.entrada_columnas.insert(0, "3")
 
-        self.boton_establecer_matriz = ctk.CTkButton(
-            self.frame_dimensiones, text="Establecer Matriz", command=self.establecer_matriz
-        )
-        self.boton_establecer_matriz.grid(row=0, column=4, padx=10)
+            self.boton_establecer_matriz = ctk.CTkButton(
+                self.frame_dimensiones, text="Establecer Matriz", command=self.establecer_matriz
+            )
+            self.boton_establecer_matriz.grid(row=0, column=4, padx=10)
 
         # Frame inferior para la matriz
         self.frame_matriz = ctk.CTkFrame(self)
@@ -91,6 +98,7 @@ class FrameEntradaMatriz(ctk.CTkFrame):
         nueva_fila = [ctk.CTkEntry(self.frame_matriz, width=50) for _ in range(self.columnas)]
         for c, entrada in enumerate(nueva_fila):
             entrada.grid(row=self.filas - 1, column=c, padx=5, pady=5)
+            entrada.bind("<space>", lambda e, row=self.filas - 1, col=c: self.focus_siguiente_entrada(row, col))
         self.matriz.append(nueva_fila)
 
     def eliminar_fila(self):
@@ -110,6 +118,7 @@ class FrameEntradaMatriz(ctk.CTkFrame):
         for r, fila in enumerate(self.matriz):
             entrada = ctk.CTkEntry(self.frame_matriz, width=50)
             entrada.grid(row=r, column=self.columnas - 1, padx=5, pady=5)
+            entrada.bind("<space>", lambda e, row=r, col=self.columnas - 1: self.focus_siguiente_entrada(row, col))
             fila.append(entrada)
 
     def eliminar_columna(self):
@@ -134,7 +143,7 @@ class FrameEntradaMatriz(ctk.CTkFrame):
             self.construir_matriz()
 
         except ValueError as e:
-            print(f"Error: {e}. Por favor, ingrese enteros positivos válidos.")
+            CTkMessagebox(title="Error", message=f"Dimensiones no válidas: {e}", icon="warning", fade_in_duration=2)
 
     def construir_matriz(self):
         """Construye o reconstruye la matriz en el frame."""
@@ -167,16 +176,28 @@ class FrameEntradaMatriz(ctk.CTkFrame):
     def obtener_matriz_como_array(self):
         """Devuelve los valores de la matriz como un array de fracciones."""
         matriz_array = []
+
         for fila in self.matriz:
             datos_fila = []
             for entrada in fila:
-                valor = entrada.get()
+                valor = entrada.get().strip()  # Eliminar espacios en blanco
+
+                if not valor:
+                    CTkMessagebox(title="Error", message="Hay celdas vacías en la matriz.", icon="warning",
+                                  fade_in_duration=2)
+                    return None  # Detener la ejecución
+
                 try:
-                    fraccion = Fraction(valor)  # Convertir a fracción
+                    fraccion = Fraction(valor)  # Intentar convertir a fracción
                 except ValueError:
-                    fraccion = Fraction(0)  # Valor predeterminado en caso de error
+                    CTkMessagebox(title="Error", message=f"Valor inválido: '{valor}'", icon="warning",
+                                  fade_in_duration=2)
+                    return None  # Detener la ejecución
+
                 datos_fila.append(fraccion)
+
             matriz_array.append(datos_fila)
+
         return matriz_array
 
     def clonar_dimensiones(self, filas, columnas):
@@ -184,24 +205,16 @@ class FrameEntradaMatriz(ctk.CTkFrame):
         self.filas = filas
         self.columnas = columnas
 
-        # Establecer las dimensiones en las entradas correspondientes.
-        self.entrada_filas.delete(0, ctk.END)
-        self.entrada_filas.insert(0, str(filas))
-
-        self.entrada_columnas.delete(0, ctk.END)
-        self.entrada_columnas.insert(0, str(columnas))
-
-        # Reconstruir la matriz según las nuevas dimensiones.
         self.construir_matriz()
 
     def limpiar_entradas(self):
         """Limpia todas las entradas de la matriz y las dimensiones."""
         # Limpiar las entradas de filas y columnas
         self.entrada_filas.delete(0, ctk.END)
-        self.entrada_filas.insert(0, "3")
+        # self.entrada_filas.insert(0, "3")
 
         self.entrada_columnas.delete(0, ctk.END)
-        self.entrada_columnas.insert(0, "3")
+        # self.entrada_columnas.insert(0, "3")
 
         # Limpiar las entradas de la matriz
         for fila in self.matriz:

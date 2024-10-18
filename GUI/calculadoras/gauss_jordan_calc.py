@@ -1,5 +1,5 @@
 """
-Archivo: jauss_jorda_calc.py 1.6.2
+Archivo: jauss_jorda_calc.py 1.7.2
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
@@ -38,8 +38,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Matriz (filas separadas "
-                                              "por enter, valores separados por espacios):")
+                                         text="Ingrese la matriz (separada por espacios):")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
@@ -206,7 +205,6 @@ class GaussJordanFrame(ctk.CTkFrame):
         """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
         matriz = historial_popup.retornar_matriz_importada()
         self.text_matriz.importar_desde_historial(matriz)
-        print(matriz)
 
 
 

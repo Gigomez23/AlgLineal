@@ -1,5 +1,5 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.2
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.3
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 import customtkinter as ctk
@@ -342,6 +342,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
 if __name__ == "__main__":
     root = ctk.CTk()
-    app_frame = MultiplicacionMatricesFrame(root)
+    historial = []
+    app_frame = MultiplicacionMatricesFrame(root, historial)
     app_frame.pack(padx=10, pady=10, fill="both", expand=True)
     root.mainloop()
