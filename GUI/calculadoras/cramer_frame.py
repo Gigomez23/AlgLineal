@@ -1,11 +1,9 @@
 # Archivo: cramer_frame.py
-import customtkinter as ctk
-from fractions import Fraction
 from CTkTable import CTkTable
 from ctkcomponents import *
 from Historial.historial_popup_ui import *
 from models.operacion_cramer import CreadorDeCramer
-from GUI.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 from funciones_adicionales.convertir_formato_lista import *
 
 

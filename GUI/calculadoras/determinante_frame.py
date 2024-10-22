@@ -2,16 +2,11 @@
 Archivo: determinante_frame.py 1.3.0
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de determinantes.
 """
-import customtkinter as ctk
-from CTkMessagebox import CTkMessagebox
-from fractions import Fraction
 from CTkTable import CTkTable
-from CTkToolTip import *
 from ctkcomponents import *
 from models.operaciones_determinante import *
-from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup_ui import *
-from GUI.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
 class DeterminanteFrame(ctk.CTkFrame):

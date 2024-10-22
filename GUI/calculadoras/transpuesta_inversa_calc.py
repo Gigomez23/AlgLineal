@@ -2,14 +2,11 @@
 Archivo: transpuesta_inversa_calc.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
 """
-import customtkinter as ctk
-from tkinter import messagebox
 from ctkcomponents import *
-from CTkToolTip import *
 from models.clase_matriz_inv_tran import *
 from Historial.historial_popup_ui import *
 from CTkTable import CTkTable
-from GUI.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
 class MatrizCalculatorInvTranFrame(ctk.CTkFrame):

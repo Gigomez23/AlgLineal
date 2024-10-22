@@ -3,15 +3,11 @@ Archivo: jauss_jorda_calc.py 1.7.2
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
-import customtkinter as ctk
 from ctkcomponents import *
-from CTkToolTip import *
 from models.clase_sistema_ecuaciones import *
 from Historial.historial_popup_ui import *
-from CTkMessagebox import CTkMessagebox
-from fractions import Fraction
 from CTkTable import CTkTable
-from GUI.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
 class GaussJordanFrame(ctk.CTkFrame):

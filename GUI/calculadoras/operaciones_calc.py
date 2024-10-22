@@ -3,16 +3,12 @@ Archivo: operaciones_calc.py 2.3.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
 """
 # todo: fix catch de error en este y todos los archivos
-import customtkinter as ctk
-from CTkMessagebox import CTkMessagebox
 from ctkcomponents import *
 from CTkTable import *
-from CTkToolTip import *
 from models.clase_matriz_op_ari import *
-from funciones_adicionales.convertir_formato_lista import convertir_a_formato_lista
 from Historial.historial_popup_ui import *
-from fractions import Fraction
-from GUI.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_esclava_identica import FrameEsclavoMatriz
 
 
 class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
@@ -63,7 +59,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar una matriz del historial")
 
-        self.text_matriz2 = FrameEntradaMatriz(self.entrada_frame)
+        self.text_matriz2 = FrameEsclavoMatriz(self.entrada_frame, self.text_matriz1)
         self.text_matriz2.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         # Radio buttons para seleccionar operación
@@ -112,9 +108,6 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         """
         matriz1_text = self.text_matriz1.obtener_matriz_como_array()
         matriz2_text = self.text_matriz2.obtener_matriz_como_array()
-
-        # matriz1_filas = matriz1_text.split("\n")
-        # matriz2_filas = matriz2_text.split("\n")
 
         try:
             self.operaciones.matriz1 = matriz1_text
@@ -254,40 +247,10 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
             self.tablas_mostradas = False
 
-    def clonar_frame_matriz(self, padre):
-        """Clona el frame de entrada sin las entradas de dimensiones."""
-        filas = self.text_matriz1.filas
-        columnas = self.text_matriz1.columnas
-
-        # Crear una nueva instancia del frame de entrada sin las entradas de dimensiones.
-        self.text_matriz2 = FrameEntradaMatriz(padre, mostrar_dimensiones=False)
-        self.text_matriz2.clonar_dimensiones(filas, columnas)
-        self.text_matriz2.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
-
     def limpiar_y_actualizar(self):
         """Limpia las entradas y actualiza ambos marcos."""
         self.text_matriz1.limpiar_entradas()
-        self.actualizar_clon_automatica()
-
-    def vincular_actualizacion(self):
-        """Vincula los cambios de la matriz principal a la clonada."""
-        for fila in self.text_matriz1.matriz:
-            for entrada in fila:
-                entrada.bind("<KeyRelease>", lambda event: self.actualizar_clon_automatica())
-
-    def actualizar_clon_automatica(self):
-        """Propaga los cambios de la matriz principal a la clonada automáticamente."""
-        filas = self.text_matriz1.filas
-        columnas = self.text_matriz1.columnas
-        self.text_matriz2.clonar_dimensiones(filas, columnas)
-
-        # Rellenar la matriz clonada con los mismos valores que la original
-        matriz_original = self.text_matriz1.obtener_matriz_como_array()
-        for r in range(filas):
-            for c in range(columnas):
-                valor = matriz_original[r][c]
-                self.text_matriz2.matriz[r][c].delete(0, ctk.END)
-                self.text_matriz2.matriz[r][c].insert(0, str(valor))
+        self.text_matriz2.limpiar_entradas()
 
     def accionar_guardado_en_historial(self):
         matriz3 = []
