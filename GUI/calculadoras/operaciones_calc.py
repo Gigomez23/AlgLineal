@@ -36,8 +36,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Componentes del frame de entrada
-        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la matriz aumentada "
-                                              "(separada por espacios):")
+        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la primera matriz:")
         self.label_matriz1.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.entrada_frame, text="Importar",
@@ -50,8 +49,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.text_matriz1 = FrameEntradaMatriz(self.entrada_frame)
         self.text_matriz1.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
-        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Matriz 2 (separada por espacios, cada "
-                                                                   "fila en una línea separadas por enter):")
+        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la segunda matriz:")
         self.label_matriz2.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
 
         self.btn_importar_hist_entrada2 = ctk.CTkButton(self.entrada_frame, text="Importar",

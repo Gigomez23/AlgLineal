@@ -35,7 +35,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Ingrese la matriz (separada por espacios):")
+                                         text="Ingrese la matriz:")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)

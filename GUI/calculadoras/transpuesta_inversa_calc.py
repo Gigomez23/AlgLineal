@@ -31,7 +31,7 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.input_label = ctk.CTkLabel(self.left_frame,
-                                        text="Ingrese la matriz aumentada (separada por espacios):")
+                                        text="Ingrese la matriz (aumentada para la inversa):")
         self.input_label.pack(pady=10)
 
         self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial)

@@ -31,7 +31,7 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.output_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         # Widgets en el frame izquierdo (entrada)
-        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Matriz A:")
+        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Ingrese la matriz A:")
         self.label_matrix.grid(row=0, column=0, padx=5, pady=5)
 
         self.btn_importar_hist = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial)
@@ -42,13 +42,13 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.matriz_entrada = FrameEntradaMatriz(self.input_frame)
         self.matriz_entrada.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2)
-        self.btn_importar_hist2.grid(row=3, column=0, padx=10, pady=10)
-        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
-                                           message="Importar un vector del historial")
+        self.label_vector = ctk.CTkLabel(self.input_frame, text="Ingrese el vector b:")
+        self.label_vector.grid(row=3, column=0, padx=5, pady=5)
 
-        self.label_vector = ctk.CTkLabel(self.input_frame, text="Vector b:")
-        self.label_vector.grid(row=4, column=0, padx=5, pady=5)
+        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2)
+        self.btn_importar_hist2.grid(row=4, column=0, padx=10, pady=10)
+        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
+                                            message="Importar un vector del historial")
 
         self.vector_entrada = FrameEntradaVector(self.input_frame)
         self.vector_entrada.grid(row=5, column=0, padx=5, pady=5)

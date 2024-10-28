@@ -38,8 +38,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         # --- Frame Izquierdo: Entradas ---
         # Entradas para la matriz A
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Matriz A (filas separadas por enter, "
-                                                "valores separados por espacios):")
+                                           text="Ingrese la matriz A:")
         self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # boton para importar en primera entrada
@@ -57,7 +56,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         # Entradas para la matriz b
         self.label_matriz_b = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Vector/matriz b (valores separados por espacios):")
+                                           text="Ingrese el vector b:")
         self.label_matriz_b.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
 
         # botón para importar en segunda entrada

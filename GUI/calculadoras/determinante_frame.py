@@ -36,7 +36,7 @@ class DeterminanteFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Matriz (separada por espacios, cada fila separadas por enter):")
+                                         text="Ingrese la matriz:")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # botón importar
