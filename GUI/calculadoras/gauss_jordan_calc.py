@@ -1,16 +1,14 @@
 """
-Archivo: jauss_jorda_calc.py 1.5.2
+Archivo: jauss_jorda_calc.py 1.7.2
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
-import customtkinter as ctk
 from ctkcomponents import *
 from CTkToolTip import *
-from models.clase_sistema_ecuaciones import *
-from Historial.historial_popup_ui import *
-from CTkMessagebox import CTkMessagebox
-from fractions import Fraction
 from CTkTable import CTkTable
+from models.clase_sistema_ecuaciones import *
+from Historial.historial_popup.historial_popup_ui import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
 class GaussJordanFrame(ctk.CTkFrame):
@@ -22,6 +20,7 @@ class GaussJordanFrame(ctk.CTkFrame):
         super().__init__(parent)
         self.gauss_jordan = CreadorDeEcuaciones()
         self.historial = historial
+        self.importar = []
 
         # Frame para entradas
         self.entrada_frame = ctk.CTkFrame(self)
@@ -36,17 +35,16 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Matriz (filas separadas "
-                                              "por enter, valores separados por espacios):")
+                                         text="Ingrese la matriz (separada por espacios):")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
         self.btn_importar_hist.grid(row=2, column=0, padx=10, pady=10)
         self.tooltip_importar = CTkToolTip(self.btn_importar_hist,
-                                            message="Importar un vector del historial")
+                                            message="Importar una matriz del historial")
 
-        # Aumentar la altura del Textbox
-        self.text_matriz = ctk.CTkTextbox(self.entrada_frame, width=400, height=150)
+        # frame para entrada
+        self.text_matriz = FrameEntradaMatriz(self.entrada_frame)
         self.text_matriz.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
         # Botón único para resolver
@@ -83,36 +81,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
     def resolver_matriz(self):
         """Realiza la reducción de la matriz y muestra la solución."""
-        matriz_text = self.text_matriz.get("1.0", "end-1c")
-
-        if not matriz_text.strip():
-            CTkMessagebox(title="Error", message="Las entradas de la matriz están vacías.", icon="warning",
-                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
-            return
-
-        try:
-            matriz_filas = matriz_text.split("\n")
-            matriz = []
-            num_columnas = None  # Almacenar el número de columnas de la primera fila
-
-            for fila in matriz_filas:
-                if fila.strip():
-                    valores_fila = [Fraction(x) for x in fila.split()]
-
-                    if num_columnas is None:
-                        num_columnas = len(valores_fila)  # Guardar la cantidad de columnas de la primera fila
-                    elif len(valores_fila) != num_columnas:
-                        raise ValueError("Por favor revise los valores ingresado, pueda que falte un valor.")
-
-                    matriz.append(valores_fila)
-
-            if not matriz:
-                raise ValueError("Matriz vacía")
-
-        except ValueError as e:
-            CTkMessagebox(title="Error", message=f"Error: {str(e)}", icon="warning", option_1="Entendido",
-                          button_hover_color="green", fade_in_duration=2)
-            return
+        matriz = self.text_matriz.obtener_matriz_como_array()
 
         self.gauss_jordan.matriz = matriz
         self.gauss_jordan.matriz_original = [fila.copy() for fila in matriz]  # Guardar una copia de la matriz original
@@ -180,7 +149,7 @@ class GaussJordanFrame(ctk.CTkFrame):
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada, la salida y las tablas."""
-        self.text_matriz.delete("1.0", "end")
+        self.text_matriz.limpiar_entradas()
         self.text_salida.delete("1.0", "end")
         self.gauss_jordan.solucion = []  # Limpiar soluciones previas
         self.limpiar_tablas()
@@ -210,25 +179,35 @@ class GaussJordanFrame(ctk.CTkFrame):
             self.tabla_reducida = None
 
     def accionar_guardado(self):
-        matriz3 = []
         self.guardar_en_historial(self.gauss_jordan.matriz_original, self.gauss_jordan.matriz,
-                                  matriz3, self.gauss_jordan.solucion)
+                                  self.gauss_jordan.solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos", clasificacion="matriz")
+    def guardar_en_historial(self, matriz_1, matriz_2, solucion):
+        self.historial.agregar_problema(matriz1=matriz_1, matriz2=matriz_2, solucion=solucion, tipo="dos", clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")
 
     def abrir_historial(self):
         """Abre el pop-up del historial"""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz)
-        historial_popup.grab_set()
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada(historial_popup)
+
+    def cargar_matriz_importada(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz.importar_desde_historial(matriz)
+
 
 
 # Uso del frame
 if __name__ == "__main__":
     root = ctk.CTk()
-    app_frame = GaussJordanFrame(root)
+    historial = []
+    app_frame = GaussJordanFrame(root, historial)
     app_frame.pack(padx=10, pady=10, fill="both", expand=True)
     root.mainloop()

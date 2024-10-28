@@ -1,16 +1,14 @@
 """
-Archivo: Au_Ax_calc.py 1.3.0
+Archivo: Au_Ax_calc.py 1.3.1
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
-from fractions import Fraction
-from CTkMessagebox import CTkMessagebox
-import customtkinter as ctk
-from CTkToolTip import *
 from ctkcomponents import *
 from CTkTable import CTkTable
+from CTkToolTip import *
 from models.clase_matriz_vectores import *
-from Additiona_functions.convertir_formato_lista import *
-from Historial.historial_popup_ui import *
+from funciones_adicionales.convertir_formato_lista import *
+from Historial.historial_popup.historial_popup_ui import *
+# todo: agregar nuevos metodos de ingresar datos
 
 
 class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
@@ -314,7 +312,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.guardar_en_historial(self.matriz_operaciones.A, tabla_u, tabla_v, datos_tabla_salida)
 
     def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='tres', clasificacion="mixto")
+        self.historial.agregar_problema(matriz1=matriz1, matriz2=matriz2, matriz3=matriz3, solucion=solucion,
+                                        tipo='tres', clasificacion="mixto")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")
@@ -340,8 +339,9 @@ if __name__ == "__main__":
     root = ctk.CTk()
     root.geometry("800x400")
     root.title("Calculadora de Ecuaciones Matriciales")
+    historial = []
 
-    frame = CalculadoraDeMatrizxVectoresFrame(root)
+    frame = CalculadoraDeMatrizxVectoresFrame(root, historial)
     frame.pack(fill="both", expand=True)
 
     root.mainloop()

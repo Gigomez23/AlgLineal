@@ -1,5 +1,5 @@
 """
-Programa Versión:  3.6.1
+Programa Versión:  3.7.3
 Descripcion: archivo main
 Clase: Algebra Lineal
 Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza

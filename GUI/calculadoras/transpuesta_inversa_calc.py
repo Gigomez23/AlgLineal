@@ -1,14 +1,13 @@
 """
-Archivo: transpuesta_inversa_calc.py 1.1.0
+Archivo: transpuesta_inversa_calc.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
 """
-import customtkinter as ctk
-from tkinter import messagebox
 from ctkcomponents import *
+from CTkTable import CTkTable
 from CTkToolTip import *
 from models.clase_matriz_inv_tran import *
-from Historial.historial_popup_ui import *
-from CTkTable import CTkTable
+from Historial.historial_popup.historial_popup_ui import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
 class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
@@ -32,7 +31,7 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.input_label = ctk.CTkLabel(self.left_frame,
-                                        text="Ingresa la matriz (filas separadas por enter, elementos por espacio):")
+                                        text="Ingrese la matriz aumentada (separada por espacios):")
         self.input_label.pack(pady=10)
 
         self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial)
@@ -40,8 +39,9 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist,
                                             message="Importar una matriz del historial")
 
-        self.input_textbox = ctk.CTkTextbox(self.left_frame, height=120, width=250)
-        self.input_textbox.pack(pady=10)
+        # frame para entrada
+        self.text_matriz = FrameEntradaMatriz(self.left_frame)
+        self.text_matriz.pack(pady=10)
 
         self.operacion = ctk.StringVar(value="transpuesta")
         self.transpuesta_radio = ctk.CTkRadioButton(self.left_frame, text="Transpuesta", variable=self.operacion,
@@ -85,10 +85,10 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         en la matriz ingresada y muestra el resultado en la interfaz.
         """
         operacion = self.operacion.get()
-        matriz_str = self.input_textbox.get("1.0", "end").strip()
+        # matriz_str = self.text_matriz.obtener_matriz_como_array()
 
         try:
-            matriz = MatrizCalculadora.obtener_matriz(matriz_str)
+            matriz = self.text_matriz.obtener_matriz_como_array()
 
             if operacion == "transpuesta":
                 transpuesta = MatrizCalculadora.transponer_matriz(matriz)
@@ -157,7 +157,7 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         """
         Limpia el cuadro de texto de entrada y el cuadro de resultado.
         """
-        self.input_textbox.delete("1.0", "end")
+        self.text_matriz.limpiar_entradas()
         self.result_textbox.configure(state="normal")
         self.result_textbox.delete("1.0", "end")
         self.result_textbox.configure(state="disabled")
@@ -197,21 +197,27 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         })
 
     def accionar_guardado(self):
-        matriz2 = []
-        matriz3 = []
-        self.guardar_en_historial(self.historial_local[0]['matriz_entrada'], matriz2,
-                                  matriz3, self.historial_local[0]['matriz_solucion'])
+        self.guardar_en_historial(self.historial_local[0]['matriz_entrada'], self.historial_local[0]['matriz_solucion'])
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="uno", clasificacion="matriz")
+    def guardar_en_historial(self, matriz1, solucion):
+        self.historial.agregar_problema(matriz1=matriz1, solucion=solucion, tipo="uno", clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")
 
     def abrir_historial(self):
         """Abre el pop-up del historial"""
-        historial_popup = HistorialPopup(self, self.historial, self.input_textbox)
-        historial_popup.grab_set()
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada(historial_popup)
+
+    def cargar_matriz_importada(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz.importar_desde_historial(matriz)
 
 
 if __name__ == "__main__":
@@ -223,8 +229,10 @@ if __name__ == "__main__":
     app = ctk.CTk()
     app.geometry("800x400")
 
+    historial = []
+
     # Crear el frame de la calculadora de matrices e iniciarla
-    matriz_calculator_frame = MatrizCalculatorInvTranFrame(app)
+    matriz_calculator_frame = MatrizCalculatorInvTranFrame(app, historial)
     matriz_calculator_frame.pack(fill="both", expand=True)
 
     app.mainloop()

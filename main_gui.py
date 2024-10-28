@@ -27,20 +27,27 @@ class App(CTk):
         self.frame_menu = CTkFrame(self.frame_principal, width=200)
         self.frame_menu.pack(side="left", fill="y", padx=10, pady=10)
 
-        # Botones del menú
-        self.btn_matrices = CTkButton(self.frame_menu, text="Calculadora de Matrices", command=lambda: self.mostrar_contenido('matrices'))
-        self.btn_matrices.pack(pady=10)
+        # label para menu
+        self.label_menu = CTkLabel(self.frame_menu, text="Seleccione el tipo \nde operación:",
+                                   font=CTkFont(family="Consolas", size=14))
+        self.label_menu.pack(padx=5, pady=10)
 
-        self.btn_mixta = CTkButton(self.frame_menu, text="Calculadora Mixta", command=lambda: self.mostrar_contenido('mixta'))
-        self.btn_mixta.pack(pady=10)
+        # Botones del menú
+        self.btn_matrices = CTkButton(self.frame_menu, text="Calculadora de Matrices",
+                                      command=lambda: self.mostrar_contenido('matrices'))
+        self.btn_matrices.pack(pady=10, padx=5)
+
+        self.btn_mixta = CTkButton(self.frame_menu, text="Calculadora Mixta",
+                                   command=lambda: self.mostrar_contenido('mixta'))
+        self.btn_mixta.pack(pady=10, padx=5)
 
         self.btn_vectores = CTkButton(self.frame_menu, text="Calculadora de Vectores",
                                       command=lambda: self.mostrar_contenido('vectores'))
-        self.btn_vectores.pack(pady=10)
+        self.btn_vectores.pack(pady=10, padx=5)
 
-        # todo: desarollar frame de Historial
-        self.btn_historial = CTkButton(self.frame_menu, text="Historial", command=lambda: self.mostrar_contenido('historial'))
-        self.btn_historial.pack(pady=10)
+        self.btn_historial = CTkButton(self.frame_menu, text="Historial",
+                                       command=lambda: self.mostrar_contenido('historial'))
+        self.btn_historial.pack(pady=10, padx=5)
 
         # Frame para el contenido principal
         self.frame_contenido = CTkFrame(self.frame_principal)
@@ -66,8 +73,10 @@ class App(CTk):
             frame = CalculadoraMixtaFrame(self.frame_contenido, self.historial)
             frame.pack(fill="both", expand=True)
         elif opcion == 'historial':
-            frame = HistorialGeneralFrame(self.frame_contenido, self.historial)  # Asumiendo que el historial ya es un frame
+            frame = HistorialGeneralFrame(self.frame_contenido,
+                                          self.historial)  # Asumiendo que el historial ya es un frame
             frame.pack(fill="both", expand=True)
+
 
 set_default_color_theme("green")
 

@@ -2,6 +2,8 @@ from customtkinter import *  # Importa CustomTkinter para los componentes de la 
 from GUI.calculadoras.gauss_jordan_calc import GaussJordanFrame
 from GUI.calculadoras.operaciones_calc import OperacionesAritmeticasMatrizFrame
 from GUI.calculadoras.transpuesta_inversa_calc import MatrizCalculatorInvTranFrame
+from GUI.calculadoras.determinante_frame import DeterminanteFrame
+from GUI.calculadoras.cramer_frame import CramerFrame
 
 
 # Clase principal convertida a Frame
@@ -28,7 +30,7 @@ class CalculadoraMatricesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Resolver Ecuaciones Lineales', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz"],
+            values=['Resolver Ecuaciones Lineales', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz", "Determinante", 'Metodo Cramer'],
             anchor="w",
             width=250,
             hover=True,
@@ -48,7 +50,9 @@ class CalculadoraMatricesFrame(CTkFrame):
         self.frames = {
             'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable, self.historial),
             'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial),
-            'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial)
+            'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial),
+            'Determinante': DeterminanteFrame(self.frame_cambiable, self.historial),
+            'Metodo Cramer': CramerFrame(self.frame_cambiable, self.historial)
         }
 
         # Muestra el frame por defecto
