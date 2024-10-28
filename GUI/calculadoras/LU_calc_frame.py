@@ -42,7 +42,7 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.matriz_entrada = FrameEntradaMatriz(self.input_frame)
         self.matriz_entrada.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial)
+        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2)
         self.btn_importar_hist2.grid(row=3, column=0, padx=10, pady=10)
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
                                            message="Importar un vector del historial")
@@ -221,6 +221,20 @@ class LUFactorizationFrame(ctk.CTkFrame):
         """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
         matriz = historial_popup.retornar_matriz_importada()
         self.matriz_entrada.importar_desde_historial(matriz)
+
+    def abrir_historial2(self):
+        """Abre el pop-up del historial"""
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada2(historial_popup)
+
+    def cargar_matriz_importada2(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.vector_entrada.importar_desde_historial(matriz)
 
 
 class MainApp(ctk.CTk):

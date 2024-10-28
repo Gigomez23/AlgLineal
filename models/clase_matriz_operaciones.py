@@ -5,6 +5,7 @@ un vector.
 """
 from fractions import Fraction
 
+
 def CreadorDeOperaciones():
     class MatrizOperaciones:
         def __init__(self):
@@ -23,11 +24,13 @@ def CreadorDeOperaciones():
             for i in range(self.filas_A):
                 suma = 0
                 for j in range(self.columnas_A):
-                    multiplicacion = self.A[i][j] * self.b[j]
+                    # Desempaqueta el valor de b si es una lista de listas
+                    valor_b = self.b[j][0] if isinstance(self.b[j], list) else self.b[j]
+                    multiplicacion = self.A[i][j] * valor_b
                     suma += multiplicacion
                     if mostrar_pasos:
                         text_salida.insert("end",
-                                           f"A[{i + 1}][{j + 1}] * b[{j + 1}] = {self.A[i][j]} * {self.b[j]} = {multiplicacion}\n")
+                                           f"A[{i + 1}][{j + 1}] * b[{j + 1}] = {self.A[i][j]} * {valor_b} = {multiplicacion}\n")
                 resultado[i] = suma
                 if mostrar_pasos:
                     text_salida.insert("end", f"Suma fila {i + 1}: {suma}\n")
@@ -40,7 +43,8 @@ def CreadorDeOperaciones():
 
             text_salida.insert("end", "\nVector/matriz b:\n")
             for valor in self.b:
-                text_salida.insert("end", f"{str(Fraction(valor))}\n")
+                text_salida.insert("end", f"{str(valor)}\n")
+                # text_salida.insert("end", f"{valor}\n")
 
         def imprimir_solucion(self, text_salida, mostrar_pasos=False):
             resultado = self.multiplicar_con_pasos(text_salida, mostrar_pasos)

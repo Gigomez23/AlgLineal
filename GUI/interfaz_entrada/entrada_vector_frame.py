@@ -1,5 +1,5 @@
 """
-Archivo: entrada_matriz_frame.py 1.0.5
+Archivo: entrada_matriz_frame.py 1.0.6
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras con matrices.
 """
 import customtkinter as ctk
@@ -166,7 +166,7 @@ class FrameEntradaVector(ctk.CTkFrame):
         filas = len(matriz)
         columnas = len(matriz[0]) if filas > 0 else 0
 
-        if filas == 1:
+        if columnas == 1:
             self.filas = filas
             self.columnas = columnas
 

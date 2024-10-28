@@ -1,15 +1,17 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.3
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.4.5
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 from ctkcomponents import *
-from models.clase_matriz_operaciones import *
-from funciones_adicionales.convertir_formato_lista import *
-from Historial.historial_popup.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
 from CTkToolTip import *
-# todo: fix que el vector es llamado como dos columnas en tablas
+from models.clase_matriz_operaciones import *
+from funciones_adicionales.convertir_formato_lista import *
+from Historial.historial_popup.historial_popup_ui import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_vector_frame import *
+# todo: fix la salida del vector en el texbox
 
 
 class MultiplicacionMatricesFrame(ctk.CTkFrame):
@@ -50,7 +52,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
                                             message="Importar una matriz del historial")
 
         # textbox para primera entrada
-        self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
+        self.text_matriz_A = FrameEntradaMatriz(self.frame_izquierdo)
         self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
         # Entradas para la matriz b
@@ -67,7 +69,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar un vector del historial")
 
-        self.text_matriz_b = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
+        self.text_matriz_b = FrameEntradaVector(self.frame_izquierdo)
         self.text_matriz_b.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         # Botones debajo de las entradas
@@ -115,8 +117,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
     def calcular_multiplicacion(self):
         """Calcula la multiplicación Ax = b y muestra el resultado sin pasos"""
         # Obtener el contenido de las entradas de texto
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
-        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").strip()
+        matriz_A_text = self.text_matriz_A.obtener_matriz_como_array()
+        matriz_b_text = self.text_matriz_b.obtener_matriz_como_array()
 
         # Verificar si alguno de los campos de entrada está vacío
         if not matriz_A_text or not matriz_b_text:
@@ -126,8 +128,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         try:
             # Obtener la matriz A y calcular filas y columnas automáticamente
-            matriz_A_text = matriz_A_text.split("\n")
-            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+            matriz_A = matriz_A_text
 
             # Verificar si las filas de la matriz A tienen el mismo número de columnas
             columnas_A = len(matriz_A[0]) if matriz_A else 0
@@ -142,9 +143,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
             self.matriz_entrada = matriz_A
             filas_A = len(matriz_A)
 
-            matriz_b_text = matriz_b_text.split()
             self.vector_entrada = matriz_b_text
-            matriz_b = [Fraction(x) for x in matriz_b_text]
+            matriz_b = matriz_b_text
             filas_b = len(matriz_b)
 
             if columnas_A != filas_b:
@@ -169,7 +169,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         # Si está correcto, proceder con la operación
         self.matriz_operaciones.A = matriz_A
-        self.matriz_operaciones.b = matriz_b
+        self.matriz_operaciones.b = convertir_a_matriz_de_fracciones(matriz_b)
         self.matriz_operaciones.filas_A = filas_A
         self.matriz_operaciones.columnas_A = columnas_A
         self.matriz_operaciones.filas_b = filas_b
@@ -184,8 +184,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
     def mostrar_resultado_con_pasos(self):
         """Muestra el resultado de la multiplicación y los pasos"""
         # Obtener el contenido de las entradas de texto
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
-        matriz_b_text = self.text_matriz_b.get("1.0", "end-1c").strip()
+        matriz_A_text = self.text_matriz_A.obtener_matriz_como_array()
+        matriz_b_text = self.text_matriz_b.obtener_matriz_como_array()
 
         # Verificar si alguno de los campos de entrada está vacío
         if not matriz_A_text or not matriz_b_text:
@@ -195,16 +195,14 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         try:
             # Obtener la matriz A y calcular filas y columnas automáticamente
-            matriz_A_text = matriz_A_text.split("\n")
-            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+            matriz_A = matriz_A_text
 
             self.matriz_entrada = matriz_A
             filas_A = len(matriz_A)
             columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
 
-            matriz_b_text = matriz_b_text.split()
             self.vector_entrada = matriz_b_text
-            matriz_b = [Fraction(x) for x in matriz_b_text]
+            matriz_b = matriz_b_text
             filas_b = len(matriz_b)
 
             if columnas_A != filas_b:
@@ -229,7 +227,7 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         # Si está correcto, proceder con la operación
         self.matriz_operaciones.A = matriz_A
-        self.matriz_operaciones.b = matriz_b
+        self.matriz_operaciones.b = convertir_a_matriz_de_fracciones(matriz_b)
         self.matriz_operaciones.filas_A = filas_A
         self.matriz_operaciones.columnas_A = columnas_A
         self.matriz_operaciones.filas_b = filas_b
@@ -313,8 +311,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
     def clear_inputs(self):
         """Limpia todas las entradas y la salida"""
         # self.entry_nombre.delete(0, 'end')
-        self.text_matriz_A.delete("1.0", "end")
-        self.text_matriz_b.delete("1.0", "end")
+        self.text_matriz_A.limpiar_entradas()
+        self.text_matriz_b.limpiar_entradas()
         self.text_salida.delete("1.0", "end")
         self.limpiar_tablas()
 
@@ -331,13 +329,31 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_A)
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
         historial_popup.grab_set()  # Foco en el pop-up
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada(historial_popup)
+
+    def cargar_matriz_importada(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz_A.importar_desde_historial(matriz)
 
     def abrir_historial2(self):
         """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_b)
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
         historial_popup.grab_set()  # Foco en el pop-up
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada2(historial_popup)
+
+    def cargar_matriz_importada2(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz_b.importar_desde_historial(matriz)
 
 
 if __name__ == "__main__":
