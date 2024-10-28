@@ -28,20 +28,37 @@ def convertir_a_formato_lista(matriz_texto):
         raise ValueError(f"Error al convertir la matriz: {str(e)}")
 
 
-# def lista_a_array_strings(fraccion_lista):
-#     """
-#     Convierte una lista de fracciones en un array de strings que contienen los numeradores.
-#
-#     Args:
-#         fraccion_lista (list): Lista con objetos Fraction.
-#
-#     Returns:
-#         list: Lista de strings que contienen los numeradores de las fracciones.
-#     """
-#     # Extrae los numeradores de las fracciones y los convierte en strings
-#     resultado = [str(fr.numerator) for fr in fraccion_lista]
-#
-#     return resultado
+def lista_a_array_strings(fraccion_lista):
+    """
+    Convierte una lista de fracciones en un array de strings que contienen los numeradores.
+
+    Args:
+        fraccion_lista (list): Lista con objetos Fraction.
+
+    Returns:
+        list: Lista de strings que contienen los numeradores de las fracciones.
+    """
+    # Extrae los numeradores de las fracciones y los convierte en strings
+    resultado = [str(fr.numerator) for fr in fraccion_lista]
+
+    return resultado
+
+
+from fractions import Fraction
+
+
+def convertir_a_array_columnas(lista):
+    """
+    Convierte una lista de fracciones en un array de listas con cada fracción en su propia lista.
+
+    Args:
+        lista (list of Fraction): Lista de fracciones.
+
+    Returns:
+        list of list of Fraction: Array en el formato deseado.
+    """
+    return [[elemento] for elemento in lista]
+
 
 def lista_a_matriz(fraccion_lista):
     """

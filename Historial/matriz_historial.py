@@ -8,14 +8,16 @@ class Historial:
     def __init__(self):
         self.problemas = []
 
-    def agregar_problema(self, matriz1, matriz2, matriz3, solucion, tipo, clasificacion):
+    def agregar_problema(self, matriz1=None, matriz2=None, matriz3=None, matriz4=None, solucion=None, tipo=None,
+                         clasificacion=None):
         problema = {
             "nombre": f"Problema {len(self.problemas) + 1}",
             "matriz entrada 1": matriz1,
             "matriz entrada 2": matriz2,
             "matriz entrada 3": matriz3,
+            "matriz entrada 4": matriz4,
             "solucion": solucion,
-            "tipo": tipo,  # uno, dos, tres
+            "tipo": tipo,  # uno, dos, tres, cuatro
             "clasificacion": clasificacion  # matriz, vector, mixto
         }
         self.problemas.append(problema)

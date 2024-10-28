@@ -5,8 +5,9 @@ Descripción: Este archivo contiene la interfáz gráfica de la calculadora de o
 # todo: fix catch de error en este y todos los archivos
 from ctkcomponents import *
 from CTkTable import *
+from CTkToolTip import *
 from models.clase_matriz_op_ari import *
-from Historial.historial_popup_ui import *
+from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 from GUI.interfaz_entrada.entrada_matriz_esclava_identica import FrameEsclavoMatriz
 
@@ -99,6 +100,14 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         # Frames para las tablas vacías
         self.tabla_frame1 = ctk.CTkFrame(self)
         self.tabla_frame2 = ctk.CTkFrame(self)
+
+        # Aquí enlazamos el evento en este FramePadre
+        self.text_matriz1.bind("<<EventoPersonalizado>>", self.propagar_evento)
+
+    def propagar_evento(self):
+        # Propagar manualmente el evento hacia FrameEsclavoMatriz
+        self.text_matriz2.event_generate("<<EventoPersonalizado>>")
+        print('Evento capturado en Calculadora')
 
     def obtener_matrices(self, operacion):
         """Función que extrae y valida las matrices según la operación seleccionada.
@@ -253,11 +262,11 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.text_matriz2.limpiar_entradas()
 
     def accionar_guardado_en_historial(self):
-        matriz3 = []
-        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, matriz3, self.matriz_solucion)
+        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, self.matriz_solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo='dos', clasificacion="matriz")
+    def guardar_en_historial(self, matriz1, matriz2, solucion):
+        self.historial.agregar_problema(matriz1=matriz1, matriz2=matriz2, solucion=solucion,
+                                        tipo='dos', clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")

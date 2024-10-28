@@ -4,9 +4,7 @@ Descripción: Este archivo contiene el frame interno para mostrar problemas mixt
 """
 from customtkinter import *
 from Historial.matriz_historial import *
-from Historial.visualizador.historial_visualizar_popup1 import HistorialVisualizacionPopup1
-from Historial.visualizador.historial_visualizar_popup2 import HistorialVisualizacionPopup2
-from Historial.visualizador.historial_visualizar_popup3 import HistorialVisualizacionPopup3
+from Historial.historial_popup.historial_visualizar_popup import HistorialVisualizacionPopup
 
 
 class HistorialMixtoFrame(CTkFrame):
@@ -55,15 +53,8 @@ class HistorialMixtoFrame(CTkFrame):
             (i for i, problema in enumerate(self.historial.problemas) if problema["nombre"] == nombre_problema), None)
 
         if indice is not None:
-            if self.historial.problemas[indice]["tipo"] == "uno":
-                popup_visualizacion = HistorialVisualizacionPopup1(self, self.historial, indice)
-                popup_visualizacion.grab_set()
-            elif self.historial.problemas[indice]["tipo"] == "dos":
-                popup_visualizacion = HistorialVisualizacionPopup2(self, self.historial, indice)
-                popup_visualizacion.grab_set()
-            elif self.historial.problemas[indice]["tipo"] == "tres":
-                popup_visualizacion = HistorialVisualizacionPopup3(self, self.historial, indice)
-                popup_visualizacion.grab_set()
+            popup_visualizacion = HistorialVisualizacionPopup(self, self.historial, indice)
+            popup_visualizacion.grab_set()
         else:
             print("Problema no encontrado.")
 

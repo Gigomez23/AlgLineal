@@ -1,7 +1,8 @@
 # Archivo: cramer_frame.py
 from CTkTable import CTkTable
 from ctkcomponents import *
-from Historial.historial_popup_ui import *
+from CTkToolTip import *
+from Historial.historial_popup.historial_popup_ui import *
 from models.operacion_cramer import CreadorDeCramer
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 from funciones_adicionales.convertir_formato_lista import *
@@ -166,14 +167,12 @@ class CramerFrame(ctk.CTkFrame):
             self.tabla_salida = None
 
     def accionar_guardado(self):
-        matriz2 = []
-        matriz3 = []
         matriz_solucion = lista_a_matriz(self.operacion_cramer.solucion)
-        self.guardar_en_historial(self.operacion_cramer.matriz_original, matriz2,
-                                  matriz3, matriz_solucion)
+        self.guardar_en_historial(self.operacion_cramer.matriz_original, matriz_solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="uno", clasificacion="matriz")
+    def guardar_en_historial(self, matriz1, solucion):
+        self.historial.agregar_problema(matriz1=matriz1, solucion=solucion,
+                                        tipo="uno", clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")

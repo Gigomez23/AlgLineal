@@ -3,9 +3,10 @@ Archivo: transpuesta_inversa_calc.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
 """
 from ctkcomponents import *
-from models.clase_matriz_inv_tran import *
-from Historial.historial_popup_ui import *
 from CTkTable import CTkTable
+from CTkToolTip import *
+from models.clase_matriz_inv_tran import *
+from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
@@ -196,13 +197,10 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         })
 
     def accionar_guardado(self):
-        matriz2 = []
-        matriz3 = []
-        self.guardar_en_historial(self.historial_local[0]['matriz_entrada'], matriz2,
-                                  matriz3, self.historial_local[0]['matriz_solucion'])
+        self.guardar_en_historial(self.historial_local[0]['matriz_entrada'], self.historial_local[0]['matriz_solucion'])
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="uno", clasificacion="matriz")
+    def guardar_en_historial(self, matriz1, solucion):
+        self.historial.agregar_problema(matriz1=matriz1, solucion=solucion, tipo="uno", clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")

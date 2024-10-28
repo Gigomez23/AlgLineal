@@ -2,14 +2,14 @@
 Archivo: ecuacion_matricial_matrizxvector_calc.py 2.3.3
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
-import customtkinter as ctk
 from ctkcomponents import *
-from CTkToolTip import *
 from models.clase_matriz_operaciones import *
 from funciones_adicionales.convertir_formato_lista import *
-from Historial.historial_popup_ui import *
+from Historial.historial_popup.historial_popup_ui import *
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
+from CTkToolTip import *
+# todo: fix que el vector es llamado como dos columnas en tablas
 
 
 class MultiplicacionMatricesFrame(ctk.CTkFrame):
@@ -319,12 +319,12 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.limpiar_tablas()
 
     def accionar_guardado_en_historial(self):
-        matriz3 = []
         datos_tabla_salida = lista_a_matriz(self.matriz_operaciones.solucion)
-        self.guardar_en_historial(self.matriz_entrada, self.vector_entrada, matriz3, datos_tabla_salida)
+        self.guardar_en_historial(self.matriz_entrada, self.vector_entrada, datos_tabla_salida)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos', clasificacion="mixto")
+    def guardar_en_historial(self, matriz1, matriz2, solucion):
+        self.historial.agregar_problema(matriz1=matriz1,matriz2=matriz2, solucion=solucion, tipo='dos',
+                                        clasificacion="mixto")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")

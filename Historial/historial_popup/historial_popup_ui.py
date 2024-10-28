@@ -1,19 +1,13 @@
 """
-Archivo: historial_popup_ui.py 2.0.1
+Archivo: historial_popup_ui.py 2.2.1
 Descripción: Archivo contiene la interfaz grafica para el manejo de historial como popup
 contiene un listbox con el historial y opciones para visualizar o importar.
 """
 import customtkinter as ctk
 from CTkListbox import *
 from CTkMessagebox import CTkMessagebox
-from CTkToolTip import *
-from fractions import Fraction
-from Historial.visualizador.historial_visualizar_popup1 import HistorialVisualizacionPopup1
-from Historial.visualizador.historial_visualizar_popup2 import HistorialVisualizacionPopup2
-from Historial.visualizador.historial_visualizar_popup3 import HistorialVisualizacionPopup3
-from Historial.importador.escoger_matriz1 import HistorialImportarPopup1
-from Historial.importador.escoger_matriz2 import HistorialImportarPopup2
-from Historial.importador.escoger_matriz3 import HistorialImportarPopup3
+from Historial.historial_popup.historial_importar_popup import HistorialImportarPopup
+from Historial.historial_popup.historial_visualizar_popup import HistorialVisualizacionPopup
 
 
 class HistorialPopup(ctk.CTkToplevel):
@@ -71,23 +65,7 @@ class HistorialPopup(ctk.CTkToplevel):
 
         indice = seleccion
         tipo = self.historial.problemas[indice]["tipo"]
-
-        # Determina el popup a utilizar según el tipo de matriz
-        if tipo == "uno":
-            popup_importar = HistorialImportarPopup1(self, self.historial, indice)
-        elif tipo == "dos":
-            popup_importar = HistorialImportarPopup2(self, self.historial, indice)
-        elif tipo == "tres":
-            popup_importar = HistorialImportarPopup3(self, self.historial, indice)
-        else:
-            CTkMessagebox(
-                title="Error",
-                message="Tipo de matriz desconocido.",
-                icon="error",
-                option_1="Ok"
-            )
-            return
-
+        popup_importar = HistorialImportarPopup(self, self.historial, indice)
         popup_importar.grab_set()
 
         self.wait_window(popup_importar)  # Espera hasta que se cierre el popup
@@ -111,25 +89,9 @@ class HistorialPopup(ctk.CTkToplevel):
             )
             return
 
-        indice = seleccion[0]
-        tipo = self.historial.problemas[indice]["tipo"]
+        indice = seleccion
 
-        # Determina el popup de visualización según el tipo de matriz
-        if tipo == "uno":
-            popup_visualizacion = HistorialVisualizacionPopup1(self, self.historial, indice)
-        elif tipo == "dos":
-            popup_visualizacion = HistorialVisualizacionPopup2(self, self.historial, indice)
-        elif tipo == "tres":
-            popup_visualizacion = HistorialVisualizacionPopup3(self, self.historial, indice)
-        else:
-            CTkMessagebox(
-                title="Error",
-                message="Tipo de problema desconocido.",
-                icon="error",
-                option_1="Ok"
-            )
-            return
-
+        popup_visualizacion = HistorialVisualizacionPopup(self, self.historial, indice)
         popup_visualizacion.grab_set()
 
     def retornar_matriz_importada(self):

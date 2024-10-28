@@ -1,5 +1,5 @@
 """
-Archivo: clase_matriz_inv_tran.py 1.10.0
+Archivo: clase_matriz_inv_tran.py 1.10.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
 """
 from fractions import Fraction
@@ -83,7 +83,15 @@ class MatrizCalculadora:
 
         for i in range(n):
             if aumentada[i][i] == 0:
-                raise ValueError("La matriz no tiene inversa (determinante es 0).")
+                for k in range(i + 1, n):
+                    if aumentada[k][i] != 0:
+                        # Intercambiamos las filas
+                        aumentada[i], aumentada[k] = aumentada[k], aumentada[i]
+                        pasos.append(
+                            f"Intercambiando fila {i + 1} con la fila {k + 1}:\n{MatrizCalculadora.matriz_a_string(aumentada)}")
+                        break
+                else:
+                    raise ValueError("La matriz no tiene inversa (determinante es 0).")
 
             divisor = aumentada[i][i]
             aumentada[i] = [elemento / divisor for elemento in aumentada[i]]

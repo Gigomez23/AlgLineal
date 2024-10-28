@@ -26,6 +26,11 @@ class FrameEsclavoMatriz(ctk.CTkFrame):
 
         # Vincular los métodos para actualizar la matriz esclava cuando cambien las dimensiones en la matriz original
         self.matriz_original.bind("<Configure>", self.actualizar_matriz_esclava)
+        # self.matriz_original.bind("<Configure>", self.prueba)
+        self.bind("<<EventoPersonalizado>>", self.prueba)  # todo: fix this
+
+    def prueba(self, event):  # todo: va con el de arriba
+        print("Evento recibido")
 
     def construir_matriz_esclava(self):
         """Construye la matriz esclava que replica la estructura de la matriz original."""
@@ -149,6 +154,13 @@ class Aplicacion(ctk.CTk):
         self.boton_limpiar = ctk.CTkButton(
             self.frame_matriz_principal, text="Limpiar Entradas", command=self.limpiar_datos)
         self.boton_limpiar.pack(pady=10)
+
+        # Enlazar el evento de FrameEntradaMatriz y propagarlo a FrameEsclavoMatriz
+        self.frame_entrada_matriz.bind("<<EventoPersonalizado>>", self.propagar_evento)  # todo: fix this
+
+    def propagar_evento(self):
+        # Propagar manualmente el evento hacia FrameEsclavoMatriz
+        self.frame_esclavo_matriz.event_generate("<<EventoPersonalizado>>") # todo:fix this also
 
     def limpiar_datos(self):
         self.marco_matriz.limpiar_entradas()

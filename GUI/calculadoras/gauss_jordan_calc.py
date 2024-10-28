@@ -4,9 +4,10 @@ Descripción: Este archivo contiene el diseño del frame para la calculadora de 
 por método escalonado o de Gauss-Jordan.
 """
 from ctkcomponents import *
-from models.clase_sistema_ecuaciones import *
-from Historial.historial_popup_ui import *
+from CTkToolTip import *
 from CTkTable import CTkTable
+from models.clase_sistema_ecuaciones import *
+from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 
 
@@ -178,12 +179,11 @@ class GaussJordanFrame(ctk.CTkFrame):
             self.tabla_reducida = None
 
     def accionar_guardado(self):
-        matriz3 = []
         self.guardar_en_historial(self.gauss_jordan.matriz_original, self.gauss_jordan.matriz,
-                                  matriz3, self.gauss_jordan.solucion)
+                                  self.gauss_jordan.solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1, matriz2, matriz3, solucion, tipo="dos", clasificacion="matriz")
+    def guardar_en_historial(self, matriz_1, matriz_2, solucion):
+        self.historial.agregar_problema(matriz1=matriz_1, matriz2=matriz_2, solucion=solucion, tipo="dos", clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")
