@@ -59,19 +59,22 @@ def convertir_a_array_columnas(lista):
 
 def convertir_a_formato_matriz(matriz_texto):
     """
-    Convierte una matriz de listas con elementos Fraction en una matriz donde
-    cada elemento esté encapsulado en su propia sublista.
+    Convierte una cadena de texto en una matriz de Fracciones en el formato adecuado.
 
     Args:
-        matriz_texto (list of list of Fraction): Matriz original con valores de tipo Fraction.
+        matriz_texto (str): Cadena de texto con las filas de la matriz separadas por líneas.
 
     Returns:
-        list of list of list of Fraction: Matriz con cada elemento dentro de una sublista.
+        list of list of Fraction: Matriz de Fracciones.
     """
-    # Convertir cada elemento en una sublista
-    matriz_formato_deseado = [[[elemento] for elemento in fila] for fila in matriz_texto]
+    filas = matriz_texto.split('\n')
+    matriz = []
+    for fila in filas:
+        if fila.strip():  # Ignorar filas vacías
+            valores = [Fraction(valor) for valor in fila.split()]
+            matriz.append(valores)
+    return matriz
 
-    return matriz_formato_deseado
 
 
 def lista_a_matriz(fraccion_lista):
@@ -110,6 +113,20 @@ def convertir_a_matriz_de_fracciones(matriz_texto):
         matriz_fracciones.append(nueva_fila)  # Agregar la nueva fila a la matriz
 
     return matriz_fracciones
+
+
+def a_lista_simple(vector):
+    """
+    Convierte una lista de listas con un solo elemento en una lista plana de elementos.
+
+    Args:
+        vector (lista de listas): Una lista donde cada elemento es una lista de un solo elemento.
+
+    Returns:
+        lista: Una lista plana con los elementos extraídos.
+    """
+    return [item[0] for item in vector]
+
 
 
 

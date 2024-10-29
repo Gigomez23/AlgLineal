@@ -1,5 +1,5 @@
 """
-Archivo: Au_Ax_calc.py 1.3.1
+Archivo: Au_Ax_calc.py 1.4.0
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from ctkcomponents import *
@@ -8,7 +8,8 @@ from CTkToolTip import *
 from models.clase_matriz_vectores import *
 from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup.historial_popup_ui import *
-# todo: agregar nuevos metodos de ingresar datos
+from GUI.interfaz_entrada.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_vector_frame import *
 
 
 class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
@@ -32,25 +33,24 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
         # --- Frame Izquierdo: Entradas ---
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Matriz A (fila separadas por enter, "
-                                                "valores separados por espacios):")
-        self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+                                           text="Ingrese la Matriz A:")
+        self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=4, sticky="nsew")
 
         # boton para importar en primera entrada
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
                                                         command=self.abrir_historial1)
-        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=4)
 
         #tooltip para boton de importar
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
                                             message="Importar una matriz del historial")
 
 
-        self.text_matriz_A = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=100)
-        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_A = FrameEntradaMatriz(self.frame_izquierdo)
+        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=4)
 
         self.label_vector_u = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Vector u (valores separados por espacios):")
+                                           text="Ingrese el Vector u:")
         self.label_vector_u.grid(row=4, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
         # boton para importar en segunda entrada
@@ -62,24 +62,24 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar un vector del historial")
 
-        self.text_vector_u = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
+        self.text_vector_u = FrameEntradaVector(self.frame_izquierdo)
         self.text_vector_u.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         self.label_vector_v = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Vector v (valores separados por espacios):")
-        self.label_vector_v.grid(row=7, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+                                           text="Ingrese el Vector v:")
+        self.label_vector_v.grid(row=4, column=2, padx=10, pady=10, columnspan=2, sticky="w")
 
         # boton para importar en primera entrada
         self.btn_importar_hist_entrada3 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
                                                         command=self.abrir_historial3)
-        self.btn_importar_hist_entrada3.grid(row=8, column=0, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist_entrada3.grid(row=5, column=2, padx=10, pady=10, columnspan=2)
 
         # tooltip para boton de importación
         self.tooltip_importar3 = CTkToolTip(self.btn_importar_hist_entrada3,
                                             message="Importar un vector del historial")
 
-        self.text_vector_v = ctk.CTkTextbox(self.frame_izquierdo, width=300, height=50)
-        self.text_vector_v.grid(row=9, column=0, padx=10, pady=10, columnspan=2)
+        self.text_vector_v = FrameEntradaVector(self.frame_izquierdo)
+        self.text_vector_v.grid(row=6, column=2, padx=10, pady=10, columnspan=2)
 
         # --- Frame Derecho: Controles y Salida ---
         self.label_metodo = ctk.CTkLabel(self.frame_derecho, text="Método de Resolución:")
@@ -142,9 +142,9 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         metodo = self.metodo_var.get()
 
         # Obtener el contenido de los campos de texto
-        matriz_A_text = self.text_matriz_A.get("1.0", "end-1c").strip()
-        vector_u_text = self.text_vector_u.get("1.0", "end-1c").strip()
-        vector_v_text = self.text_vector_v.get("1.0", "end-1c").strip()
+        matriz_A_text = self.text_matriz_A.obtener_matriz_como_array()
+        vector_u_text = self.text_vector_u.obtener_matriz_como_array()
+        vector_v_text = self.text_vector_v.obtener_matriz_como_array()
 
         # Verificar si algún campo de entrada está vacío
         if not matriz_A_text or not vector_u_text or not vector_v_text:
@@ -154,15 +154,14 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
         try:
             # Obtener la matriz A y calcular filas y columnas automáticamente
-            matriz_A_text = matriz_A_text.split("\n")
-            matriz_A = [[Fraction(x) for x in fila.split()] for fila in matriz_A_text if fila.strip()]
+            matriz_A = matriz_A_text
 
             filas_A = len(matriz_A)
             columnas_A = len(matriz_A[0]) if filas_A > 0 else 0
 
             # Obtener vectores u y v
-            vector_u = [Fraction(x) for x in vector_u_text.split()]
-            vector_v = [Fraction(x) for x in vector_v_text.split()]
+            vector_u = vector_u_text
+            vector_v = vector_v_text
 
             # Validar si el tamaño de los vectores coincide con el número de columnas de la matriz A
             if len(vector_u) != columnas_A or len(vector_v) != columnas_A:
@@ -187,8 +186,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
         # Almacenar datos en la instancia de operaciones
         self.matriz_operaciones.A = matriz_A
-        self.matriz_operaciones.u = vector_u
-        self.matriz_operaciones.v = vector_v
+        self.matriz_operaciones.u = a_lista_simple(vector_u)
+        self.matriz_operaciones.v = a_lista_simple(vector_v)
         self.matriz_operaciones.filas_A = filas_A
         self.matriz_operaciones.columnas_A = columnas_A
 
@@ -299,9 +298,9 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
     def clear_inputs(self):
         """Limpia los campos de entrada y salida"""
-        self.text_matriz_A.delete("1.0", "end")
-        self.text_vector_u.delete("1.0", "end")
-        self.text_vector_v.delete("1.0", "end")
+        self.text_matriz_A.limpiar_entradas()
+        self.text_vector_u.limpiar_entradas()
+        self.text_vector_v.limpiar_entradas()
         self.text_salida.delete("1.0", "end")
         self.limpiar_tablas()
 
