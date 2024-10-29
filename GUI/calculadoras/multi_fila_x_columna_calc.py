@@ -1,10 +1,13 @@
 """
-Archivo: multi_fila_x_columna_calc.py 1.1.0
+Archivo: multi_fila_x_columna_calc.py 2.1.0
 Descripcion: Archivo que contiene el diseño del frame para operaciones de vector x vector.
 """
 import customtkinter as ctk
 from fractions import Fraction
 from CTkMessagebox import CTkMessagebox
+from models.clase_muli_vectores import VectorMultiplicacionCalculadora
+from GUI.interfaz_entrada.entrada_vector_frame import *
+from funciones_adicionales.convertir_formato_lista import *
 
 
 class VectorMultiplicacionFrame(ctk.CTkFrame):
@@ -14,64 +17,67 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
     Args:
         parent (CTkWidget): El widget padre que contendrá este frame.
     """
-    def __init__(self, parent):
+
+    def __init__(self, parent, historial):
         super().__init__(parent)
+        self.historial = historial
+        self.calculadora = VectorMultiplicacionCalculadora()
+
+        # Frame para entrada
+        self.entrada_frame = ctk.CTkFrame(self)
+        self.entrada_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        # Frame para resultados
+        self.resultado_frame = ctk.CTkFrame(self)
+        self.resultado_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
 
         # Configuración del frame
-        self.label_fila = ctk.CTkLabel(self, text="Introduce el vector fila (separado por comas):")
-        self.label_fila.pack(pady=10)
-        self.entry_fila = ctk.CTkEntry(self, width=400)
-        self.entry_fila.pack(pady=10)
+        self.label_fila = ctk.CTkLabel(self.entrada_frame, text="Introduce el vector fila:")
+        self.label_fila.grid(row=0, column=0, padx=10, pady=10)
 
+        self.entry_fila = FrameEntradaVector(self.entrada_frame)
+        self.entry_fila.grid(row=1, column=0, padx=10, pady=10)
 
-        self.label_columna = ctk.CTkLabel(self, text="Introduce el vector columna (separado por comas):")
-        self.label_columna.pack(pady=10)
-        self.entry_columna = ctk.CTkEntry(self, width=400)
-        self.entry_columna.pack(pady=10)
+        self.label_columna = ctk.CTkLabel(self.entrada_frame, text="Introduce el vector columna:")
+        self.label_columna.grid(row=0, column=1, padx=10, pady=10)
 
-        self.button_calculate = ctk.CTkButton(self, text="Calcular Multiplicación", command=self.calcular_multiplicacion)
-        self.button_calculate.pack(pady=20)
+        self.entry_columna = FrameEntradaVector(self.entrada_frame)
+        self.entry_columna.grid(row=1, column=1, padx=10, pady=10)
 
-        self.result_text = ctk.CTkTextbox(self, height=200, width=500)
-        self.result_text.pack(pady=10)
+        self.button_calculate = ctk.CTkButton(self.entrada_frame, text="Calcular Multiplicación",
+                                              command=self.calcular_multiplicacion)
+        self.button_calculate.grid(row=2, column=0, padx=10, pady=10, sticky="nsew", columnspan=2)
+
+        self.result_text = ctk.CTkTextbox(self.resultado_frame, height=200, width=300)
+        self.result_text.pack(pady=10, padx=10)
         self.result_text.configure(state="disabled")  # Hacer que el textbox sea de solo lectura
 
-        self.button_clear = ctk.CTkButton(self, text="Limpiar", command=self.limpiar_entradas)
+        self.button_clear = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
         self.button_clear.pack(pady=10)
 
     def calcular_multiplicacion(self):
         """
-        Función que calcula la multiplicación entre el vector fila y el vector columna
-        y muestra el proceso y el resultado.
+        Función que obtiene los vectores de entrada, realiza el cálculo y muestra el resultado.
         """
         try:
-            fila_str = self.entry_fila.get().strip()
-            columna_str = self.entry_columna.get().strip()
+            # Obtener valores de entrada
+            fila_str = self.entry_fila.obtener_matriz_como_array()
+            columna_str = self.entry_columna.obtener_matriz_como_array()
 
-            # Parse vectors
-            fila = list(map(Fraction, fila_str.split(',')))
-            columna = list(map(Fraction, columna_str.split(',')))
+            # Parsear vectores como fracciones
+            fila = a_lista_simple(fila_str)
+            columna = a_lista_simple(columna_str)
 
-            # Check dimensions
-            if len(fila) != len(columna):
-                raise ValueError("El número de elementos en el vector fila debe ser igual al número de elementos en el vector columna.")
-
-            # Calculando el proceso
-            process_steps = []
-            for i in range(len(fila)):
-                process_steps.append(f"{fila[i]} * {columna[i]} = {fila[i] * columna[i]}")
-
-            # Suma de los productos
-            result = sum(fila[i] * columna[i] for i in range(len(fila)))
+            # Configurar vectores en la calculadora
+            self.calculadora.set_vectores(fila, columna)
+            proceso_y_resultado = self.calculadora.calcular()
 
             # Mostrar el proceso y el resultado
-            process_str = "\n".join(process_steps)
-            result_str = f"\nResultado de la multiplicación: {result}"
-
-            self.result_text.configure(state="normal")  # Habilitar la edición para mostrar resultados
+            self.result_text.configure(state="normal")
             self.result_text.delete(1.0, ctk.END)
-            self.result_text.insert(ctk.END, f"Proceso de la multiplicación:\n{process_str}\n{result_str}")
-            self.result_text.configure(state="disabled")  # Volver a dejarlo como solo lectura
+            self.result_text.insert(ctk.END, f"Proceso de la multiplicación:\n{proceso_y_resultado}")
+            self.result_text.configure(state="disabled")
 
         except Exception as e:
             CTkMessagebox(title="Error", message=f"Error en el cálculo: {e}",
@@ -79,11 +85,11 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada y el texto de salida."""
-        self.entry_fila.delete(0, ctk.END)
-        self.entry_columna.delete(0, ctk.END)
-        self.result_text.configure(state="normal")  # Habilitar la edición para limpiar resultados
+        self.entry_fila.limpiar_entradas()
+        self.entry_columna.limpiar_entradas()
+        self.result_text.configure(state="normal")
         self.result_text.delete(1.0, ctk.END)
-        self.result_text.configure(state="disabled")  # Volver a dejarlo como solo lectura
+        self.result_text.configure(state="disabled")
 
 
 # Uso en una aplicación más grande
@@ -95,12 +101,15 @@ if __name__ == "__main__":
         def __init__(self):
             super().__init__()
 
+            historial = []
             self.title("Multiplicación de Vectores Fila y Columna")
             self.geometry("600x600")
 
             # Frame de Multiplicación de Vectores
-            self.vector_multiplicacion_frame = VectorMultiplicacionFrame(self)
+            self.vector_multiplicacion_frame = VectorMultiplicacionFrame(self, historial)
             self.vector_multiplicacion_frame.pack(padx=20, pady=20, fill="both", expand=True)
+
 
     app = AplicacionPrincipal()
     app.mainloop()
+
