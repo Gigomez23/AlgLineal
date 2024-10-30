@@ -128,6 +128,19 @@ def a_lista_simple(vector):
     return [item[0] for item in vector]
 
 
+def convertir_a_vector_columnar(matriz):
+    """
+    Convierte una matriz en un vector columnar, colocando cada elemento en una sublista.
+
+    Args:
+        matriz (list): Matriz de entrada en formato [[Fraction, Fraction, ...]].
+
+    Returns:
+        list: Matriz en formato [[Fraction], [Fraction], ...] con cada valor en una sublista.
+    """
+    return [[elemento] for elemento in matriz[0]]
+
+
 
 
 
