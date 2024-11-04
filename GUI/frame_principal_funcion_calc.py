@@ -10,7 +10,7 @@ from GUI.gui_calc_matriz.submenu.mixtas_seleccion import CalculadoraMixtaFrame
 from GUI.gui_calc_matriz.submenu.historial_general_ui import HistorialGeneralFrame
 
 
-class CalculadoraMatricesApp(CTkFrame):
+class CalculadoraFuncionApp(CTkFrame):
     """App de calculadora de matrices y vectores, convertida en Frame para integración."""
 
     def __init__(self, parent, regresar_callback, *args, **kwargs):
@@ -50,7 +50,7 @@ class CalculadoraMatricesApp(CTkFrame):
         self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)
 
         # Inicializa la primera calculadora directamente
-        self.mostrar_contenido('matrices')
+        self.mostrar_contenido('General')
 
         # Área sensible para mostrar el menú
         self.area_sensible = CTkFrame(self.frame_principal, width=10, bg_color="transparent")
@@ -135,7 +135,7 @@ class PantallaInicio(CTk):
         self.btn_calculadora_otra.pack(pady=20)
 
         # Frame para la Calculadora de Matrices y Vectores
-        self.calculadora_matrices_frame = CalculadoraMatricesApp(self, self.mostrar_inicio)
+        self.calculadora_matrices_frame = CalculadoraFuncionApp(self, self.mostrar_inicio)
 
         # Frame de la otra calculadora (en proceso de desarrollo)
         self.calculadora_otra_frame = CTkFrame(self)
