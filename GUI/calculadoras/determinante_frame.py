@@ -9,6 +9,7 @@ from funciones_adicionales.convertir_formato_lista import lista_a_matriz
 from models.operaciones_determinante import *
 from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
+from GUI.tablas_gui.modulo_tablas_entradas import TablasFrame
 
 
 class DeterminanteFrame(ctk.CTkFrame):
@@ -36,7 +37,7 @@ class DeterminanteFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Matriz (separada por espacios, cada fila separadas por enter):")
+                                         text="Ingrese la matriz:")
         self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         # botón importar
@@ -65,11 +66,8 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.text_salida = ctk.CTkTextbox(self.resultado_frame, width=400, height=150)
         self.text_salida.grid(row=1, column=0, padx=10, pady=10)
 
-        self.frame_matriz1 = None
-        self.tabla_matriz2 = None
-        self.frame_matriz2 = None
-        self.tabla_matriz1 = None
-        self.tabla_salida = None
+        self.tablas_entradas = None
+        self.tablas_salidas = None
 
     def calcular_determinante(self):
         """Realiza el cálculo del determinante de la matriz introducida por el usuario."""
@@ -88,62 +86,28 @@ class DeterminanteFrame(ctk.CTkFrame):
 
     def crear_tablas(self):
         """Crea los frames con CTkTable para mostrar las matrices."""
-        if self.frame_matriz1 or self.frame_matriz2:
-            self.limpiar_tablas()
-
-        # Frame para la primera matriz (input)
-        self.frame_matriz1 = ctk.CTkFrame(self)
-        self.frame_matriz1.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        # Frame para la segunda matriz (output)
-        self.frame_matriz2 = ctk.CTkFrame(self)
-        self.frame_matriz2.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        # labels para frames
-        self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz1, text="Matriz ingresada:")
-        self.tabla_matriz1.pack(padx=10, pady=10)
-
-        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución Det A:")
-        self.tabla_matriz2.pack(padx=10, pady=10)
-
         # tablas para la frame 1 que contiene los datos de entrada
         datos_tabla_entrada = self.operaciones_determinante.matriz
-        self.tabla_entrada = CTkTable(self.frame_matriz1, values=datos_tabla_entrada)
-        self.tabla_entrada.pack(padx=10, pady=10)
-
-        # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = lista_a_matriz(self.operaciones_determinante.determinantes)
-        self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
-        self.tabla_salida.pack(padx=10, pady=10)
+
+        self.tablas_entradas = TablasFrame(self, tabla1=datos_tabla_entrada, texto1="Matriz Ingresada:")
+        self.tablas_entradas.grid(row=1, column=0, pady=10, sticky="nsew")
+        self.tablas_salidas = TablasFrame(self, tabla1=datos_tabla_salida, texto1="Solución Det. A:")
+        self.tablas_salidas.grid(row=1, column=1, pady=10, sticky="n")
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar", command=self.accionar_guardado)
+        self.btn_guardar = ctk.CTkButton(self.tablas_salidas.frame_entradas, text="Guardar",
+                                         command=self.accionar_guardado)
         self.btn_guardar.pack(padx=10, pady=10)
         self.tooltip_guardar = CTkToolTip(self.btn_guardar,
                                             message="Guardar en historial")
-
-    def limpiar_tablas(self):
-        """Elimina los frames con las tablas y reinicia las soluciones."""
-        # Limpiar la lista de soluciones
-        self.operaciones_determinante.determinantes = []
-
-        # Destruir los frames de las tablas si existen
-        if self.frame_matriz1:
-            self.frame_matriz1.destroy()
-            self.frame_matriz1 = None
-        if self.frame_matriz2:
-            self.frame_matriz2.destroy()
-            self.frame_matriz2 = None
-
-        # Reiniciar las tablas de entrada, salida y matriz reducida
-        if self.tabla_salida:
-            self.tabla_salida.destroy()
-            self.tabla_salida = None
 
     def limpiar_entradas(self):
         """Limpia los campos de entrada y salida."""
         self.text_matriz.limpiar_entradas()
         self.text_salida.delete("1.0", "end")
-        self.limpiar_tablas()
+        self.tablas_entradas.limpiar_tablas()
+        self.tablas_salidas.limpiar_tablas()
 
     def accionar_guardado(self):
         solucion = lista_a_matriz(self.operaciones_determinante.determinantes)

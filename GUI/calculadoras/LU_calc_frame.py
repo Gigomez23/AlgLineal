@@ -1,5 +1,5 @@
 """
-Archivo: LU_calc_frame.py 1.0.0
+Archivo: LU_calc_frame.py 1.1.1
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan para resolver por Ax=b por factorización LU.
 """
@@ -13,7 +13,7 @@ from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 from GUI.interfaz_entrada.entrada_vector_frame import *
 from funciones_adicionales.convertir_formato_lista import *
-
+from GUI.tablas_gui.modulo_tablas_entradas import TablasFrame
 
 class LUFactorizationFrame(ctk.CTkFrame):
     def __init__(self, parent, historial, *args, **kwargs):
@@ -31,7 +31,7 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.output_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         # Widgets en el frame izquierdo (entrada)
-        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Matriz A:")
+        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Ingrese la matriz A:")
         self.label_matrix.grid(row=0, column=0, padx=5, pady=5)
 
         self.btn_importar_hist = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial)
@@ -42,13 +42,13 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.matriz_entrada = FrameEntradaMatriz(self.input_frame)
         self.matriz_entrada.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial)
-        self.btn_importar_hist2.grid(row=3, column=0, padx=10, pady=10)
-        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
-                                           message="Importar un vector del historial")
+        self.label_vector = ctk.CTkLabel(self.input_frame, text="Ingrese el vector b:")
+        self.label_vector.grid(row=3, column=0, padx=5, pady=5)
 
-        self.label_vector = ctk.CTkLabel(self.input_frame, text="Vector b:")
-        self.label_vector.grid(row=4, column=0, padx=5, pady=5)
+        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2)
+        self.btn_importar_hist2.grid(row=4, column=0, padx=10, pady=10)
+        self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
+                                            message="Importar un vector del historial")
 
         self.vector_entrada = FrameEntradaVector(self.input_frame)
         self.vector_entrada.grid(row=5, column=0, padx=5, pady=5)
@@ -67,13 +67,8 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.clear_button.grid(row=2, column=0, padx=5, pady=10)
 
         # Variables para los frames y tablas adicionales
-        self.frame_matriz1 = None
-        self.frame_matriz2 = None
-        self.tabla_matriz_entrada = None
-        self.tabla_vector_entrada = None
-        self.tabla_matriz_L = None
-        self.tabla_matriz_U = None
-        self.tabla_vector_solucion = None
+        self.frame_tablas_izq = None
+        self.frame_tablas_der = None
         self.lu_solver = None
 
     def calculate_lu(self):
@@ -101,95 +96,30 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.matriz_entrada.limpiar_entradas()
         self.vector_entrada.limpiar_entradas()
         self.textbox_output.delete("1.0", "end")
-        self.limpiar_tablas()
-
-    def limpiar_tablas(self):
-        """Elimina los frames con las tablas y reinicia las soluciones."""
-
-        # Destruir los frames de las tablas si existen
-        if self.frame_matriz1:
-            self.frame_matriz1.destroy()
-            self.frame_matriz1 = None
-        if self.frame_matriz2:
-            self.frame_matriz2.destroy()
-            self.frame_matriz2 = None
-
-        # Reiniciar las tablas de entrada, salida y matriz reducida
-        if self.tabla_matriz_entrada:
-            self.tabla_matriz_entrada.destroy()
-            self.tabla_matriz_entrada = None
-        if self.tabla_vector_entrada:
-            self.tabla_vector_entrada.destroy()
-            self.tabla_vector_entrada = None
-        if self.tabla_matriz_U:
-            self.tabla_matriz_U.destroy()
-            self.tabla_matriz_U = None
-        if self.tabla_matriz_L:
-            self.tabla_matriz_L.destroy()
-            self.tabla_matriz_L = None
-        if self.tabla_vector_solucion:
-            self.tabla_vector_solucion.destroy()
-            self.tabla_vector_solucion = None
+        self.frame_tablas_izq.limpiar_tablas()
+        self.frame_tablas_der.limpiar_tablas()
 
     def crear_tablas(self):
         """Crea los frames con CTkTable para mostrar las matrices."""
-        if self.frame_matriz1 or self.frame_matriz2:
-            self.limpiar_tablas()
-
-        # Frame para la primera matriz (input)
-        self.frame_matriz1 = ctk.CTkFrame(self)
-        self.frame_matriz1.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        # Frame para la segunda matriz (output)
-        self.frame_matriz2 = ctk.CTkFrame(self)
-        self.frame_matriz2.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        # labels para frames
-        self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz1, text="Matriz A:")
-        self.tabla_matriz1.pack(padx=10, pady=10)
-
         # tablas para la frame 1 que contiene los datos de entrada
         datos_tabla_entrada = self.lu_solver.original_matrix_A  # Usamos la matriz original
-        self.tabla_matriz_entrada = CTkTable(self.frame_matriz1, values=datos_tabla_entrada)
-        self.tabla_matriz_entrada.pack(padx=10, pady=10)
-
-        #label para vector B
-        self.label_vector_b = ctk.CTkLabel(self.frame_matriz1, text="Vector b:")
-        self.label_vector_b.pack(padx=10, pady=10)
-
-        # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = convertir_a_array_columnas(self.lu_solver.original_vector_b)
-        self.tabla_vector_solucion = CTkTable(self.frame_matriz1, values=datos_tabla_salida)
-        self.tabla_vector_solucion.pack(padx=10, pady=10)
-
-        # label para matriz L
-        self.label_matriz_L = ctk.CTkLabel(self.frame_matriz2, text="Matriz L:")
-        self.label_matriz_L.pack(padx=10, pady=10)
-
-        # tabla para matriz reduciad en frame 1
         datos_tabla_reducida = self.lu_solver.L
-        self.tabla_matriz_L = CTkTable(self.frame_matriz2, values=datos_tabla_reducida)
-        self.tabla_matriz_L.pack(padx=10, pady=10)
-
-        # label para matriz U
-        self.label_matriz_U = ctk.CTkLabel(self.frame_matriz2, text="Matriz U:")
-        self.label_matriz_U.pack(padx=10, pady=10)
+        self.frame_tablas_izq = TablasFrame(self, tabla1=datos_tabla_entrada,
+                                            tabla2=datos_tabla_salida, tabla3=datos_tabla_reducida,
+                                            texto1="Matriz A:", texto2="Vector b:", texto3="Matriz L:")
+        self.frame_tablas_izq.grid(row=1, column=0, padx=10, pady=10, sticky="n")
 
         # tabla para matriz reduciad en frame 1
         datos_tabla_reducida = self.lu_solver.U
-        self.tabla_matriz_U = CTkTable(self.frame_matriz2, values=datos_tabla_reducida)
-        self.tabla_matriz_U.pack(padx=10, pady=10)
-
-        # label para vector x
-        self.label_matriz_U = ctk.CTkLabel(self.frame_matriz2, text="Vector x:")
-        self.label_matriz_U.pack(padx=10, pady=10)
-
-        # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = convertir_a_array_columnas(self.lu_solver.solution_x)
-        self.tabla_vector_solucion = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
-        self.tabla_vector_solucion.pack(padx=10, pady=10)
+        self.frame_tablas_der = TablasFrame(self, tabla1=datos_tabla_reducida, tabla2=datos_tabla_salida,
+                                            texto1="Matriz U:", texto2="Vector x:")
+        self.frame_tablas_der.grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar", command=self.accionar_guardado)
+        self.btn_guardar = ctk.CTkButton(self.frame_tablas_der.frame_entradas, text="Guardar",
+                                         command=self.accionar_guardado)
         self.btn_guardar.pack(padx=10, pady=10)
         self.tooltip_guardar = CTkToolTip(self.btn_guardar,
                                             message="Guardar en historial")
@@ -222,6 +152,20 @@ class LUFactorizationFrame(ctk.CTkFrame):
         matriz = historial_popup.retornar_matriz_importada()
         self.matriz_entrada.importar_desde_historial(matriz)
 
+    def abrir_historial2(self):
+        """Abre el pop-up del historial"""
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada2(historial_popup)
+
+    def cargar_matriz_importada2(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.vector_entrada.importar_desde_historial(matriz)
+
 
 class MainApp(ctk.CTk):
     def __init__(self):
@@ -234,7 +178,6 @@ class MainApp(ctk.CTk):
         # Crear y posicionar el frame de factorización LU
         self.lu_frame = LUFactorizationFrame(self, historial)
         self.lu_frame.pack(expand=True, fill="both")
-
 
 if __name__ == "__main__":
     app = MainApp()

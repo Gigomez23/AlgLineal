@@ -45,7 +45,7 @@ class CalculadoraVectoresFrame(CTkFrame):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable),
+            'Multiplicar Vector Fila x Columna': VectorMultiplicacionFrame(self.frame_cambiable, self.historial),
             'Operaciones de Vectores': VectorOperacionesFrame(self.frame_cambiable, self)
         }
 

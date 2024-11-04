@@ -1,5 +1,5 @@
 """
-Archivo: entrada_matriz_frame.py 1.0.5
+Archivo: entrada_matriz_frame.py 1.0.6
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras con matrices.
 """
 import customtkinter as ctk
@@ -55,9 +55,9 @@ class FrameEntradaVector(ctk.CTkFrame):
         self.matriz = []
         self.construir_matriz()
 
-    def generar_evento_prueba(self):
-        print("evento generado")
-        self.master.event_generate("<<EventoPersonalizado>>")  # , when="tail" todo: fix this
+    # def generar_evento_prueba(self):
+    #     print("evento generado")
+    #     self.master.event_generate("<<EventoPersonalizado>>")  # , when="tail" todo: fix this
 
     def agregar_fila(self):
         """Agrega una nueva fila vacía al final de la matriz."""
@@ -92,7 +92,7 @@ class FrameEntradaVector(ctk.CTkFrame):
 
         except ValueError as e:
             CTkMessagebox(title="Error", message=f"Dimensiones no válidas: {e}", icon="warning", fade_in_duration=2)
-        self.generar_evento_prueba()
+        # self.generar_evento_prueba()
 
     def construir_matriz(self):
         """Construye o reconstruye la matriz en el frame."""
@@ -166,7 +166,7 @@ class FrameEntradaVector(ctk.CTkFrame):
         filas = len(matriz)
         columnas = len(matriz[0]) if filas > 0 else 0
 
-        if filas == 1:
+        if columnas == 1:
             self.filas = filas
             self.columnas = columnas
 
