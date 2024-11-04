@@ -1,5 +1,5 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 2.4.5
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.5.5
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 from ctkcomponents import *
@@ -11,6 +11,7 @@ from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 from GUI.interfaz_entrada.entrada_vector_frame import *
+from GUI.tablas_gui.modulo_tablas_entradas import TablasFrame
 # todo: fix la salida del vector en el texbox
 
 
@@ -105,13 +106,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10)
 
         # Variables para los frames y tablas adicionales
-        self.frame_matriz1 = None
-        self.frame_matriz2 = None
-        self.tabla_matriz = None
-        self.tabla_matriz2 = None
-        self.tabla_reducida = None
-        self.tabla_entrada = None
-        self.tabla_salida = None
+        self.frame_tablas_entradas = None
+        self.frame_tablas_solucion = None
 
     def calcular_multiplicacion(self):
         """Calcula la multiplicación Ax = b y muestra el resultado sin pasos"""
@@ -240,44 +236,21 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
     def crear_tablas(self):
         """Crea los frames con CTkTable para mostrar las matrices."""
-        if self.frame_matriz1 or self.frame_matriz2:
-            self.limpiar_tablas()
-
-        # Frame para la primera serie de tablas
-        self.frame_matriz1 = ctk.CTkFrame(self)
-        self.frame_matriz1.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        # Frame para la serie de tablas de solucion y el boton de guardar
-        self.frame_matriz2 = ctk.CTkFrame(self)
-        self.frame_matriz2.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        # labels para frames
-        self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz1, text="Matriz Ingresada:")
-        self.tabla_matriz1.pack(padx=10, pady=10)
-        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución:")
-        self.tabla_matriz2.pack(padx=10, pady=10)
-
-        # tablas para la frame 1 que contiene los datos de entrada
-        # tabla para la matriz original
         datos_tabla_matriz = self.matriz_entrada
-        self.tabla_matriz = CTkTable(self.frame_matriz1, values=datos_tabla_matriz)
-        self.tabla_matriz.pack(padx=10, pady=10)
-
-        # label para vector ingresado
-        self.label_vector_ingresada = ctk.CTkLabel(self.frame_matriz1, text="Vector Ingresado:")
-        self.label_vector_ingresada.pack(padx=10, pady=10)
-
-        # tabla para el vector ingresado
         datos_tabla_entrada = self.vector_entrada
-        self.tabla_entrada = CTkTable(self.frame_matriz1, values=datos_tabla_entrada)
-        self.tabla_entrada.pack(padx=10, pady=10)
+        self.frame_tablas_entradas = TablasFrame(self, tabla1=datos_tabla_matriz,
+                                                 tabla2=datos_tabla_entrada,
+                                                 texto1="Matriz Ingresada:", texto2="vector Ingresado:")
+        self.frame_tablas_entradas.grid(row=1, column=0, padx=10, pady=10, sticky="n")
 
         # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = lista_a_matriz(self.matriz_operaciones.solucion)
-        self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
-        self.tabla_salida.pack(padx=10, pady=10)
+        self.frame_tablas_solucion = TablasFrame(self, tabla1=datos_tabla_salida,
+                                                 texto1="Solución:")
+        self.frame_tablas_solucion.grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar",
+        self.btn_guardar = ctk.CTkButton(self.frame_tablas_solucion.frame_entradas, text="Guardar",
                                          command=self.accionar_guardado_en_historial)
         self.btn_guardar.pack(padx=10, pady=10)
         self.tooltip_guardar = CTkToolTip(self.btn_importar_hist_entrada2,
@@ -288,24 +261,8 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         # Limpiar la lista de soluciones
         self.matriz_operaciones.solucion = []
 
-        # Destruir los frames de las tablas si existen
-        if self.frame_matriz1:
-            self.frame_matriz1.destroy()
-            self.frame_matriz1 = None
-        if self.frame_matriz2:
-            self.frame_matriz2.destroy()
-            self.frame_matriz2 = None
-
-        # Reiniciar las tablas de entrada, salida y matriz reducida
-        if self.tabla_entrada:
-            self.tabla_entrada.destroy()
-            self.tabla_entrada = None
-        if self.tabla_salida:
-            self.tabla_salida.destroy()
-            self.tabla_salida = None
-        if self.tabla_reducida:
-            self.tabla_reducida.destroy()
-            self.tabla_reducida = None
+        self.frame_tablas_entradas.limpiar_tablas()
+        self.frame_tablas_solucion.limpiar_tablas()
 
     def clear_inputs(self):
         """Limpia todas las entradas y la salida"""

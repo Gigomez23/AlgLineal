@@ -87,6 +87,7 @@ class TablasFrame(ctk.CTkFrame):
         if self.tabla_matriz4:
             self.tabla4.destroy()
             self.tabla4 = None
+        self.destroy()
 
 
 class Aplicacion(ctk.CTk):

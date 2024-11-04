@@ -55,9 +55,9 @@ class FrameEntradaVector(ctk.CTkFrame):
         self.matriz = []
         self.construir_matriz()
 
-    def generar_evento_prueba(self):
-        print("evento generado")
-        self.master.event_generate("<<EventoPersonalizado>>")  # , when="tail" todo: fix this
+    # def generar_evento_prueba(self):
+    #     print("evento generado")
+    #     self.master.event_generate("<<EventoPersonalizado>>")  # , when="tail" todo: fix this
 
     def agregar_fila(self):
         """Agrega una nueva fila vacía al final de la matriz."""
@@ -92,7 +92,7 @@ class FrameEntradaVector(ctk.CTkFrame):
 
         except ValueError as e:
             CTkMessagebox(title="Error", message=f"Dimensiones no válidas: {e}", icon="warning", fade_in_duration=2)
-        self.generar_evento_prueba()
+        # self.generar_evento_prueba()
 
     def construir_matriz(self):
         """Construye o reconstruye la matriz en el frame."""

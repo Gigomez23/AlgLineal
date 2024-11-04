@@ -143,7 +143,7 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
 
     def guardar_en_historial(self, matriz_1, matriz_2, solucion):
         self.historial.agregar_problema(matriz1=matriz_1, matriz2=matriz_2, solucion=solucion, tipo="dos",
-                                        clasificacion="matriz")
+                                        clasificacion="vector")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")

@@ -1,15 +1,15 @@
 """
-Archivo: Au_Ax_calc.py 1.4.0
+Archivo: Au_Ax_calc.py 1.5.1
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from ctkcomponents import *
-from CTkTable import CTkTable
 from CTkToolTip import *
 from models.clase_matriz_vectores import *
 from funciones_adicionales.convertir_formato_lista import *
 from Historial.historial_popup.historial_popup_ui import *
 from GUI.interfaz_entrada.entrada_matriz_frame import *
 from GUI.interfaz_entrada.entrada_vector_frame import *
+from GUI.tablas_gui.modulo_tablas_entradas import TablasFrame
 
 
 class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
@@ -123,19 +123,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.btn_limpiar.grid(row=6, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
         # Variables para los frames y tablas adicionales
-        self.frame_matriz1 = None
-        self.frame_matriz2 = None
-        self.tabla_matriz = None
-        self.tabla_matriz2 = None
-        self.tabla_reducida = None
-        self.tabla_entrada = None
-        self.tabla2_entrada = None
-        self.tabla_salida = None
-        self.tabla_entrada2 = None
-        self.frame_matriz_ingresada = None
-        self.frame_vectores_ingresados = None
-        self.tabla_matriz1 = None
-        self.frame_vector_uno = None
+        self.frame_tablas_entradas = None
+        self.frame_tablas_solucion = None
 
     def calcular_multiplicacion(self):
         """Calcula la multiplicación según el método seleccionado"""
@@ -203,67 +192,22 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
     # función para crear tablas
     def crear_tablas(self):
         """Crea los frames con CTkTable para mostrar las matrices."""
-        if self.frame_matriz1 or self.frame_matriz2:
-            self.limpiar_tablas()
-
-        # Frame para la primera serie de tablas
-        self.frame_matriz1 = ctk.CTkFrame(self)
-        self.frame_matriz1.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        # subFrame para la matriz
-        self.frame_matriz_ingresada = ctk.CTkFrame(self.frame_matriz1)
-        self.frame_matriz_ingresada.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-        self.frame_vectores_ingresados = ctk.CTkFrame(self.frame_matriz1)
-        self.frame_vectores_ingresados.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
-        # Frame para la serie de tablas de solucion y el boton de guardar
-        self.frame_matriz2 = ctk.CTkFrame(self)
-        self.frame_matriz2.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        # label para matriz
-        self.tabla_matriz1 = ctk.CTkLabel(self.frame_matriz_ingresada, text="Matriz Ingresada:")
-        self.tabla_matriz1.pack(padx=10, pady=10)
-        # labels para frames
-        self.tabla_matriz2 = ctk.CTkLabel(self.frame_matriz2, text="Solución:")
-        self.tabla_matriz2.pack(padx=10, pady=10)
-
-        # tablas para la frame 1 que contiene los datos de entrada
-        # tabla para la matriz original
+        # tablas para las entradas
         datos_tabla_matriz = self.matriz_operaciones.A
-        self.tabla_matriz = CTkTable(self.frame_matriz_ingresada, values=datos_tabla_matriz)
-        self.tabla_matriz.pack(padx=10, pady=10)
-
-        # frame exclusivo para vector 1 ingresado
-        self.frame_vector_uno = ctk.CTkFrame(self.frame_vectores_ingresados)
-        self.frame_vector_uno.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-        # label para vector 1 ingresado
-        self.label_vector_ingresada = ctk.CTkLabel(self.frame_vector_uno, text="Vector u:")
-        self.label_vector_ingresada.pack(padx=10, pady=10)
-
-        # tabla para el vector ingresado
         datos_tabla_entrada = lista_a_matriz(self.matriz_operaciones.u)
-        self.tabla_entrada = CTkTable(self.frame_vector_uno, values=datos_tabla_entrada)
-        self.tabla_entrada.pack(padx=10, pady=10)
-
-        # frame exclusivo para vector 2 ingresado
-        self.frame_vector_dos = ctk.CTkFrame(self.frame_vectores_ingresados)
-        self.frame_vector_dos.grid(row=0, column=1, padx=5, pady=5, sticky="e")
-
-        # label para vector 2 ingresado
-        self.label_vector_ingresado2 = ctk.CTkLabel(self.frame_vector_dos, text="Vector v:")
-        self.label_vector_ingresado2.pack(padx=10, pady=10)
-
-        # tabla para el vector ingresado
         datos_tabla_entrada2 = lista_a_matriz(self.matriz_operaciones.v)
-        self.tabla_entrada2 = CTkTable(self.frame_vector_dos, values=datos_tabla_entrada2)
-        self.tabla_entrada2.pack(padx=10, pady=10)
+        self.frame_tablas_entradas = TablasFrame(self, tabla1=datos_tabla_matriz, tabla2=datos_tabla_entrada,
+                                                 tabla3=datos_tabla_entrada2, texto1="Matriz Ingresada:",
+                                                 texto2="Vector u:", texto3="Vector v:")
+        self.frame_tablas_entradas.grid(row=1, column=0, padx=10, pady=10, sticky="n")
 
         # tablas para la frame 2 que contiene los datos de salida
         datos_tabla_salida = lista_a_matriz(self.matriz_operaciones.solucion)
-        self.tabla_salida = CTkTable(self.frame_matriz2, values=datos_tabla_salida)
-        self.tabla_salida.pack(padx=10, pady=10)
+        self.frame_tablas_solucion = TablasFrame(self, tabla1=datos_tabla_salida, texto1="Solución:")
+        self.frame_tablas_solucion.grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
         #botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.frame_matriz2, text="Guardar",
+        self.btn_guardar = ctk.CTkButton(self.frame_tablas_solucion.frame_entradas, text="Guardar",
                                          command=self.accionar_guardado_en_historial)
         self.btn_guardar.pack(padx=10, pady=10)
         self.tooltip_guardar = CTkToolTip(self.btn_guardar,
@@ -273,28 +217,8 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         """Elimina los frames con las tablas y reinicia las soluciones."""
         # Limpiar la lista de soluciones
         self.matriz_operaciones.solucion = []
-
-        # Destruir los frames de las tablas si existen
-        if self.frame_matriz1:
-            self.frame_matriz1.destroy()
-            self.frame_matriz1 = None
-        if self.frame_matriz2:
-            self.frame_matriz2.destroy()
-            self.frame_matriz2 = None
-
-        # Reiniciar las tablas de entrada, salida y matriz reducida
-        if self.tabla_entrada:
-            self.tabla_entrada.destroy()
-            self.tabla_entrada = None
-        if self.tabla_salida:
-            self.tabla_salida.destroy()
-            self.tabla_salida = None
-        if self.tabla_entrada2:
-            self.tabla_entrada2.destroy()
-            self.tabla_entrada2 = None
-        if self.tabla_reducida:
-            self.tabla_reducida.destroy()
-            self.tabla_reducida = None
+        self.frame_tablas_solucion.limpiar_tablas()
+        self.frame_tablas_entradas.limpiar_tablas()
 
     def clear_inputs(self):
         """Limpia los campos de entrada y salida"""
@@ -319,18 +243,46 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
     def abrir_historial1(self):
         """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz_A)
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
         historial_popup.grab_set()  # Foco en el pop-up
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada(historial_popup)
+
+    def cargar_matriz_importada(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz_A.importar_desde_historial(matriz)
+
 
     def abrir_historial2(self):
         """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_vector_u)
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
         historial_popup.grab_set()  # Foco en el pop-up
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada2(historial_popup)
+
+    def cargar_matriz_importada2(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_vector_u.importar_desde_historial(matriz)
 
     def abrir_historial3(self):
         """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_vector_v)
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
         historial_popup.grab_set()  # Foco en el pop-up
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada3(historial_popup)
+
+    def cargar_matriz_importada3(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_vector_v.importar_desde_historial(matriz)
 
 
 # Ejemplo de uso del frame en una aplicación principal de tkinter
