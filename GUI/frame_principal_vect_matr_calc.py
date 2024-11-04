@@ -1,5 +1,5 @@
 """
-Archivo: frame_principal_vect_matr_calc.py 1.0.0
+Archivo: frame_principal_vect_matr_calc.py 1.0.2
 Descripción: archivo que contiene la construcción de la calculadora de matrices y vectores.
 """
 from customtkinter import *
@@ -59,7 +59,7 @@ class CalculadoraMatricesApp(CTkFrame):
             self.frame_principal, text="☰", width=32, height=20,
             command=self.mostrar_menu
         )
-        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=10)
+        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)
 
         # Inicializa la primera calculadora directamente
         self.mostrar_contenido('matrices')
@@ -78,11 +78,12 @@ class CalculadoraMatricesApp(CTkFrame):
         """Muestra el menú y desplaza el contenido hacia la derecha."""
         if not self.frame_menu.winfo_ismapped():
             self.frame_menu.pack(side="left", fill="y", padx=10, pady=10)
+            self.boton_menu_icono.place_forget()  # Oculta el ícono del botón del menú
         self.cancelar_ocultacion()
 
     def iniciar_ocultacion(self, event=None):
         """Inicia el temporizador para ocultar el menú."""
-        self.ocultar_menu_id = self.after(2000, self.ocultar_menu)
+        self.ocultar_menu_id = self.after(1500, self.ocultar_menu)
 
     def cancelar_ocultacion(self, event=None):
         """Cancela el temporizador para ocultar el menú."""
@@ -93,6 +94,7 @@ class CalculadoraMatricesApp(CTkFrame):
     def ocultar_menu(self):
         """Oculta el menú y ajusta el contenido."""
         self.frame_menu.pack_forget()
+        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)  # Muestra el ícono del botón del menú de nuevo
 
     def mostrar_contenido(self, opcion):
         """Función para cambiar el contenido principal basado en la opción seleccionada."""
@@ -115,6 +117,7 @@ class CalculadoraMatricesApp(CTkFrame):
     def regresar_a_inicio(self):
         """Llama al callback para regresar a la pantalla de inicio."""
         self.regresar_callback()
+
 
 
 class PantallaInicio(CTk):
