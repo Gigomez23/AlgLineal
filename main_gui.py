@@ -4,6 +4,7 @@ Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 from customtkinter import *
 from GUI.frame_principal_vect_matr_calc import CalculadoraMatricesApp
+from GUI.frame_principal_funcion_calc import CalculadoraFuncionApp
 
 
 class PantallaInicio(CTk):
@@ -36,26 +37,24 @@ class PantallaInicio(CTk):
         self.calculadora_matrices_frame = CalculadoraMatricesApp(self, self.mostrar_inicio)
 
         # Frame de la otra calculadora (en proceso de desarrollo)
-        self.calculadora_otra_frame = CTkFrame(self)
-        label = CTkLabel(self.calculadora_otra_frame, text="Calculadora en desarrollo")
-        label.pack(pady=10)
+        self.calculadora_funcion_frame = CalculadoraFuncionApp(self, self.mostrar_inicio)
 
     def mostrar_calculadora_matrices(self):
         """Muestra la calculadora de matrices y oculta la pantalla de selección."""
         self.frame_seleccion.pack_forget()
-        self.calculadora_otra_frame.pack_forget()
+        self.calculadora_funcion_frame.pack_forget()
         self.calculadora_matrices_frame.pack(fill="both", expand=True)
 
     def mostrar_calculadora_otra(self):
         """Muestra la calculadora en desarrollo y oculta la pantalla de selección."""
         self.frame_seleccion.pack_forget()
         self.calculadora_matrices_frame.pack_forget()
-        self.calculadora_otra_frame.pack(fill="both", expand=True)
+        self.calculadora_funcion_frame.pack(fill="both", expand=True)
 
     def mostrar_inicio(self):
         """Muestra la pantalla de inicio."""
         self.calculadora_matrices_frame.pack_forget()
-        self.calculadora_otra_frame.pack_forget()
+        self.calculadora_funcion_frame.pack_forget()
         self.frame_seleccion.pack(fill="both", expand=True)
 
 
