@@ -1,16 +1,15 @@
 """
-Archivo: operaciones_calc.py 2.2.0
+Archivo: operaciones_calc.py 2.3.1
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
 """
-import customtkinter as ctk
-from CTkMessagebox import CTkMessagebox
 from ctkcomponents import *
 from CTkTable import *
 from CTkToolTip import *
 from models.clase_matriz_op_ari import *
-from Additiona_functions.convertir_formato_lista import convertir_a_formato_lista
-from Historial.historial_popup_ui import *
-from fractions import Fraction
+from Historial.historial_popup.historial_popup_ui import *
+from GUI.interfaz_entrada.entrada_matriz_frame import *
+from GUI.interfaz_entrada.entrada_matriz_esclava_identica import FrameEsclavoMatriz
+from GUI.tablas_gui.modulo_tablas_entradas import TablasFrame
 
 
 class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
@@ -20,7 +19,6 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.historial = historial
         self.operaciones = CreadorDeMatricesAritmeticas()
         self.operacion_seleccionada = ctk.StringVar(value="sumar")
-        self.tablas_mostradas = False  # Para controlar si las tablas están mostradas o no
         self.matriz_entrada1 = []
         self.matriz_entrada2 = []
         self.matriz_solucion = []
@@ -37,30 +35,29 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Componentes del frame de entrada
-        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Matriz 1 (separada por espacios, cada "
-                                                                   "fila en una línea separadas por enter):")
+        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la primera matriz:")
         self.label_matriz1.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
 
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.entrada_frame, text="Importar",
-                                                 command=self.abrir_historial1)
+                                                        command=self.abrir_historial1)
         self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
                                             message="Importar una matriz del historial")
 
-        self.text_matriz1 = ctk.CTkTextbox(self.entrada_frame, width=400, height=100)
+        # frame para entrada
+        self.text_matriz1 = FrameEntradaMatriz(self.entrada_frame)
         self.text_matriz1.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
 
-        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Matriz 2 (separada por espacios, cada "
-                                                                   "fila en una línea separadas por enter):")
+        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la segunda matriz:")
         self.label_matriz2.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
 
         self.btn_importar_hist_entrada2 = ctk.CTkButton(self.entrada_frame, text="Importar",
-                                                 command=self.abrir_historial2)
+                                                        command=self.abrir_historial2)
         self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar una matriz del historial")
 
-        self.text_matriz2 = ctk.CTkTextbox(self.entrada_frame, width=400, height=100)
+        self.text_matriz2 = FrameEsclavoMatriz(self.entrada_frame, self.text_matriz1)
         self.text_matriz2.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
 
         # Radio buttons para seleccionar operación
@@ -98,8 +95,16 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10)
 
         # Frames para las tablas vacías
-        self.tabla_frame1 = ctk.CTkFrame(self)
-        self.tabla_frame2 = ctk.CTkFrame(self)
+        self.tabla_frame1 = None
+        self.tabla_frame2 = None
+
+        # # Aquí enlazamos el evento en este FramePadre
+        # self.text_matriz1.bind("<<EventoPersonalizado>>", self.propagar_evento)
+
+    # def propagar_evento(self):
+    #     # Propagar manualmente el evento hacia FrameEsclavoMatriz
+    #     self.text_matriz2.event_generate("<<EventoPersonalizado>>")
+    #     print('Evento capturado en Calculadora')
 
     def obtener_matrices(self, operacion):
         """Función que extrae y valida las matrices según la operación seleccionada.
@@ -107,15 +112,12 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         :param operacion: str - La operación a realizar ("sumar", "restar", "multiplicar")
         :return: bool
         """
-        matriz1_text = self.text_matriz1.get("1.0", "end-1c")
-        matriz2_text = self.text_matriz2.get("1.0", "end-1c")
-
-        matriz1_filas = matriz1_text.split("\n")
-        matriz2_filas = matriz2_text.split("\n")
+        matriz1_text = self.text_matriz1.obtener_matriz_como_array()
+        matriz2_text = self.text_matriz2.obtener_matriz_como_array()
 
         try:
-            self.operaciones.matriz1 = [[Fraction(x) for x in fila.split()] for fila in matriz1_filas if fila.strip()]
-            self.operaciones.matriz2 = [[Fraction(x) for x in fila.split()] for fila in matriz2_filas if fila.strip()]
+            self.operaciones.matriz1 = matriz1_text
+            self.operaciones.matriz2 = matriz2_text
 
             self.matriz_entrada1 = self.operaciones.matriz1
             self.matriz_entrada2 = self.operaciones.matriz2
@@ -157,8 +159,8 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
     def calcular_operacion(self):
         """Función que selecciona y realiza el cálculo según la operación seleccionada."""
-        matriz1_text = self.text_matriz1.get("1.0", "end-1c").strip()
-        matriz2_text = self.text_matriz2.get("1.0", "end-1c").strip()
+        matriz1_text = self.text_matriz1.obtener_matriz_como_array()
+        matriz2_text = self.text_matriz2.obtener_matriz_como_array()
 
         # Verificar si los campos están vacíos
         if not matriz1_text or not matriz2_text:
@@ -181,7 +183,7 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
                 self.mostrar_tablas()  # Muestra las tablas vacías
             except Exception as e:
                 CTkMessagebox(title="Error en la operación", message=f"Ocurrió un error durante la operación: {str(e)}",
-                              icon="error", option_1="Entendido", button_hover_color="red", fade_in_duration=2)
+                              icon="warning", option_1="Entendido", button_hover_color="red", fade_in_duration=2)
 
     def mostrar_resultado(self):
         """Función muestra los resultados en el textbox de salida."""
@@ -193,90 +195,81 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
     def mostrar_tablas(self):
         """Muestra las tablas vacías cuando se presiona el botón 'Calcular'."""
-        if not self.tablas_mostradas:
-            self.tabla_frame1.grid(row=3, column=0, padx=10, pady=20)
-            self.tabla_frame2.grid(row=3, column=1, padx=10, pady=10)
+        # Tablas del frame1 que contienen los datos de entradas mostradas en una tabla cTkTable
+        datos_tabla_1 = self.text_matriz1.obtener_matriz_como_array()
+        datos_tabla_2 = self.text_matriz2.obtener_matriz_como_array()
+        self.tabla_frame1 = TablasFrame(self, tabla1=datos_tabla_1, tabla2=datos_tabla_2,
+                                        texto1="Matriz Ingresada 1:", texto2="Matriz Ingresada 2:")
+        self.tabla_frame1.grid(row=1, column=0, padx=10, pady=10, sticky="n")
 
-            # Se crean los labels para cada frame de las tablas
-            self.label_tabla_entrada = ctk.CTkLabel(self.tabla_frame1,
-                                              text="Matrices de entrada: ")
-            self.label_tabla_entrada.pack(pady=10, padx=10)
-            self.label_tabla_solucion = ctk.CTkLabel(self.tabla_frame2,
-                                                    text="Matriz Solución: ")
-            self.label_tabla_solucion.pack(padx=10, pady=10)
+        datos_tabla_solucion = self.operaciones.resultado
+        self.tabla_frame2 = TablasFrame(self, tabla1=datos_tabla_solucion, texto1="Solución:")
+        self.tabla_frame2.grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
-            # Tablas del frame1 que contienen los datos de entradas mostradas en una tabla cTkTable
-            datos_tabla_1 = convertir_a_formato_lista(self.text_matriz1.get("1.0", "end-1c"))
-            self.tabla1 = CTkTable(self.tabla_frame1, values=datos_tabla_1)
-            self.tabla1.pack(padx=10, pady=10)
-
-            datos_tabla_2 = convertir_a_formato_lista(self.text_matriz2.get("1.0", "end-1c"))
-            self.tabla2 = CTkTable(self.tabla_frame1, values=datos_tabla_2)
-            self.tabla2.pack(padx=10, pady=10)
-
-            # Tabla de solución
-            datos_tabla_solucion = self.operaciones.resultado
-            self.tabla_solucion = CTkTable(self.tabla_frame2, values=datos_tabla_solucion)
-            self.tabla_solucion.pack(padx=10, pady=10)
-
-            self.tablas_mostradas = True
-
-            # boton para guardar
-            self.btn_guardar = ctk.CTkButton(self.tabla_frame2, text="Guardar",
-                                             command=self.accionar_guardado_en_historial)
-            self.btn_guardar.pack(padx=10, pady=10)
-            self.tooltip_guardar = CTkToolTip(self.btn_guardar,
-                                                message="Guardar en historial")
+        # boton para guardar
+        self.btn_guardar = ctk.CTkButton(self.tabla_frame2.frame_entradas, text="Guardar",
+                                         command=self.accionar_guardado_en_historial)
+        self.btn_guardar.pack(padx=10, pady=10)
+        self.tooltip_guardar = CTkToolTip(self.btn_guardar,
+                                          message="Guardar en historial")
 
     def limpiar_entradas(self):
         """Limpia las entradas y elimina las tablas."""
         # Limpiar los campos de entrada
-        self.text_matriz1.delete("1.0", "end")
-        self.text_matriz2.delete("1.0", "end")
+        self.limpiar_y_actualizar()
         self.text_salida.delete("1.0", "end")
-        self.label_tabla_entrada.destroy()
-        self.label_tabla_solucion.destroy()
+        self.tabla_frame1.limpiar_tablas()
+        self.tabla_frame2.limpiar_tablas()
 
-        # Eliminar las tablas si están mostradas
-        if self.tablas_mostradas:
-            if hasattr(self, 'tabla1'):
-                self.tabla1.destroy()
-            if hasattr(self, 'tabla2'):
-                self.tabla2.destroy()
-            if hasattr(self, 'tabla_solucion'):
-                self.tabla_solucion.destroy()
-
-            # Eliminar los frames de las tablas
-            self.tabla_frame1.grid_forget()
-            self.tabla_frame2.grid_forget()
-
-            self.tablas_mostradas = False
+    def limpiar_y_actualizar(self):
+        """Limpia las entradas y actualiza ambos marcos."""
+        self.text_matriz1.limpiar_entradas()
+        self.text_matriz2.limpiar_entradas()
 
     def accionar_guardado_en_historial(self):
-        matriz3 = []
-        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, matriz3, self.matriz_solucion)
+        self.guardar_en_historial(self.matriz_entrada1, self.matriz_entrada2, self.matriz_solucion)
 
-    def guardar_en_historial(self, matriz1, matriz2, matriz3, solucion):
-        self.historial.agregar_problema(matriz1,matriz2, matriz3, solucion, tipo='dos', clasificacion="matriz")
+    def guardar_en_historial(self, matriz1, matriz2, solucion):
+        self.historial.agregar_problema(matriz1=matriz1, matriz2=matriz2, solucion=solucion,
+                                        tipo='dos', clasificacion="matriz")
         CTkNotification(master=self, state="info",
                         message=f"{self.historial.problemas[-1]['nombre']} ha sido guardado exitosamente!",
                         side="right_bottom")
 
     def abrir_historial1(self):
-        """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz1)
-        historial_popup.grab_set()  # Foco en el pop-up
+        """Abre el pop-up del historial"""
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
+
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada1(historial_popup)
+
+    def cargar_matriz_importada1(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz1.importar_desde_historial(matriz)
+        print(matriz)
 
     def abrir_historial2(self):
-        """Abre el pop-up del historial."""
-        historial_popup = HistorialPopup(self, self.historial, self.text_matriz2)
-        historial_popup.grab_set()  # Foco en el pop-up
+        """Abre el pop-up del historial"""
+        historial_popup = HistorialPopup(self, self.historial, self.historial)
+        historial_popup.grab_set()  # Esperar hasta que se cierre el popup
 
+        # Obtener la matriz importada después de cerrar el popup
+        self.wait_window(historial_popup)  # Espera hasta que se cierre el popup
+        self.cargar_matriz_importada2(historial_popup)
 
+    def cargar_matriz_importada2(self, historial_popup):
+        """Carga la matriz importada al Textbox del FrameEntradaMatriz."""
+        matriz = historial_popup.retornar_matriz_importada()
+        self.text_matriz2.importar_desde_historial(matriz)
+        print(matriz)
 
 
 if __name__ == "__main__":
     root = ctk.CTk()
-    app_frame = OperacionesAritmeticasMatrizFrame(root)
+    historial = []
+    app_frame = OperacionesAritmeticasMatrizFrame(root, historial)
     app_frame.pack(padx=10, pady=10, fill="both", expand=True)
     root.mainloop()

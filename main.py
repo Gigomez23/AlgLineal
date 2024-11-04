@@ -1,10 +1,9 @@
 """
-Programa Versión:  3.7.2
+Programa Versión:  3.9.4
 Descripcion: archivo main
 Clase: Algebra Lineal
 Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
 """
-
 from main_gui import App
 
 
