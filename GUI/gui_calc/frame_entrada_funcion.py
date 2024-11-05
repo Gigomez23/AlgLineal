@@ -1,184 +1,188 @@
 import customtkinter as ctk
-from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, solve, Eq
+from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Define symbols x and y for calculations
-x, y = symbols('x y')
+# Definir símbolo para las expresiones
+x = symbols('x')
 
 
-class CalculadoraCientifica(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Calculadora Científica")
-        self.geometry("400x750")
+class CalculadoraCientificaFrame(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
 
-        # Display Frame
-        self.display_frame = ctk.CTkFrame(self)
-        self.display_frame.pack(pady=10, padx=10, fill="both", expand=False)
-
-        # Input Box for Expression
+        # Variable para el contenido del display
         self.expression = ""
-        self.display_var = ctk.StringVar(value="Ingrese función o ecuación en términos de x o y")
-        self.display_box = ctk.CTkEntry(self.display_frame, textvariable=self.display_var, font=("Arial", 18),
-                                        width=300)
+        self.display_var = ctk.StringVar(value="Ingrese función en términos de x")
+
+        # Cuadro de texto para ingresar la expresión
+        self.display_box = ctk.CTkEntry(self, textvariable=self.display_var, font=("Arial", 18), width=300)
         self.display_box.pack(pady=10, padx=10)
 
-        # Input Box for x and y values
-        self.values_frame = ctk.CTkFrame(self.display_frame)
-        self.values_frame.pack(pady=5, padx=10, fill="both", expand=False)
+        # Frame para los botones de números y operaciones aritméticas
+        self.frame_derecho = ctk.CTkFrame(self)
+        self.frame_derecho.pack(side="right", fill="y", expand=True, padx=5, pady=5)
 
-        self.x_value_var = ctk.StringVar(value="Valor de x")
-        self.y_value_var = ctk.StringVar(value="Valor de y")
+        # Frame para las categorías de botones adicionales
+        self.frame_izquierdo = ctk.CTkFrame(self)
+        self.frame_izquierdo.pack(side="left", fill="y", expand=True, padx=5, pady=5, )
 
-        self.x_value_box = ctk.CTkEntry(self.values_frame, textvariable=self.x_value_var, font=("Arial", 12), width=140)
-        self.x_value_box.pack(side="left", padx=5)
+        # Diccionario de categorías y botones
+        self.categories = {"Trigonometría": ['sin', 'cos', 'tan'],
+                           "Funciones": ['log', 'sqrt'],
+                           "(123)": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']}
 
-        self.y_value_box = ctk.CTkEntry(self.values_frame, textvariable=self.y_value_var, font=("Arial", 12), width=140)
-        self.y_value_box.pack(side="right", padx=5)
+        # Dropdown para seleccionar categoría
+        self.category_var = ctk.StringVar(value="(123)")
+        self.dropdown_menu = ctk.CTkOptionMenu(self.frame_izquierdo, variable=self.category_var,
+                                               values=list(self.categories.keys()),
+                                               command=self.show_category_buttons)
+        self.dropdown_menu.pack(fill="x", padx=2, pady=2)
 
-        # Dropdown to select variable to solve for
-        self.solve_for_var = ctk.StringVar(value="Resolver para...")
-        self.solve_dropdown = ctk.CTkComboBox(self.display_frame, values=["x", "y"], variable=self.solve_for_var)
-        self.solve_dropdown.pack(pady=10)
+        # Frame para mostrar botones de la categoría seleccionada en grid
+        self.category_buttons_frame = ctk.CTkFrame(self.frame_izquierdo)
+        self.category_buttons_frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-        # Button Frame
-        self.button_frame = ctk.CTkFrame(self)
-        self.button_frame.pack(fill="both", expand=True)
+        # Inicializar con los botones de la categoría seleccionada por defecto
+        self.show_category_buttons(self.category_var.get())
 
-        # Button Layout
-        buttons = [
-            ['7', '8', '9', '/', 'C'],
-            ['4', '5', '6', '*', 'pi'],
-            ['1', '2', '3', '-', 'e'],
-            ['0', '.', '(', ')', '+'],
-            ['sin', 'cos', 'tan', 'log', 'ln', 'sqrt'],
-            ['^', 'x', 'y', 'Borrar', 'Calcular']
-        ]
+        # Crear los botones en el frame derecho para números, operaciones aritméticas y limpiar
+        self.create_numeric_buttons()
+        self.create_arithmetic_buttons()
+        self.create_clear_button()
 
-        for row in buttons:
-            row_buttons = ctk.CTkFrame(self.button_frame)
-            row_buttons.pack(fill="both", expand=True)
-            for button_text in row:
-                button = ctk.CTkButton(row_buttons, text=button_text,
-                                       command=lambda t=button_text: self.on_button_press(t))
-                button.pack(side="left", expand=True, fill="both", padx=2, pady=2)
-
-        # Button to Show Graph
-        self.graph_button = ctk.CTkButton(self, text="Mostrar gráfica", command=self.show_graph)
+        # Botón para mostrar la gráfica
+        self.graph_button = ctk.CTkButton(self, text="Mostrar gráfica", command=self.mostrar_grafica)
         self.graph_button.pack(pady=10)
 
-        # Text Box for Results
-        self.result_display = ctk.CTkTextbox(self, height=100)
-        self.result_display.pack(pady=10, padx=10, fill="both", expand=True)
+    def show_category_buttons(self, category_name):
+        """Muestra los botones específicos de una categoría seleccionada en formato de cuadrícula (grid)."""
+        for widget in self.category_buttons_frame.winfo_children():
+            widget.destroy()  # Limpiar el frame de botones antes de agregar nuevos
 
-        # Allow direct editing in expression box
-        self.display_box.configure(state="normal")
+        buttons = self.categories[category_name]
+        for idx, text in enumerate(buttons):
+            button = ctk.CTkButton(self.category_buttons_frame, text=text,
+                                   command=lambda t=text: self.on_button_press(t))
+            button.grid(row=idx // 3, column=idx % 3, padx=2, pady=2, sticky="nsew")
+
+    def create_numeric_buttons(self):
+        """Crea los botones de números y los coloca en el frame derecho."""
+        for i in range(1, 10):
+            button = ctk.CTkButton(self.frame_derecho, text=str(i),
+                                   command=lambda t=str(i): self.on_button_press(t))
+            button.grid(row=(i - 1) // 3, column=(i - 1) % 3, sticky="nsew", padx=2, pady=2)
+        zero_button = ctk.CTkButton(self.frame_derecho, text="0", command=lambda: self.on_button_press("0"))
+        zero_button.grid(row=3, column=0, columnspan=2, sticky="nsew", padx=2, pady=2)
+        dot_button = ctk.CTkButton(self.frame_derecho, text=".", command=lambda: self.on_button_press("."))
+        dot_button.grid(row=3, column=2, sticky="nsew", padx=2, pady=2)
+
+    def create_arithmetic_buttons(self):
+        """Crea botones de operaciones aritméticas y los coloca en el frame derecho."""
+        operations = ['+', '-', '*', '/']
+        for i, op in enumerate(operations):
+            button = ctk.CTkButton(self.frame_derecho, text=op, command=lambda t=op: self.on_button_press(t))
+            button.grid(row=i, column=3, sticky="nsew", padx=2, pady=2)
+
+    def create_clear_button(self):
+        """Crea el botón de limpiar y lo coloca en el frame derecho."""
+        clear_button = ctk.CTkButton(self.frame_derecho, text="C", command=lambda: self.on_button_press("C"))
+        clear_button.grid(row=3, column=3, sticky="nsew", padx=2, pady=2)
+
+        boton_borrar = ctk.CTkButton(self.frame_derecho, text="Borrar", command=lambda: self.on_button_press("Borrar"))
+        boton_borrar.grid(row=4, column=0, padx=2, pady=2)
 
     def on_button_press(self, button_text):
-        """Handles button press events and appends to the current input."""
+        """Maneja los eventos de los botones y añade el texto al input actual."""
         current_expression = self.display_box.get()
 
         if button_text == 'C':
-            self.expression = current_expression[:-1]  # Remove the last character
+            self.expression = current_expression[:-1]  # Eliminar último caracter
         elif button_text == 'Borrar':
             self.expression = ""
             self.display_box.delete(0, "end")
-            self.result_display.delete("1.0", "end")
-        elif button_text == 'Calcular':
-            self.calculate_expression()
-            return
-        elif button_text in {'sin', 'cos', 'tan', 'log', 'ln', 'sqrt'}:
+        elif button_text == '^2':
+            self.expression = current_expression + '**2'
+        elif button_text == '^3':
+            self.expression = current_expression + '**3'
+        elif button_text == 'x^x':
+            self.expression = current_expression + '**'
+        elif button_text in {'sin', 'cos', 'tan', 'log', 'sqrt'}:
             self.expression = current_expression + f"{button_text}("
         elif button_text == 'pi':
             self.expression = current_expression + 'pi'
         elif button_text == 'e':
             self.expression = current_expression + 'E'
-        elif button_text == '^':
-            self.expression = current_expression + '**'
         else:
             self.expression = current_expression + button_text
 
-        # Update input box and move cursor to end
+        # Actualizar el cuadro de entrada y mover el cursor al final
         self.display_var.set(self.expression)
-        self.display_box.icursor(len(self.expression))  # Move cursor to the end
+        self.display_box.icursor(len(self.expression))  # Mover cursor al final
 
-    def calculate_expression(self):
-        """Evaluates the expression or solves an equation entered with sympy and displays the result."""
-        self.expression = self.display_box.get()  # Get text from input box
+    def obtener_funcion(self):
+        """Devuelve la función ingresada en formato interpretable por Python."""
+        return self.display_box.get()
+
+    def mostrar_grafica(self):
+        """Genera y muestra la gráfica de la función ingresada en modo oscuro."""
         try:
-            # Check if the expression is an equation by looking for the "=" sign
-            if "=" in self.expression:
-                left_expr, right_expr = self.expression.split("=")
-                parsed_left = sympify(left_expr,
-                                      locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "ln": log, "sqrt": sqrt,
-                                              "pi": pi, "E": E})
-                parsed_right = sympify(right_expr,
-                                       locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "ln": log, "sqrt": sqrt,
-                                               "pi": pi, "E": E})
+            # Configurar el tema oscuro para la gráfica
+            plt.style.use('dark_background')  # Tema oscuro en Matplotlib
 
-                equation = Eq(parsed_left, parsed_right)
+            # Analizar y evaluar la expresión
+            parsed_expr = sympify(self.obtener_funcion(),
+                                  locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "sqrt": sqrt,
+                                          "pi": pi, "E": E})
+            x_vals = np.linspace(-10, 10, 400)
+            y_vals = [parsed_expr.subs(x, val).evalf() for val in x_vals]
 
-                # Imprime la ecuación original en el textbox
-                self.result_display.insert("end", f"Ecuación dada: {self.expression}\n")
-
-                # Determine if we need to solve for a variable
-                solve_for = self.solve_for_var.get()
-                if solve_for in ['x', 'y']:
-                    # Solve for the specified variable
-                    self.result = solve(equation, symbols(solve_for))
-                    self.result_display.insert("end", f"Solución para {solve_for}: {self.result}\n")
-                else:
-                    self.result_display.insert("end", "Por favor, selecciona una variable para resolver.\n")
-            else:
-                # Parse and evaluate the expression if it's not an equation
-                parsed_expr = sympify(self.expression,
-                                      locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "ln": log, "sqrt": sqrt,
-                                              "pi": pi, "E": E})
-                self.result = parsed_expr
-
-                # Imprime la expresión y el resultado en el textbox
-                self.result_display.insert("end", f"Expresión dada: {self.expression}\n")
+            plt.figure("Gráfica de la función")
+            plt.plot(x_vals, y_vals, label=self.obtener_funcion(), color="cyan")  # Línea en color claro
+            plt.xlabel("x", color="white")
+            plt.ylabel("y", color="white")
+            plt.title("Gráfica de la función", color="white")
+            plt.legend(facecolor="black", edgecolor="white")
+            plt.grid(color="gray")
+            plt.show()
 
         except Exception as e:
-            self.result_display.insert("end", f"Error: {e}\n")
+            print(f"Error al mostrar la gráfica: {e}")
 
-    def show_graph(self):
-        """Displays the graph in a separate window."""
-        try:
-            # Check if it's a function or an equation solution
-            if "=" in self.expression:
-                # If it's an equation, plot the solution point(s)
-                solve_for = self.solve_for_var.get()
-                if solve_for in ['x', 'y'] and self.result:
-                    # Only plot the first solution point if there are multiple
-                    plt.figure("Solución")
-                    plt.plot(float(self.result[0]), 0, 'ro', label=f"{solve_for} = {self.result[0]}")
-                    plt.xlabel(solve_for)
-                    plt.title(f"Punto de solución para {solve_for}")
-                    plt.legend()
-                    plt.show()
-            else:
-                # If it's a function, plot the curve
-                parsed_expr = sympify(self.expression,
-                                      locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "ln": log, "sqrt": sqrt,
-                                              "pi": pi, "E": E})
-                x_vals = np.linspace(-10, 10, 400)
-                y_vals = [parsed_expr.subs(x, val).evalf() for val in x_vals]
 
-                plt.figure("Gráfica de la función")
-                plt.plot(x_vals, y_vals, label=self.expression)
-                plt.xlabel("x")
-                plt.ylabel("y")
-                plt.title("Gráfica de la función")
-                plt.legend()
-                plt.grid()
-                plt.show()
+# Clase principal de la aplicación
+class AplicacionPrincipal(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("Aplicación Principal")
+        self.geometry("600x800")
 
-        except Exception as e:
-            self.result_display.insert("end", f"Error al mostrar la gráfica: {e}\n")
+        # Frame de título o bienvenida
+        titulo_frame = ctk.CTkFrame(self)
+        titulo_frame.pack(pady=10, padx=10, fill="both")
+        titulo_label = ctk.CTkLabel(titulo_frame, text="Bienvenido a la Calculadora Extendida", font=("Arial", 20))
+        titulo_label.pack(pady=10)
+
+        # Frame de calculadora científica
+        self.calculadora_frame = CalculadoraCientificaFrame(self)  # Se añade el frame de la calculadora científica
+        self.calculadora_frame.pack(pady=10, padx=10, fill="both", expand=True)
+
+        # Botón para obtener la función ingresada
+        obtener_funcion_button = ctk.CTkButton(self, text="Obtener Función", command=self.obtener_funcion)
+        obtener_funcion_button.pack(pady=10)
+
+        # Textbox para mostrar la función obtenida
+        self.resultado_textbox = ctk.CTkTextbox(self, height=100)
+        self.resultado_textbox.pack(pady=10, padx=10, fill="both")
+
+    def obtener_funcion(self):
+        """Obtiene la función ingresada en el frame de la calculadora y la muestra en el textbox."""
+        funcion = self.calculadora_frame.obtener_funcion()
+        self.resultado_textbox.delete("1.0", "end")
+        self.resultado_textbox.insert("end", f"Función ingresada: {funcion}")
 
 
 if __name__ == "__main__":
-    app = CalculadoraCientifica()
+    # Crear y ejecutar la aplicación principal
+    app = AplicacionPrincipal()
     app.mainloop()

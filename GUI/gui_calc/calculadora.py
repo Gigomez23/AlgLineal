@@ -1,142 +1,154 @@
 import sympy as sp
 import customtkinter as ctk
-from tkinter import messagebox, Text, Tk, END
+from tkinter import messagebox, Text, END
+from GUI.gui_calc.frame_entrada_funcion import CalculadoraCientificaFrame
 
-def mostrar_resultados(iteraciones, xr, converged, metodo):
-    resultados_ventana = Tk()
-    resultados_ventana.title(f"Resultados - Método de {metodo}")
+class MetodosRaicesFrame(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configurar_interfaz()
 
-    texto_resultados = Text(resultados_ventana, wrap='none', font=('Courier', 10))
-    texto_resultados.insert(END, f"{'Iteración':<19}{'Xi':<8}{'Xu':<7}{'Xr':<8}{'Ea':<3}\n")
-    texto_resultados.insert(END, "-" * 60 + "\n")
+    def configurar_interfaz(self):
+        # Etiquetas y entradas para la interfaz
+        ctk.CTkLabel(self, text="Intervalo inferior (Xi):").grid(row=0, column=0, padx=10, pady=10)
+        self.entry_xi = ctk.CTkEntry(self, width=200)
+        self.entry_xi.grid(row=0, column=1, padx=10, pady=10)
 
-    for iteracion in iteraciones:
-        texto_resultados.insert(END,
-                                f"{iteracion[0]}\t\t{iteracion[1]:.5f}\t{iteracion[2]:.5f}\t{iteracion[3]:.5f}\t{iteracion[4]:.4f}\n")
+        ctk.CTkLabel(self, text="Intervalo superior (Xu):").grid(row=1, column=0, padx=10, pady=10)
+        self.entry_xu = ctk.CTkEntry(self, width=200)
+        self.entry_xu.grid(row=1, column=1, padx=10, pady=10)
 
-    texto_resultados.insert(END, f"\nLa raíz aproximada es: {xr:.10f}")
-    if converged:
-        texto_resultados.insert(END, f"\nEl método converge en {len(iteraciones)} iteraciones.")
-    else:
-        texto_resultados.insert(END, "\nEl método no converge dentro del número máximo de iteraciones.")
+        ctk.CTkLabel(self, text="Error de tolerancia:").grid(row=2, column=0, padx=10, pady=10)
+        self.entry_error_tol = ctk.CTkEntry(self, width=200)
+        self.entry_error_tol.grid(row=2, column=1, padx=10, pady=10)
 
-    texto_resultados.config(state='disabled')
-    texto_resultados.pack(expand=True, fill='both')
-    resultados_ventana.mainloop()
+        ctk.CTkLabel(self, text="Máximo de iteraciones (opcional):").grid(row=3, column=0, padx=10, pady=10)
+        self.entry_max_iter = ctk.CTkEntry(self, width=200)
+        self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
 
-def falsa_posicion():
-    try:
-        expr_latex = entry_expr.get()
-        xi = float(entry_xi.get())
-        xu = float(entry_xu.get())
-        error_tol = float(entry_error_tol.get())
-        max_iter = int(entry_max_iter.get()) if entry_max_iter.get() else 100
+        self.entrada_funcion = CalculadoraCientificaFrame(self)
+        self.entrada_funcion.grid(row=4, column=0, pady=20, columnspan=2)
 
-        x = sp.symbols('x')
-        funcion = sp.sympify(expr_latex)
+        # Botones para calcular
+        btn_calcular_falsa = ctk.CTkButton(self, text="Calcular por Falsa Posición", command=self.falsa_posicion)
+        btn_calcular_falsa.grid(row=5, column=0, pady=20)
 
-        iteraciones = []
-        ea = float('inf')
-        xr_old = xi
-        converged = False
+        btn_calcular_biseccion = ctk.CTkButton(self, text="Calcular por Bisección", command=self.biseccion)
+        btn_calcular_biseccion.grid(row=5, column=1, pady=20)
 
-        for i in range(max_iter):
-            xr = xu - (funcion.subs(x, xu) * (xi - xu)) / (funcion.subs(x, xi) - funcion.subs(x, xu))
+    def mostrar_resultados(self, iteraciones, xr, converged, metodo):
+        resultados_ventana = ctk.CTkToplevel(self)
+        resultados_ventana.title(f"Resultados - Método de {metodo}")
 
-            if i > 0:
-                ea = abs((xr - xr_old) / xr)
+        texto_resultados = Text(resultados_ventana, wrap='none', font=('Courier', 10))
+        texto_resultados.insert(END, f"{'Iteración':<19}{'Xi':<8}{'Xu':<7}{'Xr':<8}{'Ea':<3}\n")
+        texto_resultados.insert(END, "-" * 60 + "\n")
 
-            iteraciones.append((i + 1, xi, xu, xr, ea, funcion.subs(x, xi), funcion.subs(x, xu), funcion.subs(x, xr)))
+        for iteracion in iteraciones:
+            texto_resultados.insert(END,
+                                    f"{iteracion[0]}\t\t{iteracion[1]:.5f}\t{iteracion[2]:.5f}\t{iteracion[3]:.5f}\t{iteracion[4]:.4f}\n")
 
-            if ea < error_tol:
-                converged = True
-                break
+        texto_resultados.insert(END, f"\nLa raíz aproximada es: {xr:.10f}")
+        if converged:
+            texto_resultados.insert(END, f"\nEl método converge en {len(iteraciones)} iteraciones.")
+        else:
+            texto_resultados.insert(END, "\nEl método no converge dentro del número máximo de iteraciones.")
 
-            if funcion.subs(x, xi) * funcion.subs(x, xr) < 0:
-                xu = xr
-            else:
-                xi = xr
+        texto_resultados.config(state='disabled')
+        texto_resultados.pack(expand=True, fill='both')
 
-            xr_old = xr
+    def falsa_posicion(self):
+        try:
+            # expr_latex = self.entry_expr.get()
+            expr_latex = self.entrada_funcion.obtener_funcion()
+            xi = float(self.entry_xi.get())
+            xu = float(self.entry_xu.get())
+            error_tol = float(self.entry_error_tol.get())
+            max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
 
-        mostrar_resultados(iteraciones, xr, converged, "Falsa Posición")
+            x = sp.symbols('x')
+            funcion = sp.sympify(expr_latex)
 
-    except Exception as e:
-        messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+            iteraciones = []
+            ea = float('inf')
+            xr_old = xi
+            converged = False
 
-def biseccion():
-    try:
-        expr_latex = entry_expr.get()
-        xi = float(entry_xi.get())
-        xu = float(entry_xu.get())
-        error_tol = float(entry_error_tol.get())
-        max_iter = int(entry_max_iter.get()) if entry_max_iter.get() else 100
+            for i in range(max_iter):
+                xr = xu - (funcion.subs(x, xu) * (xi - xu)) / (funcion.subs(x, xi) - funcion.subs(x, xu))
 
-        x = sp.symbols('x')
-        funcion = sp.sympify(expr_latex)
+                if i > 0:
+                    ea = abs((xr - xr_old) / xr)
 
-        iteraciones = []
-        ea = float('inf')
-        xr_old = xi
-        converged = False
+                iteraciones.append((i + 1, xi, xu, xr, ea))
 
-        for i in range(max_iter):
-            xr = (xi + xu) / 2
+                if ea < error_tol:
+                    converged = True
+                    break
 
-            if i > 0:
-                ea = abs((xr - xr_old) / xr)
+                if funcion.subs(x, xi) * funcion.subs(x, xr) < 0:
+                    xu = xr
+                else:
+                    xi = xr
 
-            iteraciones.append((i + 1, xi, xu, xr, ea, funcion.subs(x, xi), funcion.subs(x, xu), funcion.subs(x, xr)))
+                xr_old = xr
 
-            if ea < error_tol:
-                converged = True
-                break
+            self.mostrar_resultados(iteraciones, xr, converged, "Falsa Posición")
 
-            if funcion.subs(x, xi) * funcion.subs(x, xr) < 0:
-                xu = xr
-            else:
-                xi = xr
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
 
-            xr_old = xr
+    def biseccion(self):
+        try:
+            # expr_latex = self.entry_expr.get()
+            expr_latex = self.entrada_funcion.obtener_funcion()
+            xi = float(self.entry_xi.get())
+            xu = float(self.entry_xu.get())
+            error_tol = float(self.entry_error_tol.get())
+            max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
 
-        mostrar_resultados(iteraciones, xr, converged, "Bisección")
+            x = sp.symbols('x')
+            funcion = sp.sympify(expr_latex)
 
-    except Exception as e:
-        messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+            iteraciones = []
+            ea = float('inf')
+            xr_old = xi
+            converged = False
 
-# Configuración de la interfaz de customTkinter
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
+            for i in range(max_iter):
+                xr = (xi + xu) / 2
 
-root = ctk.CTk()
-root.title("Método de Falsa Posición")
+                if i > 0:
+                    ea = abs((xr - xr_old) / xr)
 
-# Etiquetas y entradas para la interfaz
-ctk.CTkLabel(root, text="Función f(x):").grid(row=0, column=0, padx=10, pady=10)
-entry_expr = ctk.CTkEntry(root, width=200)
-entry_expr.grid(row=0, column=1, padx=10, pady=10)
+                iteraciones.append((i + 1, xi, xu, xr, ea))
 
-ctk.CTkLabel(root, text="Intervalo inferior (Xi):").grid(row=1, column=0, padx=10, pady=10)
-entry_xi = ctk.CTkEntry(root, width=200)
-entry_xi.grid(row=1, column=1, padx=10, pady=10)
+                if ea < error_tol:
+                    converged = True
+                    break
 
-ctk.CTkLabel(root, text="Intervalo superior (Xu):").grid(row=2, column=0, padx=10, pady=10)
-entry_xu = ctk.CTkEntry(root, width=200)
-entry_xu.grid(row=2, column=1, padx=10, pady=10)
+                if funcion.subs(x, xi) * funcion.subs(x, xr) < 0:
+                    xu = xr
+                else:
+                    xi = xr
 
-ctk.CTkLabel(root, text="Error de tolerancia:").grid(row=3, column=0, padx=10, pady=10)
-entry_error_tol = ctk.CTkEntry(root, width=200)
-entry_error_tol.grid(row=3, column=1, padx=10, pady=10)
+                xr_old = xr
 
-ctk.CTkLabel(root, text="Máximo de iteraciones (opcional):").grid(row=4, column=0, padx=10, pady=10)
-entry_max_iter = ctk.CTkEntry(root, width=200)
-entry_max_iter.grid(row=4, column=1, padx=10, pady=10)
+            self.mostrar_resultados(iteraciones, xr, converged, "Bisección")
 
-# Botones para calcular
-btn_calcular_falsa = ctk.CTkButton(root, text="Calcular por Falsa Posición", command=falsa_posicion)
-btn_calcular_falsa.grid(row=5, column=0, pady=20)
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
 
-btn_calcular_biseccion = ctk.CTkButton(root, text="Calcular por Bisección", command=biseccion)
-btn_calcular_biseccion.grid(row=5, column=1, pady=20)
+class MainApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("App Principal")
 
-root.mainloop()
+        # Inicia el Frame de métodos de raíces
+        metodos_frame = MetodosRaicesFrame(self)
+        metodos_frame.pack(expand=True, fill='both')
+
+if __name__ == "__main__":
+    app = MainApp()
+    app.mainloop()
