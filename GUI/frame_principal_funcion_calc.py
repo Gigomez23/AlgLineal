@@ -4,10 +4,7 @@ Descripción: archivo que contiene la construcción de la calculadora de matrice
 """
 from customtkinter import *
 from Historial.historial_matriz.matriz_historial import Historial
-from GUI.gui_calc_matriz.submenu.matrices_seleccion import CalculadoraMatricesFrame
-from GUI.gui_calc_matriz.submenu.vectores_seleccion import CalculadoraVectoresFrame
-from GUI.gui_calc_matriz.submenu.mixtas_seleccion import CalculadoraMixtaFrame
-from GUI.gui_calc_matriz.submenu.historial_general_ui import HistorialGeneralFrame
+from GUI.gui_calc.calculadora import MetodosRaicesFrame
 
 
 class CalculadoraFuncionApp(CTkFrame):
@@ -90,8 +87,10 @@ class CalculadoraFuncionApp(CTkFrame):
             widget.destroy()
 
         if opcion == 'General':
-            frame = CalculadoraVectoresFrame(self.frame_contenido, self.historial) #todo: add the calc frame here
+            frame = CTkFrame(self.frame_contenido) #todo: add the calc frame here
             frame.pack(fill="both", expand=True)
+            frame_calculadora = MetodosRaicesFrame(frame)
+            frame_calculadora.pack(fill="both", expand=True)
         # elif opcion == 'matrices':
         #     frame = CalculadoraMatricesFrame(self.frame_contenido, self.historial)
         #     frame.pack(fill="both", expand=True)

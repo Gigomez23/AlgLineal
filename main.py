@@ -7,8 +7,9 @@ Integrantes: Gabriel Gómez, Gessler Herrera, Gabriel Lacayo, Oliver Espinoza
 from main_gui import PantallaInicio
 
 
+
 if __name__ == "__main__":
-    root = PantallaInicio()
-    root.geometry("1200x800")
-    root.title("Calculadora de Álgebra Lineal")
-    root.mainloop()
+    app = PantallaInicio()
+    app.mainloop()
+
+# set_default_color_theme("green")

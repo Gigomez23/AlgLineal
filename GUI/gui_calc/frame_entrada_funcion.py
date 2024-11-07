@@ -25,12 +25,14 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
         # Frame para las categorías de botones adicionales
         self.frame_izquierdo = ctk.CTkFrame(self)
-        self.frame_izquierdo.pack(side="left", fill="y", expand=True, padx=5, pady=5, )
+        self.frame_izquierdo.pack(side="left", fill="y", expand=True, padx=5, pady=5)
 
         # Diccionario de categorías y botones
-        self.categories = {"Trigonometría": ['sin', 'cos', 'tan'],
-                           "Funciones": ['log', 'sqrt'],
-                           "(123)": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']}
+        self.categories = {
+            "Trigonometría": ['sin', 'cos', 'tan'],
+            "Funciones": ['ln', 'log', 'sqrt'],  # Incluye ln y log
+            "(123)": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']
+        }
 
         # Dropdown para seleccionar categoría
         self.category_var = ctk.StringVar(value="(123)")
@@ -107,14 +109,18 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
             self.expression = current_expression + '**3'
         elif button_text == 'x^x':
             self.expression = current_expression + '**'
-        elif button_text in {'sin', 'cos', 'tan', 'log', 'sqrt'}:
+        elif button_text in {'sin', 'cos', 'tan', 'ln', 'log', 'sqrt'}:
             self.expression = current_expression + f"{button_text}("
         elif button_text == 'pi':
             self.expression = current_expression + 'pi'
         elif button_text == 'e':
             self.expression = current_expression + 'E'
         else:
-            self.expression = current_expression + button_text
+            # Aquí se agrega la lógica para detectar y manejar 2x como 2*x
+            if current_expression and (current_expression[-1].isdigit() or current_expression[-1] == ')'):
+                self.expression = current_expression + '*' + button_text
+            else:
+                self.expression = current_expression + button_text
 
         # Actualizar el cuadro de entrada y mover el cursor al final
         self.display_var.set(self.expression)
@@ -122,7 +128,21 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
     def obtener_funcion(self):
         """Devuelve la función ingresada en formato interpretable por Python."""
-        return self.display_box.get()
+        funcion = self.display_box.get()
+
+        # Reemplazar patrones como 2x o 2(x) con 2*x o 2*(x)
+        funcion_modificada = ""
+        for i in range(len(funcion)):
+            if i > 0 and (
+                    (funcion[i].isalpha() and funcion[i - 1].isdigit()) or  # Detecta casos como '2x'
+                    (funcion[i] == '(' and funcion[i - 1].isdigit()) or  # Detecta casos como '2('
+                    (funcion[i].isdigit() and funcion[i - 1] == ')')  # Detecta casos como ')2'
+            ):
+                funcion_modificada += '*' + funcion[i]  # Agrega '*' antes del carácter
+            else:
+                funcion_modificada += funcion[i]
+
+        return funcion_modificada
 
     def mostrar_grafica(self):
         """Genera y muestra la gráfica de la función ingresada en modo oscuro."""
@@ -132,7 +152,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
             # Analizar y evaluar la expresión
             parsed_expr = sympify(self.obtener_funcion(),
-                                  locals={"sin": sin, "cos": cos, "tan": tan, "log": log, "sqrt": sqrt,
+                                  locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt,
                                           "pi": pi, "E": E})
             x_vals = np.linspace(-10, 10, 400)
             y_vals = [parsed_expr.subs(x, val).evalf() for val in x_vals]
@@ -151,38 +171,18 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
 
 # Clase principal de la aplicación
-class AplicacionPrincipal(ctk.CTk):
+class Aplicacion(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Aplicación Principal")
-        self.geometry("600x800")
+        self.title("Calculadora Científica")
+        self.geometry("600x400")
 
-        # Frame de título o bienvenida
-        titulo_frame = ctk.CTkFrame(self)
-        titulo_frame.pack(pady=10, padx=10, fill="both")
-        titulo_label = ctk.CTkLabel(titulo_frame, text="Bienvenido a la Calculadora Extendida", font=("Arial", 20))
-        titulo_label.pack(pady=10)
-
-        # Frame de calculadora científica
-        self.calculadora_frame = CalculadoraCientificaFrame(self)  # Se añade el frame de la calculadora científica
-        self.calculadora_frame.pack(pady=10, padx=10, fill="both", expand=True)
-
-        # Botón para obtener la función ingresada
-        obtener_funcion_button = ctk.CTkButton(self, text="Obtener Función", command=self.obtener_funcion)
-        obtener_funcion_button.pack(pady=10)
-
-        # Textbox para mostrar la función obtenida
-        self.resultado_textbox = ctk.CTkTextbox(self, height=100)
-        self.resultado_textbox.pack(pady=10, padx=10, fill="both")
-
-    def obtener_funcion(self):
-        """Obtiene la función ingresada en el frame de la calculadora y la muestra en el textbox."""
-        funcion = self.calculadora_frame.obtener_funcion()
-        self.resultado_textbox.delete("1.0", "end")
-        self.resultado_textbox.insert("end", f"Función ingresada: {funcion}")
+        # Crear la calculadora científica
+        self.calculadora_frame = CalculadoraCientificaFrame(self)
+        self.calculadora_frame.pack(fill="both", expand=True)
 
 
+# Inicializar y ejecutar la aplicación
 if __name__ == "__main__":
-    # Crear y ejecutar la aplicación principal
-    app = AplicacionPrincipal()
+    app = Aplicacion()
     app.mainloop()

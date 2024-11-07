@@ -10,31 +10,35 @@ class MetodosRaicesFrame(ctk.CTkFrame):
         self.configurar_interfaz()
 
     def configurar_interfaz(self):
-        # Etiquetas y entradas para la interfaz
-        ctk.CTkLabel(self, text="Intervalo inferior (Xi):").grid(row=0, column=0, padx=10, pady=10)
-        self.entry_xi = ctk.CTkEntry(self, width=200)
+        # Crear un frame principal dentro del cual estarán todos los elementos
+        frame_contenedor = ctk.CTkFrame(self)
+        frame_contenedor.pack(expand=True, fill='both', padx=20, pady=20)
+
+        # Etiquetas y entradas para la interfaz dentro del frame
+        ctk.CTkLabel(frame_contenedor, text="Intervalo inferior (Xi):").grid(row=0, column=0, padx=10, pady=10)
+        self.entry_xi = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_xi.grid(row=0, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(self, text="Intervalo superior (Xu):").grid(row=1, column=0, padx=10, pady=10)
-        self.entry_xu = ctk.CTkEntry(self, width=200)
+        ctk.CTkLabel(frame_contenedor, text="Intervalo superior (Xu):").grid(row=1, column=0, padx=10, pady=10)
+        self.entry_xu = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_xu.grid(row=1, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(self, text="Error de tolerancia:").grid(row=2, column=0, padx=10, pady=10)
-        self.entry_error_tol = ctk.CTkEntry(self, width=200)
+        ctk.CTkLabel(frame_contenedor, text="Error de tolerancia:").grid(row=2, column=0, padx=10, pady=10)
+        self.entry_error_tol = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_error_tol.grid(row=2, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(self, text="Máximo de iteraciones (opcional):").grid(row=3, column=0, padx=10, pady=10)
-        self.entry_max_iter = ctk.CTkEntry(self, width=200)
+        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones (opcional):").grid(row=3, column=0, padx=10, pady=10)
+        self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
 
-        self.entrada_funcion = CalculadoraCientificaFrame(self)
+        self.entrada_funcion = CalculadoraCientificaFrame(frame_contenedor)
         self.entrada_funcion.grid(row=4, column=0, pady=20, columnspan=2)
 
-        # Botones para calcular
-        btn_calcular_falsa = ctk.CTkButton(self, text="Calcular por Falsa Posición", command=self.falsa_posicion)
+        # Botones para calcular dentro del frame
+        btn_calcular_falsa = ctk.CTkButton(frame_contenedor, text="Calcular por Falsa Posición", command=self.falsa_posicion)
         btn_calcular_falsa.grid(row=5, column=0, pady=20)
 
-        btn_calcular_biseccion = ctk.CTkButton(self, text="Calcular por Bisección", command=self.biseccion)
+        btn_calcular_biseccion = ctk.CTkButton(frame_contenedor, text="Calcular por Bisección", command=self.biseccion)
         btn_calcular_biseccion.grid(row=5, column=1, pady=20)
 
     def mostrar_resultados(self, iteraciones, xr, converged, metodo):
@@ -60,7 +64,6 @@ class MetodosRaicesFrame(ctk.CTkFrame):
 
     def falsa_posicion(self):
         try:
-            # expr_latex = self.entry_expr.get()
             expr_latex = self.entrada_funcion.obtener_funcion()
             xi = float(self.entry_xi.get())
             xu = float(self.entry_xu.get())
@@ -101,7 +104,6 @@ class MetodosRaicesFrame(ctk.CTkFrame):
 
     def biseccion(self):
         try:
-            # expr_latex = self.entry_expr.get()
             expr_latex = self.entrada_funcion.obtener_funcion()
             xi = float(self.entry_xi.get())
             xu = float(self.entry_xu.get())

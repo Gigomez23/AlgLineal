@@ -28,7 +28,7 @@ class PantallaInicio(CTk):
 
         # Botón para abrir la Calculadora en desarrollo
         self.btn_calculadora_otra = CTkButton(
-            self.frame_seleccion, text="Otra Calculadora (en desarrollo)",
+            self.frame_seleccion, text="Calculadora de Funciones",
             command=self.mostrar_calculadora_otra
         )
         self.btn_calculadora_otra.pack(pady=20)
