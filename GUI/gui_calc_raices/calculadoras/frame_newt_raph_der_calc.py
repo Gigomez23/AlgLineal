@@ -1,11 +1,12 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.0.0
+Archivo: frame_newt_raph_der_calc.py 1.1.0
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
 from models.modelos_func.clase_newton_raphson import NewtonRaphson
+from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
 
 
 class MetodoNewRaphFrame(ctk.CTkFrame):
@@ -17,31 +18,6 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
     def configurar_interfaz(self):
         frame_contenedor = ctk.CTkFrame(self)
         frame_contenedor.pack(expand=True, fill='both', padx=20, pady=20)
-
-        # Frame izquierdo para seleccionar funciones
-        self.frame_izquierdo = ctk.CTkFrame(frame_contenedor)
-        self.frame_izquierdo.grid(row=0, column=2, rowspan=4, padx=10, pady=10, sticky="nsew")
-
-        # Diccionario de categorías y botones
-        self.categories = {
-            "Trigonometría": ['sin', 'cos', 'tan'],
-            "Funciones": ['ln', 'log', 'sqrt'],
-            "(123)": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']
-        }
-
-        # Dropdown para seleccionar categoría
-        self.category_var = ctk.StringVar(value="(123)")
-        self.dropdown_menu = ctk.CTkOptionMenu(
-            self.frame_izquierdo, variable=self.category_var,
-            values=list(self.categories.keys()),
-            command=self.show_category_buttons
-        )
-        self.dropdown_menu.pack(fill="x", padx=2, pady=2)
-
-        # Frame para mostrar botones de la categoría seleccionada en grid
-        self.category_buttons_frame = ctk.CTkFrame(self.frame_izquierdo)
-        self.category_buttons_frame.pack(fill="both", expand=True, padx=5, pady=5)
-        self.show_category_buttons(self.category_var.get())
 
         # Frame derecho para entradas de Newton-Raphson
         ctk.CTkLabel(frame_contenedor, text="Valor inicial (X0):").grid(row=0, column=0, padx=10, pady=10)
@@ -57,46 +33,18 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         self.entry_max_iter.grid(row=2, column=1, padx=10, pady=10)
 
         # Entrada de la función
-        ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=3, column=0, padx=10, pady=10)
-        self.entry_funcion = ctk.CTkEntry(frame_contenedor, width=200)
+        # ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=3, column=0, padx=10, pady=10)
+        self.entry_funcion = CalculadoraCientificaFrame(frame_contenedor)
         self.entry_funcion.grid(row=3, column=1, padx=10, pady=10)
 
         # Botón para calcular
-        btn_calcular_newton = ctk.CTkButton(frame_contenedor, text="Calcular por Newton-Raphson", command=self.newton_raphson)
+        btn_calcular_newton = ctk.CTkButton(frame_contenedor, text="Calcular por Newton-Raphson",
+                                            command=self.newton_raphson)
         btn_calcular_newton.grid(row=4, column=0, columnspan=2, pady=20)
-
-    def show_category_buttons(self, category_name):
-        """Muestra los botones específicos de una categoría seleccionada en formato de cuadrícula (grid)."""
-        for widget in self.category_buttons_frame.winfo_children():
-            widget.destroy()  # Limpiar el frame de botones antes de agregar nuevos
-
-        buttons = self.categories[category_name]
-        for idx, text in enumerate(buttons):
-            button = ctk.CTkButton(self.category_buttons_frame, text=text, command=lambda t=text: self.on_button_press(t))
-            button.grid(row=idx // 3, column=idx % 3, padx=2, pady=2, sticky="nsew")
-
-    def on_button_press(self, button_text):
-        """Maneja los eventos de los botones y añade el texto al input actual."""
-        current_expression = self.entry_funcion.get()
-
-        if button_text in {'sin', 'cos', 'tan', 'ln', 'log', 'sqrt'}:
-            self.entry_funcion.insert(END, f"{button_text}(")
-        elif button_text == '^2':
-            self.entry_funcion.insert(END, '**2')
-        elif button_text == '^3':
-            self.entry_funcion.insert(END, '**3')
-        elif button_text == 'x^x':
-            self.entry_funcion.insert(END, '**')
-        elif button_text == 'pi':
-            self.entry_funcion.insert(END, 'pi')
-        elif button_text == 'e':
-            self.entry_funcion.insert(END, 'E')
-        else:
-            self.entry_funcion.insert(END, button_text)
 
     def newton_raphson(self):
         try:
-            expr_texto = self.entry_funcion.get()
+            expr_texto = self.entry_funcion.obtener_funcion()
             x0 = float(self.entry_x0.get())
             error_tol = float(self.entry_error_tol.get())
             max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
@@ -112,25 +60,8 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
 
-    def obtener_funcion(self):
-        """Devuelve la función ingresada en formato interpretable por SymPy."""
-        funcion = self.entry_funcion.get()
-
-        # Reemplazar patrones como 2x o 2(x) con 2*x o 2*(x)
-        funcion_modificada = ""
-        for i in range(len(funcion)):
-            if i > 0 and (
-                    (funcion[i].isalpha() and funcion[i - 1].isdigit()) or
-                    (funcion[i] == '(' and funcion[i - 1].isdigit()) or
-                    (funcion[i].isdigit() and funcion[i - 1] == ')')
-            ):
-                funcion_modificada += '*' + funcion[i]
-            else:
-                funcion_modificada += funcion[i]
-
-        return funcion_modificada
-
     def mostrar_resultados(self, iteraciones, xr, converged, frame):
+        # todo: mostrat toleranica de error
         resultados_ventana = ctk.CTkToplevel(frame)
         resultados_ventana.title("Resultados - Método de Newton-Raphson")
 

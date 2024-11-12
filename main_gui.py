@@ -50,10 +50,10 @@ class PantallaInicio(CTk):
             hover_color="#005A8D",
             corner_radius=8
         )
-        self.btn_calculadora_matrices.pack(pady=20, padx=20, fill="x")
+        self.btn_calculadora_matrices.pack(pady=20, padx=20)
 
         # Botón para abrir la Calculadora en desarrollo
-        self.btn_calculadora_otra = CTkButton(
+        self.btn_calculadora_funciones = CTkButton(
             self.frame_seleccion,
             text="Calculadora de Funciones",
             command=self.mostrar_calculadora_otra,
@@ -62,7 +62,7 @@ class PantallaInicio(CTk):
             hover_color="#005A8D",
             corner_radius=8
         )
-        self.btn_calculadora_otra.pack(pady=20, padx=20, fill="x")
+        self.btn_calculadora_funciones.pack(pady=20, padx=20)
 
         # Frame para la Calculadora de Matrices y Vectores
         self.calculadora_matrices_frame = CalculadoraMatricesApp(self, self.mostrar_inicio)

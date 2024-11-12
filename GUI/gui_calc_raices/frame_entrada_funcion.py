@@ -7,7 +7,10 @@ from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, Eq, solve
 import matplotlib.pyplot as plt
 import numpy as np
 from CTkMessagebox import CTkMessagebox
-
+# todo: hacer que el textbox a editar este fuera del frame (que pueda gráficar)
+# todo: convertir todo a español
+# todo: mejorar gráfica
+# todo: que pueda encontrar interválos superior e inferiores
 # Definir símbolo para las expresiones
 x = symbols('x')
 
