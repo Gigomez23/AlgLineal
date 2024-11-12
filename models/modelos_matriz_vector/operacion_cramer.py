@@ -1,6 +1,5 @@
 # Archivo: operacion_cramer.py
-from models.operaciones_determinante import CreadorDeOperacionDeterminantes
-from fractions import Fraction
+from models.modelos_matriz_vector.operaciones_determinante import CreadorDeOperacionDeterminantes
 
 
 def CreadorDeCramer():

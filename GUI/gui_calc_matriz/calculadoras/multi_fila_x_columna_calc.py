@@ -4,7 +4,7 @@ Descripcion: Archivo que contiene el diseño del frame para operaciones de vecto
 """
 from CTkToolTip import *
 from ctkcomponents import *
-from models.clase_muli_vectores import VectorMultiplicacionCalculadora
+from models.modelos_matriz_vector.clase_muli_vectores import VectorMultiplicacionCalculadora
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_vector_frame import *
 from funciones_adicionales.convertir_formato_lista import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame

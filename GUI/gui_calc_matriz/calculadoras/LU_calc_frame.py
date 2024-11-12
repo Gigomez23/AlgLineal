@@ -6,7 +6,7 @@ por m√©todo escalonado o de Gauss-Jordan para resolver por Ax=b por factorizaci√
 from ctkcomponents import *
 from tkinter import messagebox
 from CTkToolTip import *
-from models.clase_matriz_fact_LU import LUFactorization
+from models.modelos_matriz_vector.clase_matriz_fact_LU import LUFactorization
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_vector_frame import *

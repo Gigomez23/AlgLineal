@@ -1,8 +1,12 @@
+"""
+Archivo: funciones_raices.py 1.0.0
+Descripción: archivo que contiene el frame general para las calculadoras.
+"""
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
 from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import MetodosRaicesFrame
+from GUI.gui_calc_raices.calculadoras.frame_newt_raph_der_calc import MetodoNewRaphFrame
 
 
-# Clase principal convertida a Frame
 class FuncionesRaicesFrame(CTkFrame):
     def __init__(self, parent, *args, **kwargs):
         """Inicializa la calculadora en un frame."""
@@ -23,7 +27,7 @@ class FuncionesRaicesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Metodo Falsa Posicion/Bisseción'],
+            values=['Método Falsa Posicion/Bisseción', 'Método de Newton Raphson'],
             anchor="w",
             width=250,
             hover=True,
@@ -41,11 +45,12 @@ class FuncionesRaicesFrame(CTkFrame):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Metodo Falsa Posicion/Bisseción': MetodosRaicesFrame(self.frame_cambiable),
+            'Método Falsa Posicion/Bisseción': MetodosRaicesFrame(self.frame_cambiable),
+            'Método de Newton Raphson': MetodoNewRaphFrame(self.frame_cambiable)
         }
 
         # Muestra el frame por defecto
-        self.cambiar_frame('Metodo Falsa Posicion/Bisseción')
+        self.cambiar_frame('Método Falsa Posicion/Bisseción')
 
     def cambiar_frame(self, opcion_seleccionada):
         """Cambia el frame según la opción seleccionada en el menú."""

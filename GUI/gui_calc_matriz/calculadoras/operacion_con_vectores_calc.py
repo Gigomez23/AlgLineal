@@ -4,7 +4,7 @@ Descripción: Archivo que contiene el diseño del frame para operaciones con vec
 """
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-from models.clase_vector import *
+from models.modelos_matriz_vector.clase_vector import *
 #todo: acomodar mejor el diseño para que se vea bien en la pantalla
 
 class VectorOperacionesFrame(ctk.CTkFrame):

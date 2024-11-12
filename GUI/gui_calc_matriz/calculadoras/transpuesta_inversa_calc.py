@@ -4,7 +4,7 @@ Descripción: Este archivo contiene la interfáz gráfica de la calculadora de t
 """
 from ctkcomponents import *
 from CTkToolTip import *
-from models.clase_matriz_inv_tran import *
+from models.modelos_matriz_vector.clase_matriz_inv_tran import *
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame

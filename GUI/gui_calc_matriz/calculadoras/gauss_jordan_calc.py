@@ -5,7 +5,7 @@ por método escalonado o de Gauss-Jordan.
 """
 from ctkcomponents import *
 from CTkToolTip import *
-from models.clase_sistema_ecuaciones import *
+from models.modelos_matriz_vector.clase_sistema_ecuaciones import *
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame
