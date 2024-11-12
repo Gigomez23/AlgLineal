@@ -1,7 +1,7 @@
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
-from GUI.gui_calc.frame_entrada_funcion import CalculadoraCientificaFrame
+from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
 
 class MetodosRaicesFrame(ctk.CTkFrame):
     def __init__(self, parent):

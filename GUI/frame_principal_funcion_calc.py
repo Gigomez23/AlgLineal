@@ -1,10 +1,11 @@
 """
-Archivo: frame_principal_fucnion_calc.py 1.0.0
+Archivo: frame_principal_fucnion_calc.py 1.0.1
 Descripción: archivo que contiene la construcción de la calculadora de matrices y vectores.
 """
 from customtkinter import *
 from Historial.historial_matriz.matriz_historial import Historial
-from GUI.gui_calc.calculadora import MetodosRaicesFrame
+from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import MetodosRaicesFrame
+from GUI.gui_calc_raices.submenu.funciones_raices import FuncionesRaicesFrame
 
 
 class CalculadoraFuncionApp(CTkFrame):
@@ -87,9 +88,9 @@ class CalculadoraFuncionApp(CTkFrame):
             widget.destroy()
 
         if opcion == 'General':
-            frame = CTkFrame(self.frame_contenido) #todo: add the calc frame here
+            frame = CTkFrame(self.frame_contenido) #todo: add the calculadoras frame here
             frame.pack(fill="both", expand=True)
-            frame_calculadora = MetodosRaicesFrame(frame)
+            frame_calculadora = FuncionesRaicesFrame(frame)
             frame_calculadora.pack(fill="both", expand=True)
         # elif opcion == 'matrices':
         #     frame = CalculadoraMatricesFrame(self.frame_contenido, self.historial)
@@ -106,62 +107,26 @@ class CalculadoraFuncionApp(CTkFrame):
         self.regresar_callback()
 
 
+# Configuración inicial de la ventana principal
+class MainApp(CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("Calculadora de Matrices y Vectores")
+        self.geometry("800x600")
 
-class PantallaInicio(CTk):
-    """Pantalla de inicio para seleccionar entre diferentes calculadoras."""
+        # Función de callback para regresar al inicio (no hace nada en este ejemplo)
+        def regresar_callback():
+            print("Regresando a la pantalla de inicio...")
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.geometry("1200x800")
-        self.title("Pantalla de Inicio - Calculadoras")
-
-        # Frame principal para contener los botones de selección
-        self.frame_seleccion = CTkFrame(self)
-        self.frame_seleccion.pack(fill="both", expand=True)
-
-        # Botón para abrir la Calculadora de Matrices y Vectores
-        self.btn_calculadora_matrices = CTkButton(
-            self.frame_seleccion, text="Calculadora de Matrices/Vectores",
-            command=self.mostrar_calculadora_matrices
-        )
-        self.btn_calculadora_matrices.pack(pady=20)
-
-        # Botón para abrir la Calculadora en desarrollo
-        self.btn_calculadora_otra = CTkButton(
-            self.frame_seleccion, text="Otra Calculadora (en desarrollo)",
-            command=self.mostrar_calculadora_otra
-        )
-        self.btn_calculadora_otra.pack(pady=20)
-
-        # Frame para la Calculadora de Matrices y Vectores
-        self.calculadora_matrices_frame = CalculadoraFuncionApp(self, self.mostrar_inicio)
-
-        # Frame de la otra calculadora (en proceso de desarrollo)
-        self.calculadora_otra_frame = CTkFrame(self)
-        label = CTkLabel(self.calculadora_otra_frame, text="Calculadora en desarrollo")
-        label.pack(pady=10)
-
-    def mostrar_calculadora_matrices(self):
-        """Muestra la calculadora de matrices y oculta la pantalla de selección."""
-        self.frame_seleccion.pack_forget()
-        self.calculadora_otra_frame.pack_forget()
-        self.calculadora_matrices_frame.pack(fill="both", expand=True)
-
-    def mostrar_calculadora_otra(self):
-        """Muestra la calculadora en desarrollo y oculta la pantalla de selección."""
-        self.frame_seleccion.pack_forget()
-        self.calculadora_matrices_frame.pack_forget()
-        self.calculadora_otra_frame.pack(fill="both", expand=True)
-
-    def mostrar_inicio(self):
-        """Muestra la pantalla de inicio."""
-        self.calculadora_matrices_frame.pack_forget()
-        self.calculadora_otra_frame.pack_forget()
-        self.frame_seleccion.pack(fill="both", expand=True)
+        # Inicializa la frame de CalculadoraFuncionApp
+        self.calculadora_frame = CalculadoraFuncionApp(self, regresar_callback)
+        self.calculadora_frame.pack(fill="both", expand=True)
 
 
-# Configuración y ejecución de la pantalla de inicio
+# Ejecución de la aplicación
 if __name__ == "__main__":
-    app = PantallaInicio()
-    set_default_color_theme("green")
+    set_appearance_mode("dark")
+    set_default_color_theme("blue")
+    app = MainApp()
     app.mainloop()
+
