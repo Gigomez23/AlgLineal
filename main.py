@@ -16,7 +16,7 @@ if __name__ == "__main__":
     app = PantallaInicio()  # Crea una instancia de la clase PantallaInicio
 
     # Configura el ícono de la ventana usando el logo de Calinu
-    app.iconbitmap("GUI/archivos_adicionales/calinu_logo.png")  # Cambia la ruta si es necesario
+    app.iconbitmap("GUI/archivos_adicionales/calinu_logo.ico")  # Cambia la ruta si es necesario
 
     app.mainloop()  # Ejecuta la aplicación
 

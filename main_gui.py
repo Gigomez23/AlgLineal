@@ -14,7 +14,7 @@ class PantallaInicio(CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("1200x800")
-        self.title("Pantalla de Inicio - Calculadoras")
+        self.title("Calinu")
         self.configure(bg="#2b2b2b")
 
         # Frame principal para contener los elementos
