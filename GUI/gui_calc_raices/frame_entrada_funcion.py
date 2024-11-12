@@ -1,3 +1,7 @@
+"""
+Archivo: frame_entrada_funcion.py 1.2.2
+Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
+"""
 import customtkinter as ctk
 from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, Eq, solve
 import matplotlib.pyplot as plt
