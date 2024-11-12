@@ -1,7 +1,8 @@
 import customtkinter as ctk
-from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E
+from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, Eq, solve
 import matplotlib.pyplot as plt
 import numpy as np
+from CTkMessagebox import CTkMessagebox
 
 # Definir símbolo para las expresiones
 x = symbols('x')
@@ -145,29 +146,49 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         return funcion_modificada
 
     def mostrar_grafica(self):
-        """Genera y muestra la gráfica de la función ingresada en modo oscuro."""
+        """Genera y muestra la gráfica de la función ingresada con centro en el x-intercept y expansión de 20 unidades."""
         try:
             # Configurar el tema oscuro para la gráfica
             plt.style.use('dark_background')  # Tema oscuro en Matplotlib
 
             # Analizar y evaluar la expresión
             parsed_expr = sympify(self.obtener_funcion(),
-                                  locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt,
-                                          "pi": pi, "E": E})
-            x_vals = np.linspace(-10, 10, 400)
-            y_vals = [parsed_expr.subs(x, val).evalf() for val in x_vals]
+                                  locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt, "pi": pi,
+                                          "e": E})
 
-            plt.figure("Gráfica de la función")
-            plt.plot(x_vals, y_vals, label=self.obtener_funcion(), color="cyan")  # Línea en color claro
-            plt.xlabel("x", color="white")
-            plt.ylabel("y", color="white")
-            plt.title("Gráfica de la función", color="white")
-            plt.legend(facecolor="black", edgecolor="white")
-            plt.grid(color="gray")
+            # Intentar encontrar las raíces reales
+            intercepts = solve(parsed_expr, x)
+
+            # Si no hay soluciones reales, solo graficar la función sin interceptos
+            if not intercepts:
+                intercepts = []  # No hay interceptos reales
+
+            # Usar un rango arbitrario si no hay interceptos reales
+            center = 0 if not intercepts else float(intercepts[0])
+
+            # Crear el rango de valores de x centrado en el intercepto o 0
+            x_vals = np.linspace(center - 20, center + 20, 400)
+
+            # Evaluar la función para obtener los valores de y
+            f = lambda x: float(parsed_expr.subs({'x': x})) if not isinstance(parsed_expr.subs({'x': x}), complex) else float(parsed_expr.subs({'x': x}).real)
+
+            y_vals = [f(x_val) for x_val in x_vals]
+
+            # Graficar la función
+            plt.plot(x_vals, y_vals, label=str(parsed_expr), color="cyan")
+            plt.axhline(0, color='white', linewidth=0.7)
+            plt.axvline(0, color='white', linewidth=0.7)
+            plt.title("Gráfica de la función", fontsize=16, color="white")
+            plt.xlabel("x", fontsize=12, color="white")
+            plt.ylabel("f(x)", fontsize=12, color="white")
+            plt.legend(loc='best', fontsize=12)
+            plt.grid(True, linestyle="--", linewidth=0.5)
             plt.show()
 
         except Exception as e:
             print(f"Error al mostrar la gráfica: {e}")
+            CTkMessagebox(title="Error", message=f"No se pudo graficar la función: {str(e)}", icon="warning",
+                          fade_in_duration=2)
 
 
 # Clase principal de la aplicación
