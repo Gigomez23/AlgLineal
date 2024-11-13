@@ -2,30 +2,29 @@
 Archivo: frame_entrada_funcion.py 1.2.2
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
+# todo: bug: al presionar botón se agrega símbolo de multiplicar
+# todo: convertir todo a español
+# todo: agregar botones faltantes
+# todo: mejorar gráfica
+# todo: que pueda encontrar interválos superior e inferiores
 import customtkinter as ctk
 from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, Eq, solve
 import matplotlib.pyplot as plt
 import numpy as np
 from CTkMessagebox import CTkMessagebox
-# todo: hacer que el textbox a editar este fuera del frame (que pueda gráficar)
-# todo: convertir todo a español
-# todo: mejorar gráfica
-# todo: que pueda encontrar interválos superior e inferiores
+
 # Definir símbolo para las expresiones
 x = symbols('x')
 
-
 class CalculadoraCientificaFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, parent_textbox):
         super().__init__(parent)
 
-        # Variable para el contenido del display
-        self.expression = ""
-        self.display_var = ctk.StringVar(value="Ingrese función en términos de x")
+        # Guardar la referencia al textbox del parent
+        self.parent_textbox = parent_textbox
 
-        # Cuadro de texto para ingresar la expresión
-        self.display_box = ctk.CTkEntry(self, textvariable=self.display_var, font=("Arial", 18), width=300)
-        self.display_box.pack(pady=10, padx=10)
+        # Variable para el contenido de la expresión
+        self.expression = ""
 
         # Frame para los botones de números y operaciones aritméticas
         self.frame_derecho = ctk.CTkFrame(self)
@@ -38,7 +37,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         # Diccionario de categorías y botones
         self.categories = {
             "Trigonometría": ['sin', 'cos', 'tan'],
-            "Funciones": ['ln', 'log', 'sqrt'],  # Incluye ln y log
+            "Funciones": ['ln', 'log', 'sqrt'],
             "(123)": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']
         }
 
@@ -104,13 +103,12 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
     def on_button_press(self, button_text):
         """Maneja los eventos de los botones y añade el texto al input actual."""
-        current_expression = self.display_box.get()
+        current_expression = self.parent_textbox.get("1.0", "end-1c")  # Obtener texto actual del textbox parent
 
         if button_text == 'C':
-            self.expression = current_expression[:-1]  # Eliminar último caracter
+            self.expression = current_expression[:-1]
         elif button_text == 'Borrar':
             self.expression = ""
-            self.display_box.delete(0, "end")
         elif button_text == '^2':
             self.expression = current_expression + '**2'
         elif button_text == '^3':
@@ -130,87 +128,72 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
             else:
                 self.expression = current_expression + button_text
 
-        # Actualizar el cuadro de entrada y mover el cursor al final
-        self.display_var.set(self.expression)
-        self.display_box.icursor(len(self.expression))  # Mover cursor al final
+        # Actualizar el textbox del parent
+        self.parent_textbox.delete("1.0", "end")
+        self.parent_textbox.insert("1.0", self.expression)
 
     def obtener_funcion(self):
-        """Devuelve la función ingresada en formato interpretable por Python."""
-        funcion = self.display_box.get()
-
-        # Reemplazar patrones como 2x o 2(x) con 2*x o 2*(x)
+        """Devuelve la función ingresada en el textbox del parent en formato interpretable por Python."""
+        funcion = self.parent_textbox.get("1.0", "end-1c")
         funcion_modificada = ""
         for i in range(len(funcion)):
             if i > 0 and (
-                    (funcion[i].isalpha() and funcion[i - 1].isdigit()) or  # Detecta casos como '2x'
-                    (funcion[i] == '(' and funcion[i - 1].isdigit()) or  # Detecta casos como '2('
-                    (funcion[i].isdigit() and funcion[i - 1] == ')')  # Detecta casos como ')2'
+                    (funcion[i].isalpha() and funcion[i - 1].isdigit()) or
+                    (funcion[i] == '(' and funcion[i - 1].isdigit()) or
+                    (funcion[i].isdigit() and funcion[i - 1] == ')')
             ):
-                funcion_modificada += '*' + funcion[i]  # Agrega '*' antes del carácter
+                funcion_modificada += '*' + funcion[i]
             else:
                 funcion_modificada += funcion[i]
 
         return funcion_modificada
 
     def mostrar_grafica(self):
-        """Genera y muestra la gráfica de la función ingresada con centro en el x-intercept y expansión de 20 unidades."""
+        """Genera y muestra la gráfica de la función ingresada en el textbox del parent."""
         try:
-            # Configurar el tema oscuro para la gráfica
-            plt.style.use('dark_background')  # Tema oscuro en Matplotlib
-
-            # Analizar y evaluar la expresión
-            parsed_expr = sympify(self.obtener_funcion(),
-                                  locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt, "pi": pi,
-                                          "e": E})
-
-            # Intentar encontrar las raíces reales
+            plt.style.use('dark_background')
+            parsed_expr = sympify(self.obtener_funcion(), locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt, "pi": pi, "e": E})
             intercepts = solve(parsed_expr, x)
-
-            # Si no hay soluciones reales, solo graficar la función sin interceptos
             if not intercepts:
-                intercepts = []  # No hay interceptos reales
-
-            # Usar un rango arbitrario si no hay interceptos reales
+                intercepts = []
             center = 0 if not intercepts else float(intercepts[0])
-
-            # Crear el rango de valores de x centrado en el intercepto o 0
             x_vals = np.linspace(center - 20, center + 20, 400)
-
-            # Evaluar la función para obtener los valores de y
             f = lambda x: float(parsed_expr.subs({'x': x})) if not isinstance(parsed_expr.subs({'x': x}), complex) else float(parsed_expr.subs({'x': x}).real)
-
             y_vals = [f(x_val) for x_val in x_vals]
-
-            # Graficar la función
             plt.plot(x_vals, y_vals, label=str(parsed_expr), color="cyan")
             plt.axhline(0, color='white', linewidth=0.7)
             plt.axvline(0, color='white', linewidth=0.7)
-            plt.title("Gráfica de la función", fontsize=16, color="white")
-            plt.xlabel("x", fontsize=12, color="white")
-            plt.ylabel("f(x)", fontsize=12, color="white")
-            plt.legend(loc='best', fontsize=12)
-            plt.grid(True, linestyle="--", linewidth=0.5)
+            plt.legend()
             plt.show()
 
         except Exception as e:
-            print(f"Error al mostrar la gráfica: {e}")
-            CTkMessagebox(title="Error", message=f"No se pudo graficar la función: {str(e)}", icon="warning",
-                          fade_in_duration=2)
+            CTkMessagebox(title="Error", message="Error al graficar: Verifique la función")
 
 
 # Clase principal de la aplicación
-class Aplicacion(ctk.CTk):
+class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Calculadora Científica")
-        self.geometry("600x400")
+        self.geometry("500x500")
 
-        # Crear la calculadora científica
-        self.calculadora_frame = CalculadoraCientificaFrame(self)
-        self.calculadora_frame.pack(fill="both", expand=True)
+        # Crear un textbox en el frame principal
+        self.textbox = ctk.CTkTextbox(self, width=400, height=50)
+        self.textbox.pack(pady=10)
+
+        # Crear una instancia de CalculadoraCientificaFrame y pasarle el textbox
+        self.calculadora_frame = CalculadoraCientificaFrame(self, self.textbox)
+        self.calculadora_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        self.boton_imprimir = ctk.CTkButton(self, text="Imprimir Función", command=self.imprimir_funcion)
+        self.boton_imprimir.pack(pady=10)
+
+    def imprimir_funcion(self):
+        imprimir = self.calculadora_frame.obtener_funcion()
+        print(imprimir)
 
 
-# Inicializar y ejecutar la aplicación
+# Iniciar la aplicación
 if __name__ == "__main__":
-    app = Aplicacion()
+    app = App()
     app.mainloop()
