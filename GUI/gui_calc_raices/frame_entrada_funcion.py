@@ -1,10 +1,9 @@
 """
-Archivo: frame_entrada_funcion.py 1.4.1
+Archivo: frame_entrada_funcion.py 1.4.2 incomplete
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
-# todo: agregar botones faltantes
+# todo: bug: problema al graficar funciones como x^2+3
 # todo: bug: al presionar botones se agregan al final
-# todo: bug: problema al graficar funciones complejas como x^2+3
 # todo: mejorar gráfica
 # todo: que pueda encontrar interválos superior e inferiores
 import customtkinter as ctk
@@ -142,8 +141,8 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
     def obtener_funcion(self):
         """Devuelve la función ingresada en el textbox del parent en formato interpretable por Python."""
         funcion = self.parent_textbox.get("1.0", "end-1c")
-        # Reemplazar nombres de funciones y corregir instancias como 3x a 3*x
-        funcion_modificada = funcion.replace('sen', 'sin').replace('√', 'sqrt')
+        # Reemplazar nombres de funciones y corregir instancias como 3x a 3*x, y ^ por **
+        funcion_modificada = funcion.replace('sen', 'sin').replace('√', 'sqrt').replace('^', '**')
 
         # Añadir un operador * entre un número y una variable (por ejemplo, convierte '3x' en '3*x')
         import re
@@ -171,12 +170,23 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
                 x_vals = np.linspace(centro - 20, centro + 20, 400)
 
             # Definir función lambda para evaluar la expresión en x
-            f = lambda x: float(expresion.subs({'x': x})) if not isinstance(expresion.subs({'x': x}), complex) else None
-            y_vals = [f(x_val) for x_val in x_vals]
+            f = lambdify(x, expresion, 'numpy')
 
-            # Filtrar valores None para evitar errores en el gráfico
-            x_vals = [x for x, y in zip(x_vals, y_vals) if y is not None]
-            y_vals = [y for y in y_vals if y is not None]
+            # Evaluar y manejar excepciones para valores no evaluables
+            y_vals = []
+            for x_val in x_vals:
+                try:
+                    y_val = f(x_val)
+                    # Filtrar complejos o valores extremos de y
+                    if np.iscomplex(y_val) or abs(y_val) > 1e6:
+                        y_vals.append(np.nan)
+                    else:
+                        y_vals.append(y_val)
+                except:
+                    y_vals.append(np.nan)  # Si hay error en la evaluación, asignar NaN
+
+            # Convertir y_vals a numpy array para graficar
+            y_vals = np.array(y_vals, dtype=np.float64)
 
             # Graficar la función
             plt.plot(x_vals, y_vals, label=str(expresion), color="cyan")
@@ -186,8 +196,8 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
             plt.show()
 
         except Exception as e:
-            CTkMessagebox(title="Error", message="Error al graficar: Verifique la función")
-
+            CTkMessagebox(title="Error", message="Error al graficar: Verifique la función", icon="warning",
+                          fade_in_duration=2)
 
 
 # Clase principal de la aplicación
