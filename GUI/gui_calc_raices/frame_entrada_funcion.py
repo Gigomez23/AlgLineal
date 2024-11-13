@@ -1,5 +1,5 @@
 """
-Archivo: frame_entrada_funcion.py 1.2.2
+Archivo: frame_entrada_funcion.py 1.3.1
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 # todo: bug: al presionar botón se agrega símbolo de multiplicar
@@ -15,6 +15,7 @@ from CTkMessagebox import CTkMessagebox
 
 # Definir símbolo para las expresiones
 x = symbols('x')
+
 
 class CalculadoraCientificaFrame(ctk.CTkFrame):
     def __init__(self, parent, parent_textbox):
@@ -110,11 +111,11 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         elif button_text == 'Borrar':
             self.expression = ""
         elif button_text == '^2':
-            self.expression = current_expression + '**2'
+            self.expression = current_expression + '^2'
         elif button_text == '^3':
-            self.expression = current_expression + '**3'
+            self.expression = current_expression + '^3'
         elif button_text == 'x^x':
-            self.expression = current_expression + '**'
+            self.expression = current_expression + '^'
         elif button_text in {'sin', 'cos', 'tan', 'ln', 'log', 'sqrt'}:
             self.expression = current_expression + f"{button_text}("
         elif button_text == 'pi':
@@ -122,11 +123,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         elif button_text == 'e':
             self.expression = current_expression + 'E'
         else:
-            # Aquí se agrega la lógica para detectar y manejar 2x como 2*x
-            if current_expression and (current_expression[-1].isdigit() or current_expression[-1] == ')'):
-                self.expression = current_expression + '*' + button_text
-            else:
-                self.expression = current_expression + button_text
+            self.expression = current_expression + button_text
 
         # Actualizar el textbox del parent
         self.parent_textbox.delete("1.0", "end")
