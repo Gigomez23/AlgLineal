@@ -1,5 +1,5 @@
 """
-Archivo: frame_entrada_funcion.py 1.4.2 incomplete
+Archivo: frame_entrada_funcion.py 1.4.2
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 # todo: bug: problema al graficar funciones como x^2+3
@@ -15,6 +15,7 @@ from CTkMessagebox import CTkMessagebox
 
 # Definir símbolo para las expresiones
 x = symbols('x')
+
 
 class CalculadoraCientificaFrame(ctk.CTkFrame):
     def __init__(self, parent, parent_textbox):
@@ -111,7 +112,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
 
     def al_presionar_boton(self, texto_boton):
         """Maneja los eventos de los botones y añade el texto al input actual."""
-        expresion_actual = self.parent_textbox.get("1.0", "end-1c")  # Obtener texto actual del textbox parent
+        expresion_actual = self.parent_textbox.get()  # Obtener texto actual del entry parent
 
         if texto_boton == 'C':
             self.expresion = expresion_actual[:-1]
@@ -135,12 +136,12 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
             self.expresion = expresion_actual + texto_boton
 
         # Actualizar el textbox del parent
-        self.parent_textbox.delete("1.0", "end")
-        self.parent_textbox.insert("1.0", self.expresion)
+        self.parent_textbox.delete(0, "end")
+        self.parent_textbox.insert(0, self.expresion)
 
     def obtener_funcion(self):
         """Devuelve la función ingresada en el textbox del parent en formato interpretable por Python."""
-        funcion = self.parent_textbox.get("1.0", "end-1c")
+        funcion = self.parent_textbox.get()
         # Reemplazar nombres de funciones y corregir instancias como 3x a 3*x, y ^ por **
         funcion_modificada = funcion.replace('sen', 'sin').replace('√', 'sqrt').replace('^', '**')
 
@@ -208,7 +209,7 @@ class App(ctk.CTk):
         self.geometry("500x500")
 
         # Crear un textbox en el frame principal
-        self.textbox = ctk.CTkTextbox(self, width=400, height=50)
+        self.textbox = ctk.CTkEntry(self, width=400)
         self.textbox.pack(pady=10)
 
         # Crear una instancia de CalculadoraCientificaFrame y pasarle el textbox
