@@ -6,7 +6,7 @@ import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
 from models.modelos_func.clase_newton_raphson import NewtonRaphson
-from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
+from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 
 
 class MetodoNewRaphFrame(ctk.CTkFrame):

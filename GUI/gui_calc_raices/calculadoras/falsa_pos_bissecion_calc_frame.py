@@ -5,7 +5,7 @@ Descripción: Este archivo contiene la interfáz gráfica de las entradas para l
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
-from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
+from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 
 
 class MetodosRaicesFrame(ctk.CTkFrame):
