@@ -1,12 +1,12 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.1.0
+Archivo: frame_newt_raph_der_calc.py 1.2.0
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
 from models.modelos_func.clase_newton_raphson import NewtonRaphson
-from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
+from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 
 
 class MetodoNewRaphFrame(ctk.CTkFrame):
@@ -19,28 +19,33 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         frame_contenedor = ctk.CTkFrame(self)
         frame_contenedor.pack(expand=True, fill='both', padx=20, pady=20)
 
-        # Frame derecho para entradas de Newton-Raphson
-        ctk.CTkLabel(frame_contenedor, text="Valor inicial (X0):").grid(row=0, column=0, padx=10, pady=10)
+        # Frame para entradas de Newton-Raphson
+        ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=0, column=0, padx=10, pady=10)
+        self.entry_de_funcion = ctk.CTkEntry(frame_contenedor, width=200)
+        self.entry_de_funcion.grid(row=0, column=1, padx=10, pady=10)
+
+
+        ctk.CTkLabel(frame_contenedor, text="Valor inicial (X0):").grid(row=1, column=0, padx=10, pady=10)
         self.entry_x0 = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_x0.grid(row=0, column=1, padx=10, pady=10)
+        self.entry_x0.grid(row=1, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Error de tolerancia:").grid(row=1, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Error de tolerancia:").grid(row=2, column=0, padx=10, pady=10)
         self.entry_error_tol = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_error_tol.grid(row=1, column=1, padx=10, pady=10)
+        self.entry_error_tol.grid(row=2, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones:").grid(row=2, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones:").grid(row=3, column=0, padx=10, pady=10)
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_max_iter.grid(row=2, column=1, padx=10, pady=10)
+        self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
 
         # Entrada de la función
         # ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=3, column=0, padx=10, pady=10)
-        self.entry_funcion = CalculadoraCientificaFrame(frame_contenedor)
-        self.entry_funcion.grid(row=3, column=1, padx=10, pady=10)
+        self.entry_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entry_de_funcion)
+        self.entry_funcion.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
         # Botón para calcular
         btn_calcular_newton = ctk.CTkButton(frame_contenedor, text="Calcular por Newton-Raphson",
                                             command=self.newton_raphson)
-        btn_calcular_newton.grid(row=4, column=0, columnspan=2, pady=20)
+        btn_calcular_newton.grid(row=5, column=0, columnspan=2, pady=20)
 
     def newton_raphson(self):
         try:

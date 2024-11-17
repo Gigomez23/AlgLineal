@@ -1,7 +1,12 @@
+"""
+Archivo: flasa_pos_bissecion_calc_frame.py 1.2.0
+Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
+"""
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
-from GUI.gui_calc_raices.frame_entrada_funcion import CalculadoraCientificaFrame
+from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
+
 
 class MetodosRaicesFrame(ctk.CTkFrame):
     def __init__(self, parent):
@@ -15,31 +20,36 @@ class MetodosRaicesFrame(ctk.CTkFrame):
         frame_contenedor.pack(expand=True, fill='both', padx=20, pady=20)
 
         # Etiquetas y entradas para la interfaz dentro del frame
-        ctk.CTkLabel(frame_contenedor, text="Intervalo inferior (Xi):").grid(row=0, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Funcion f(x):").grid(row=0, column=0, padx=10, pady=10)
+        self.entrada_de_funcion = ctk.CTkEntry(frame_contenedor, width=200)
+        self.entrada_de_funcion.grid(row=0, column=1, padx=10, pady=10)
+
+        ctk.CTkLabel(frame_contenedor, text="Intervalo inferior (Xi):").grid(row=1, column=0, padx=10, pady=10)
         self.entry_xi = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_xi.grid(row=0, column=1, padx=10, pady=10)
+        self.entry_xi.grid(row=1, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Intervalo superior (Xu):").grid(row=1, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Intervalo superior (Xu):").grid(row=2, column=0, padx=10, pady=10)
         self.entry_xu = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_xu.grid(row=1, column=1, padx=10, pady=10)
+        self.entry_xu.grid(row=2, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Error de tolerancia:").grid(row=2, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Error de tolerancia:").grid(row=3, column=0, padx=10, pady=10)
         self.entry_error_tol = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_error_tol.grid(row=2, column=1, padx=10, pady=10)
+        self.entry_error_tol.grid(row=3, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones (opcional):").grid(row=3, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones (opcional):").grid(row=4, column=0, padx=10, pady=10)
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
+        self.entry_max_iter.grid(row=4, column=1, padx=10, pady=10)
 
-        self.entrada_funcion = CalculadoraCientificaFrame(frame_contenedor)
-        self.entrada_funcion.grid(row=4, column=0, pady=20, columnspan=2)
+        # modulo de botones
+        self.entrada_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entrada_de_funcion)
+        self.entrada_funcion.grid(row=5, column=0, pady=20, columnspan=2)
 
         # Botones para calcular dentro del frame
         btn_calcular_falsa = ctk.CTkButton(frame_contenedor, text="Calcular por Falsa Posición", command=self.falsa_posicion)
-        btn_calcular_falsa.grid(row=5, column=0, pady=20)
+        btn_calcular_falsa.grid(row=6, column=0, pady=20)
 
         btn_calcular_biseccion = ctk.CTkButton(frame_contenedor, text="Calcular por Bisección", command=self.biseccion)
-        btn_calcular_biseccion.grid(row=5, column=1, pady=20)
+        btn_calcular_biseccion.grid(row=6, column=1, pady=20)
 
     def mostrar_resultados(self, iteraciones, xr, converged, metodo):
         resultados_ventana = ctk.CTkToplevel(self)
@@ -141,6 +151,7 @@ class MetodosRaicesFrame(ctk.CTkFrame):
 
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+
 
 class MainApp(ctk.CTk):
     def __init__(self):
