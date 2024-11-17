@@ -1,14 +1,14 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.2.2
+Archivo: frame_newt_raph_der_calc.py 1.2.3
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
-# todo: reemplaza messageboxes
 # todo: que las respuestas muestren las tolerancia de error.
 # todo: agregar gráfica
 # todo: mejorar formato de salida (frame)
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
+from CTkMessagebox import CTkMessagebox
 from models.modelos_func.clase_newton_raphson import NewtonRaphson
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 
@@ -75,7 +75,8 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
             # Mostrar resultado paso a paso
             self.mostrar_resultados(iteraciones, raiz, converged, self)
         except Exception as e:
-            messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+            CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning",
+                          fade_in_duration=2)
 
     def mostrar_resultados(self, iteraciones, xr, converged, frame):
         # todo: mostrar toleranica de error
