@@ -1,7 +1,11 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.2.0
+Archivo: frame_newt_raph_der_calc.py 1.2.1
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
+# todo: agregar botón de clear
+# todo: que las respuestas muestren las tolerancia de error.
+# todo: agregar gráfica
+# todo: mejorar formato de salida (frame)
 import sympy as sp
 import customtkinter as ctk
 from tkinter import messagebox, Text, END
@@ -33,12 +37,11 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         self.entry_error_tol = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_error_tol.grid(row=2, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones:").grid(row=3, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Máximo de iteraciones (opcional):").grid(row=3, column=0, padx=10, pady=10)
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
 
         # Entrada de la función
-        # ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=3, column=0, padx=10, pady=10)
         self.entry_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entry_de_funcion)
         self.entry_funcion.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
@@ -66,7 +69,7 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
             messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
 
     def mostrar_resultados(self, iteraciones, xr, converged, frame):
-        # todo: mostrat toleranica de error
+        # todo: mostrar toleranica de error
         resultados_ventana = ctk.CTkToplevel(frame)
         resultados_ventana.title("Resultados - Método de Newton-Raphson")
 
