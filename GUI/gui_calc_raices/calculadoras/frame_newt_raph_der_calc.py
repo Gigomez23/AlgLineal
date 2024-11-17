@@ -1,8 +1,8 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.2.3
+Archivo: frame_newt_raph_der_calc.py 1.2.4
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
-# todo: que las respuestas muestren las tolerancia de error.
+# todo: agregar hint para superindice
 # todo: agregar gráfica
 # todo: mejorar formato de salida (frame)
 import sympy as sp
@@ -79,16 +79,17 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
                           fade_in_duration=2)
 
     def mostrar_resultados(self, iteraciones, xr, converged, frame):
-        # todo: mostrar toleranica de error
         resultados_ventana = ctk.CTkToplevel(frame)
         resultados_ventana.title("Resultados - Método de Newton-Raphson")
 
         texto_resultados = Text(resultados_ventana, wrap='none', font=('Courier', 10))
+        # Agregar encabezado con Error de tolerancia
         texto_resultados.insert(END,
                                 f"{'Iteración':<12}{'Xi':<12}{'f(Xi)':<12}{'f\'(Xi)':<12}{'Xi+1':<12}{'Error':<12}\n")
         texto_resultados.insert(END, "-" * 70 + "\n")
 
         for iteracion in iteraciones:
+            # Mostrar datos de cada iteración, incluido el error de tolerancia
             texto_resultados.insert(
                 END,
                 f"{iteracion[0]:<12}{iteracion[1]:<12.5f}{iteracion[2]:<12.5f}{iteracion[3]:<12.5f}{iteracion[4]:<12.5f}{iteracion[5]:<12.5f}\n"
@@ -99,6 +100,9 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
             texto_resultados.insert(END, f"\nEl método converge en {len(iteraciones)} iteraciones.")
         else:
             texto_resultados.insert(END, "\nEl método no converge dentro del número máximo de iteraciones.")
+
+        texto_resultados.insert(END,
+                                f"\nTolerancia de error: {self.entry_error_tol.get()}")  # Mostrar el error de tolerancia ingresado.
 
         texto_resultados.config(state='disabled')
         texto_resultados.pack(expand=True, fill='both')
