@@ -1,5 +1,5 @@
 """
-Archivo: falsa_pos_bissecion_calc_frame.py 1.2.1
+Archivo: falsa_pos_bissecion_calc_frame.py 1.2.2
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 # todo: mejorar salida (incluir en mismo frame para que no sea un popup).
