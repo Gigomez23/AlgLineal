@@ -2,7 +2,6 @@
 Archivo: falsa_pos_bissecion_calc_frame.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
-# todo: agregar botón clear
 # todo: mejorar salida (incluir en mismo frame para que no sea un popup).
 # todo: agregar gráfica
 import sympy as sp
@@ -44,16 +43,29 @@ class MetodosRaicesFrame(ctk.CTkFrame):
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_max_iter.grid(row=4, column=1, padx=10, pady=10)
 
+        # botón para limpiar entradas
+        self.boton_limpiar = ctk.CTkButton(frame_contenedor, text="Limpiar", command=self.limpiar_entradas)
+        self.boton_limpiar.grid(row=5, column=1, pady=20)
+
         # modulo de botones
         self.entrada_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entrada_de_funcion)
-        self.entrada_funcion.grid(row=5, column=0, pady=20, columnspan=2)
+        self.entrada_funcion.grid(row=6, column=0, pady=20, columnspan=2)
 
         # Botones para calcular dentro del frame
-        btn_calcular_falsa = ctk.CTkButton(frame_contenedor, text="Calcular por Falsa Posición", command=self.falsa_posicion)
-        btn_calcular_falsa.grid(row=6, column=0, pady=20)
+        btn_calcular_falsa = ctk.CTkButton(frame_contenedor, text="Calcular por Falsa Posición",
+                                           command=self.falsa_posicion)
+        btn_calcular_falsa.grid(row=7, column=0, pady=20)
 
         btn_calcular_biseccion = ctk.CTkButton(frame_contenedor, text="Calcular por Bisección", command=self.biseccion)
-        btn_calcular_biseccion.grid(row=6, column=1, pady=20)
+        btn_calcular_biseccion.grid(row=7, column=1, pady=20)
+
+    def limpiar_entradas(self):
+        self.entrada_de_funcion.delete(0, END)
+        self.entry_xi.delete(0, END)
+        self.entry_xu.delete(0, END)
+        self.entry_max_iter.delete(0, END)
+        self.entry_error_tol.delete(0, END)
+
 
     def mostrar_resultados(self, iteraciones, xr, converged, metodo):
         resultados_ventana = ctk.CTkToplevel(self)
