@@ -1,10 +1,14 @@
 """
-Archivo: flasa_pos_bissecion_calc_frame.py 1.2.0
+Archivo: falsa_pos_bissecion_calc_frame.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
+# todo: agregar botón clear
+# todo: mejorar salida (incluir en mismo frame para que no sea un popup).
+# todo: agregar gráfica
 import sympy as sp
 import customtkinter as ctk
-from tkinter import messagebox, Text, END
+from tkinter import Text, END
+from CTkMessagebox import CTkMessagebox
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 
 
@@ -20,9 +24,9 @@ class MetodosRaicesFrame(ctk.CTkFrame):
         frame_contenedor.pack(expand=True, fill='both', padx=20, pady=20)
 
         # Etiquetas y entradas para la interfaz dentro del frame
-        ctk.CTkLabel(frame_contenedor, text="Funcion f(x):").grid(row=0, column=0, padx=10, pady=10)
+        ctk.CTkLabel(frame_contenedor, text="Funcion f(x):").grid(row=0, column=0, padx=10, pady=10, sticky='n')
         self.entrada_de_funcion = ctk.CTkEntry(frame_contenedor, width=200)
-        self.entrada_de_funcion.grid(row=0, column=1, padx=10, pady=10)
+        self.entrada_de_funcion.grid(row=0, column=1, padx=10, pady=10, sticky='n')
 
         ctk.CTkLabel(frame_contenedor, text="Intervalo inferior (Xi):").grid(row=1, column=0, padx=10, pady=10)
         self.entry_xi = ctk.CTkEntry(frame_contenedor, width=200)
@@ -110,7 +114,8 @@ class MetodosRaicesFrame(ctk.CTkFrame):
             self.mostrar_resultados(iteraciones, xr, converged, "Falsa Posición")
 
         except Exception as e:
-            messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+            CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning",
+                          fade_in_duration=2)
 
     def biseccion(self):
         try:
@@ -150,7 +155,8 @@ class MetodosRaicesFrame(ctk.CTkFrame):
             self.mostrar_resultados(iteraciones, xr, converged, "Bisección")
 
         except Exception as e:
-            messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
+            CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning",
+                          fade_in_duration=2)
 
 
 class MainApp(ctk.CTk):
