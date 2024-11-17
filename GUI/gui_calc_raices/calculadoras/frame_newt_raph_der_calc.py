@@ -1,8 +1,8 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.2.1
+Archivo: frame_newt_raph_der_calc.py 1.2.2
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
-# todo: agregar botón de clear
+# todo: reemplaza messageboxes
 # todo: que las respuestas muestren las tolerancia de error.
 # todo: agregar gráfica
 # todo: mejorar formato de salida (frame)
@@ -41,14 +41,23 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_max_iter.grid(row=3, column=1, padx=10, pady=10)
 
+        self.btn_limpiar = ctk.CTkButton(frame_contenedor, text="Limpiar", command=self.limpiar_entradas)
+        self.btn_limpiar.grid(row=4, column=1, padx=10, pady=10)
+
         # Entrada de la función
         self.entry_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entry_de_funcion)
-        self.entry_funcion.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.entry_funcion.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
 
         # Botón para calcular
         btn_calcular_newton = ctk.CTkButton(frame_contenedor, text="Calcular por Newton-Raphson",
                                             command=self.newton_raphson)
-        btn_calcular_newton.grid(row=5, column=0, columnspan=2, pady=20)
+        btn_calcular_newton.grid(row=6, column=0, columnspan=2, pady=20)
+
+    def limpiar_entradas(self):
+        self.entry_de_funcion.delete(0, END)
+        self.entry_x0.delete(0, END)
+        self.entry_error_tol.delete(0, END)
+        self.entry_max_iter.delete(0, END)
 
     def newton_raphson(self):
         try:
