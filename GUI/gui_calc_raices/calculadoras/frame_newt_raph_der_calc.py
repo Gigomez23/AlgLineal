@@ -1,12 +1,12 @@
 """
-Archivo: frame_newt_raph_der_calc.py 1.2.4
+Archivo: frame_newt_raph_der_calc.py 1.2.5
 Descripción: Archivo que contiene el frame como clase de la calculadora de metodo de newton raphston.
 """
-# todo: agregar hint para superindice
 # todo: agregar gráfica
 # todo: mejorar formato de salida (frame)
 import sympy as sp
 import customtkinter as ctk
+from CTkToolTip import *
 from tkinter import messagebox, Text, END
 from CTkMessagebox import CTkMessagebox
 from models.modelos_func.clase_newton_raphson import NewtonRaphson
@@ -27,6 +27,9 @@ class MetodoNewRaphFrame(ctk.CTkFrame):
         ctk.CTkLabel(frame_contenedor, text="Función f(x):").grid(row=0, column=0, padx=10, pady=10)
         self.entry_de_funcion = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_de_funcion.grid(row=0, column=1, padx=10, pady=10)
+        self.tooltip_entry_funcion = CTkToolTip(self.entry_de_funcion,
+                                                message="Presione shift para salir del modo exponencial. ",
+                                                follow=False)
 
 
         ctk.CTkLabel(frame_contenedor, text="Valor inicial (X0):").grid(row=1, column=0, padx=10, pady=10)
