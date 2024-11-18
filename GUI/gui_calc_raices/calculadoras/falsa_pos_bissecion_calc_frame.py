@@ -1,10 +1,11 @@
 """
-Archivo: falsa_pos_bissecion_calc_frame.py 1.2.2
+Archivo: falsa_pos_bissecion_calc_frame.py 1.2.3
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 # todo: mejorar salida (incluir en mismo frame para que no sea un popup).
 # todo: agregar gráfica
 import sympy as sp
+from CTkToolTip import *
 import customtkinter as ctk
 from tkinter import Text, END
 from CTkMessagebox import CTkMessagebox
@@ -26,6 +27,8 @@ class MetodosRaicesFrame(ctk.CTkFrame):
         ctk.CTkLabel(frame_contenedor, text="Funcion f(x):").grid(row=0, column=0, padx=10, pady=10, sticky='n')
         self.entrada_de_funcion = ctk.CTkEntry(frame_contenedor, width=200)
         self.entrada_de_funcion.grid(row=0, column=1, padx=10, pady=10, sticky='n')
+        self.tooltip_entry_funcion = CTkToolTip(self.entrada_de_funcion,
+                                            message="Presione shift para salir del modo exponencial. ",follow=False)
 
         ctk.CTkLabel(frame_contenedor, text="Intervalo inferior (Xi):").grid(row=1, column=0, padx=10, pady=10)
         self.entry_xi = ctk.CTkEntry(frame_contenedor, width=200)
