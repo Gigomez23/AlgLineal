@@ -1,5 +1,5 @@
 """
-Archivo: secante_calc_frame.py 1.2.0
+Archivo: secante_calc_frame.py 1.2.1
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para el método de la secante.
 """
 import sympy as sp
@@ -41,13 +41,24 @@ class SecanteFrame(ctk.CTkFrame):
         self.entry_max_iter = ctk.CTkEntry(frame_contenedor, width=200)
         self.entry_max_iter.grid(row=4, column=1, padx=10, pady=10)
 
+        self.btn_limpiar = ctk.CTkButton(frame_contenedor, text="Limpiar", command=self.limpiar_entradas)
+        self.btn_limpiar.grid(row=5, column=1, padx=10, pady=10)
+
         # Calculadora científica para entrada de funciones
         self.entrada_funcion = CalculadoraCientificaFrame(frame_contenedor, self.entrada_de_funcion)
-        self.entrada_funcion.grid(row=5, column=0, pady=20, columnspan=2)
+        self.entrada_funcion.grid(row=6, column=0, pady=20, columnspan=2)
 
         # Botón para calcular
-        btn_calcular_secante = ctk.CTkButton(frame_contenedor, text="Calcular por Secante", command=self.calcular_secante)
-        btn_calcular_secante.grid(row=6, column=0, pady=20, columnspan=2)
+        btn_calcular_secante = ctk.CTkButton(frame_contenedor, text="Calcular por Secante",
+                                             command=self.calcular_secante)
+        btn_calcular_secante.grid(row=7, column=0, pady=20, columnspan=2)
+
+    def limpiar_entradas(self):
+        self.entrada_de_funcion.delete(0, END)
+        self.entry_x1.delete(0, END)
+        self.entry_x0.delete(0, END)
+        self.entry_error_tol.delete(0, END)
+        self.entry_max_iter.delete(0, END)
 
     def calcular_secante(self):
         try:
