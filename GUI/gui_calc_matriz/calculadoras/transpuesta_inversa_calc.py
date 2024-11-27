@@ -72,12 +72,6 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Variables para los frames y tablas adicionales
-        # self.frame_matriz1 = None
-        # self.tabla_matriz2 = None
-        # self.frame_matriz2 = None
-        # self.tabla_matriz1 = None
-        # self.tabla_salida = None
         self.tablas_entradas = None
         self.tablas_salidas = None
 
