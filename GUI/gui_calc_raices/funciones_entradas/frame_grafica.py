@@ -1,70 +1,108 @@
-# grafica_frame.py
-# todo: implement this
+"""
+Archivo: frame_grafica.py 1.0.0
+Descripción: Este archivo contiene la interfáz gráfica de la grafica en un window.
+"""
+# todo: funciones complejas no se grafican, x^3, trig, exp.
+# todo: queda un subproceso lo cual no permite cerrar correctamente la App
+
 import customtkinter as ctk
-from sympy import symbols, sympify, sin, cos, tan, log, sqrt, pi, E, solve
-from sympy import lambdify
 import matplotlib.pyplot as plt
+from sympy import symbols, sin, cos, log, exp, sqrt
 import numpy as np
-from CTkMessagebox import CTkMessagebox
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import math
 
-x = symbols('x')  # Definir símbolo para la gráfica
 
+class GraficarFuncionFrame(ctk.CTkFrame):
+    def __init__(self, master, textbox):
+        super().__init__(master)
+        self.textbox = textbox
+        self.canvas_frame = ctk.CTkFrame(self)
+        self.canvas_frame.pack(pady=10, fill="both", expand=True)
 
-class GraficaFrame(ctk.CTkFrame):
-    def __init__(self, parent, parent_textbox):
-        super().__init__(parent)
-        self.parent_textbox = parent_textbox
+        # Etiqueta para mostrar los valores al pasar el mouse sobre la gráfica
+        self.valor_label = ctk.CTkLabel(self, text="Valor: (x, y)", font=("Arial", 14))
+        self.valor_label.pack(pady=10)
 
-        # Botón para mostrar la gráfica
-        self.boton_grafica = ctk.CTkButton(self, text="Mostrar gráfica", command=self.mostrar_grafica)
-        self.boton_grafica.pack(pady=10)
+        # Botón de graficar
+        self.boton_graficar = ctk.CTkButton(self, text="Graficar Función", command=self.graficar_funcion, width=200, height=40)
+        self.boton_graficar.pack(pady=10)
 
     def obtener_funcion(self):
-        """Devuelve la función ingresada en el textbox del parent en formato interpretable por Python."""
-        funcion = self.parent_textbox.get()
-        funcion_modificada = funcion.replace('sen', 'sin').replace('√', 'sqrt').replace('^', '**')
+        """Convierte la expresión ingresada en el textbox a una función entendible por Python."""
+        expresion = self.textbox.get()
 
-        import re
-        funcion_modificada = re.sub(r'(\d)(x)', r'\1*\2', funcion_modificada)
-        return funcion_modificada
+        # Reemplazar caracteres especiales con equivalentes válidos en Python
+        expresion = expresion.replace('²', '**2')
+        expresion = expresion.replace('³', '**3')
+        expresion = expresion.replace('π', 'math.pi')
+        expresion = expresion.replace('e', 'math.e')
+        expresion = expresion.replace('√', 'math.sqrt')
+        expresion = expresion.replace('ln', 'math.log')
+        expresion = expresion.replace('log', 'math.log10')
+        expresion = expresion.replace('abs', 'math.fabs')
+        expresion = expresion.replace('sin', 'math.sin')
+        expresion = expresion.replace('cos', 'math.cos')
+        expresion = expresion.replace('tan', 'math.tan')
+        expresion = expresion.replace('asin', 'math.asin')
+        expresion = expresion.replace('acos', 'math.acos')
+        expresion = expresion.replace('atan', 'math.atan')
+        expresion = expresion.replace('exp', 'math.exp')
 
-    def mostrar_grafica(self):
-        """Genera y muestra la gráfica de la función ingresada en el textbox del parent."""
+        def funcion(x):
+            return eval(expresion)
+
+        return funcion
+
+    def graficar_funcion(self):
+        funcion = self.obtener_funcion()
+
         try:
-            plt.style.use('dark_background')
-            expresion = sympify(self.obtener_funcion(),
-                                locals={"sin": sin, "cos": cos, "tan": tan, "ln": log, "log": log, "sqrt": sqrt,
-                                        "pi": pi, "e": E})
+            # Generar puntos para graficar
+            x_vals = np.linspace(-10, 10, 400)
+            y_vals = [funcion(x) for x in x_vals]
 
-            interceptos = solve(expresion, x)
-            centro = 0 if not interceptos else float(interceptos[0])
+            # Crear la figura y personalizar la apariencia con tema oscuro
+            fig, ax = plt.subplots(figsize=(8, 6), facecolor='#2e2e2e')  # Fondo oscuro para la figura
+            ax.plot(x_vals, y_vals, label="f(x)", color='#00bcd4', linewidth=2)  # Color moderno de la línea
+            ax.set_title("Gráfica de la Función", fontsize=16, fontweight='bold', color='white')
+            ax.set_xlabel("x", fontsize=14, color='white')
+            ax.set_ylabel("f(x)", fontsize=14, color='white')
 
-            if 'sqrt' in str(expresion):
-                x_vals = np.linspace(0, centro + 20, 400)
-            else:
-                x_vals = np.linspace(centro - 20, centro + 20, 400)
+            # Personalizar los ejes con color blanco
+            ax.tick_params(axis='x', colors='white', labelsize=12)
+            ax.tick_params(axis='y', colors='white', labelsize=12)
 
-            f = lambdify(x, expresion, 'numpy')
+            # Personalizar el fondo y la malla
+            ax.set_facecolor('#121212')  # Fondo de los ejes oscuro
+            ax.grid(True, linestyle='--', color='gray', alpha=0.5)
 
-            y_vals = []
-            for x_val in x_vals:
-                try:
-                    y_val = f(x_val)
-                    if np.iscomplex(y_val) or abs(y_val) > 1e6:
-                        y_vals.append(np.nan)
-                    else:
-                        y_vals.append(y_val)
-                except:
-                    y_vals.append(np.nan)
+            # Leyenda en blanco
+            ax.legend(frameon=False, loc='best', fontsize=12, labelcolor='white')
 
-            y_vals = np.array(y_vals, dtype=np.float64)
+            # Función para mostrar el valor en el label cuando el cursor pasa sobre la gráfica
+            def on_move(event):
+                """Actualizar el valor del punto bajo el cursor."""
+                if event.inaxes != ax:
+                    return
 
-            plt.plot(x_vals, y_vals, label=str(expresion), color="cyan")
-            plt.axhline(0, color='white', linewidth=0.7)
-            plt.axvline(0, color='white', linewidth=0.7)
-            plt.legend()
-            plt.show()
+                # Obtener la posición del cursor en el gráfico
+                x_pos = event.xdata
+                y_pos = funcion(x_pos)
+
+                # Actualizar el texto del valor en la etiqueta
+                self.valor_label.configure(text=f"Valor: (x: {x_pos:.2f}, y: {y_pos:.2f})")
+
+            # Conectar el evento de movimiento del mouse
+            fig.canvas.mpl_connect('motion_notify_event', on_move)
+
+            # Mostrar la gráfica en el canvas
+            for widget in self.canvas_frame.winfo_children():
+                widget.destroy()  # Limpiar el canvas previo
+
+            canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack(fill="both", expand=True)
 
         except Exception as e:
-            CTkMessagebox(title="Error", message="Error al graficar: Verifique la función", icon="warning",
-                          fade_in_duration=2)
+            print("Error al graficar la función:", e)

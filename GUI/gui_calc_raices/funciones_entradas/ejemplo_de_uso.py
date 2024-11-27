@@ -1,3 +1,6 @@
+"""
+Ejemplo de uso.
+"""
 import customtkinter as ctk
 from GUI.gui_calc_raices.funciones_entradas.frame_grafica import *
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import *
@@ -21,8 +24,9 @@ class AppPrincipal(ctk.CTk):
         self.boton_imprimir_funcion = ctk.CTkButton(self, text="Imprimir Función", command=self.imprimir_funcion)
         self.boton_imprimir_funcion.pack(pady=10)
 
-        self.boton_graficar = GraficaFrame(self, self.textbox)
-        self.boton_graficar.pack(pady=10)
+        # Frame de la gráfica
+        self.graficar_frame = GraficarFuncionFrame(self, self.textbox)
+        self.graficar_frame.pack(pady=10, fill="both", expand=True)
 
     def imprimir_funcion(self):
         """Obtiene e imprime la función ingresada en el textbox usando obtener_funcion."""

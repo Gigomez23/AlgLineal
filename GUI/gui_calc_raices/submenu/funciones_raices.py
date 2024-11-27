@@ -5,6 +5,7 @@ Descripción: archivo que contiene el frame general para las calculadoras.
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
 from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import MetodosRaicesFrame
 from GUI.gui_calc_raices.calculadoras.frame_newt_raph_der_calc import MetodoNewRaphFrame
+from GUI.gui_calc_raices.calculadoras.secante_frame import SecanteFrame
 
 
 class FuncionesRaicesFrame(CTkFrame):
@@ -27,7 +28,7 @@ class FuncionesRaicesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Método Falsa Posicion/Bisseción', 'Método de Newton Raphson'],
+            values=['Método Falsa Posicion/Bisseción', 'Método de Newton Raphson', 'Método de Secante'],
             anchor="w",
             width=250,
             hover=True,
@@ -46,7 +47,8 @@ class FuncionesRaicesFrame(CTkFrame):
         # Inicializa los frames diferentes para las opciones
         self.frames = {
             'Método Falsa Posicion/Bisseción': MetodosRaicesFrame(self.frame_cambiable),
-            'Método de Newton Raphson': MetodoNewRaphFrame(self.frame_cambiable)
+            'Método de Newton Raphson': MetodoNewRaphFrame(self.frame_cambiable),
+            'Método de Secante': SecanteFrame(self.frame_cambiable)
         }
 
         # Muestra el frame por defecto

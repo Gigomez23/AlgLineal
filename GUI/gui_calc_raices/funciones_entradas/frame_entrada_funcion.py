@@ -1,5 +1,5 @@
 """
-Archivo: frame_entrada_funcion.py 1.7.0
+Archivo: frame_entrada_funcion.py 1.7.1
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 import re
@@ -23,7 +23,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         self.frame_izquierdo.pack(side="left", fill="y", expand=True, padx=5, pady=5)
 
         self.categorias = {
-            "Trigonometría": ['sen', 'cos', 'tan'],
+            "Trigonometría": ['sen', 'cos', 'tan', 'sec'],
             "Funciones": ['ln', 'log', '√'],
             "Exponenciales": ['^2', '^3', 'x^x', '(', ')', 'pi', 'e']
         }
@@ -162,7 +162,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
             # Activar modo superíndice y esperar el valor ingresado
             self.modo_superindice = True
             self.expresion = expresion_actual  # No agrega ningún símbolo visible
-        elif texto_boton in {'sen', 'cos', 'tan', 'ln', 'log'}:
+        elif texto_boton in {'sen', 'cos', 'tan', 'ln', 'log', 'sec'}:
             self.expresion = expresion_actual[:int(caret_pos)] + f"{texto_boton}(" + expresion_actual[int(caret_pos):]
         elif texto_boton == 'pi':
             self.expresion = expresion_actual[:int(caret_pos)] + 'pi' + expresion_actual[int(caret_pos):]
@@ -189,7 +189,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         nueva_pos = int(caret_pos) + len(texto_boton)
         if texto_boton in {'^2', '^3', '²', '³', '√'}:  # Ajusta para caracteres especiales
             nueva_pos -= len(texto_boton) - 1
-        self.parent_textbox.icursor(nueva_pos)
+        self.parent_textbox.icursor(nueva_pos + 1)
 
     def procesar_shift(self, event):
         """Desactiva el modo superíndice al presionar Shift."""
@@ -208,16 +208,20 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         # Reemplazar nombres de funciones y corregir instancias como 3x a 3*x
         funcion_modificada = funcion_modificada.replace('sen', 'sin').replace('√', 'sqrt').replace('^', '**')
 
+        # Reemplazar sec por 1/cos
+        funcion_modificada = funcion_modificada.replace('sec', '1/cos')
+
         # Reemplazar el símbolo ÷ por /
         funcion_modificada = funcion_modificada.replace('÷', '/')
 
-        # Añadir un operador * entre un número y una variable (por ejemplo, convierte '3x' en '3*x')
-        funcion_modificada = re.sub(r'(\d)(x)', r'\1*\2', funcion_modificada)
+        # Añadir un operador * entre número y variable (por ejemplo, 3x -> 3*x)
+        funcion_modificada = re.sub(r'(\d)([a-zA-Z])', r'\1*\2', funcion_modificada)
 
+        # Devolver la función modificada
         return funcion_modificada
 
 
-# Clase principal de la aplicación
+# Ejemplo de uso:
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
