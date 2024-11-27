@@ -1,6 +1,7 @@
 """
-Archivo: operaciones_calc.py 2.3.1
+Archivo: operaciones_calc.py 2.3.9
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
+nota: se elimina uso de esclava por quedar pendiente.
 """
 from ctkcomponents import *
 from CTkToolTip import *
@@ -34,64 +35,73 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Componentes del frame de entrada
-        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la primera matriz:")
-        self.label_matriz1.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz1 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la primera matriz:", font=("Arial", 17))
+        self.label_matriz1.pack(padx=10, pady=10)
 
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.entrada_frame, text="Importar",
-                                                        command=self.abrir_historial1)
-        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+                                                        command=self.abrir_historial1, font=("Georgia", 15))
+        self.btn_importar_hist_entrada1.pack(padx=10, pady=10)
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
                                             message="Importar una matriz del historial")
 
         # frame para entrada
         self.text_matriz1 = FrameEntradaMatriz(self.entrada_frame)
-        self.text_matriz1.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz1.pack(padx=10, pady=10)
 
-        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la segunda matriz:")
-        self.label_matriz2.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz2 = ctk.CTkLabel(self.entrada_frame, text="Ingrese la segunda matriz:", font=("Arial", 17))
+        self.label_matriz2.pack(padx=10, pady=10)
 
         self.btn_importar_hist_entrada2 = ctk.CTkButton(self.entrada_frame, text="Importar",
-                                                        command=self.abrir_historial2)
-        self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+                                                        command=self.abrir_historial2, font=("Georgia", 15))
+        self.btn_importar_hist_entrada2.pack(padx=10, pady=10)
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar una matriz del historial")
 
-        self.text_matriz2 = FrameEsclavoMatriz(self.entrada_frame, self.text_matriz1)
-        self.text_matriz2.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz2 = FrameEntradaMatriz(self.entrada_frame)
+        self.text_matriz2.pack(padx=10, pady=10)
 
         # Radio buttons para seleccionar operación
-        self.radio_suma = ctk.CTkRadioButton(self.entrada_frame, text="Sumar", variable=self.operacion_seleccionada,
+
+        # frame para radio buttons
+        self.btn_radio_frame = ctk.CTkFrame(self.entrada_frame)
+        self.btn_radio_frame.pack(padx=10, pady=10)
+
+        # botónes radio
+        self.radio_suma = ctk.CTkRadioButton(self.btn_radio_frame, text="Sumar", variable=self.operacion_seleccionada,
                                              value="sumar")
-        self.radio_suma.grid(row=7, column=0, padx=10, pady=10)
+        self.radio_suma.grid(row=0, column=0, padx=10, pady=10)
 
-        self.radio_resta = ctk.CTkRadioButton(self.entrada_frame, text="Restar", variable=self.operacion_seleccionada,
+        self.radio_resta = ctk.CTkRadioButton(self.btn_radio_frame, text="Restar", variable=self.operacion_seleccionada,
                                               value="restar")
-        self.radio_resta.grid(row=7, column=1, padx=10, pady=10)
+        self.radio_resta.grid(row=0, column=1, padx=10, pady=10)
 
-        self.radio_multiplicar = ctk.CTkRadioButton(self.entrada_frame, text="Multiplicar",
+        self.radio_multiplicar = ctk.CTkRadioButton(self.btn_radio_frame, text="Multiplicar",
                                                     variable=self.operacion_seleccionada, value="multiplicar")
-        self.radio_multiplicar.grid(row=8, column=0, columnspan=2, padx=10, pady=10)
+        self.radio_multiplicar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
         # Botón para calcular
-        self.btn_calcular = ctk.CTkButton(self.entrada_frame, text="Calcular", command=self.calcular_operacion)
-        self.btn_calcular.grid(row=9, column=0, columnspan=2, padx=10, pady=10)
+        self.btn_calcular = ctk.CTkButton(self.entrada_frame, text="Calcular", command=self.calcular_operacion,
+                                          font=("Georgia", 15))
+        self.btn_calcular.pack(padx=10, pady=10)
 
         # Frame para resultados
-        self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Resultado y Procedimiento:")
-        self.label_salida.grid(row=0, column=0, padx=10, pady=10)
+        self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Resultado y Procedimiento:", font=("Arial", 17))
+        self.label_salida.pack(padx=10, pady=10)
 
         self.text_salida_frame = ctk.CTkFrame(self.resultado_frame)
-        self.text_salida_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.text_salida_frame.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=400, height=150, wrap="none")
+        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=450, height=200, wrap="none",
+                                          font=("Arial", 15))
         self.text_salida.pack(side="left", fill="both", expand=True)
 
         self.scrollbar = ctk.CTkScrollbar(self.text_salida_frame, command=self.text_salida.yview)
         self.scrollbar.pack(side="right", fill="y")
         self.text_salida.configure(yscrollcommand=self.scrollbar.set)
 
-        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
-        self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10)
+        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas,
+                                         font=("Georgia", 15))
+        self.btn_limpiar.pack(padx=10, pady=10)
 
         # Frames para las tablas vacías
         self.tabla_frame1 = None
