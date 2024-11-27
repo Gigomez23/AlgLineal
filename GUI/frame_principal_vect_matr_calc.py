@@ -59,7 +59,7 @@ class CalculadoraMatricesApp(CTkFrame):
             self.frame_principal, text="☰", width=32, height=20,
             command=self.mostrar_menu
         )
-        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)
+        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=5)
 
         # Inicializa la primera calculadora directamente
         self.mostrar_contenido('matrices')
