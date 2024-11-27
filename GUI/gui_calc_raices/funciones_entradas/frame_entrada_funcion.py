@@ -221,7 +221,7 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         return funcion_modificada
 
 
-# Clase principal de la aplicación
+# Ejemplo de uso:
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
