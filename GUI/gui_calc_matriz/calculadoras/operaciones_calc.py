@@ -1,5 +1,5 @@
 """
-Archivo: operaciones_calc.py 2.3.9
+Archivo: operaciones_calc.py 2.3.10
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de operaciones de matrices.
 nota: se elimina uso de esclava por quedar pendiente.
 """
@@ -68,15 +68,16 @@ class OperacionesAritmeticasMatrizFrame(ctk.CTkFrame):
 
         # botónes radio
         self.radio_suma = ctk.CTkRadioButton(self.btn_radio_frame, text="Sumar", variable=self.operacion_seleccionada,
-                                             value="sumar")
+                                             value="sumar", font=("Arial", 15))
         self.radio_suma.grid(row=0, column=0, padx=10, pady=10)
 
         self.radio_resta = ctk.CTkRadioButton(self.btn_radio_frame, text="Restar", variable=self.operacion_seleccionada,
-                                              value="restar")
+                                              value="restar", font=("Arial", 15))
         self.radio_resta.grid(row=0, column=1, padx=10, pady=10)
 
         self.radio_multiplicar = ctk.CTkRadioButton(self.btn_radio_frame, text="Multiplicar",
-                                                    variable=self.operacion_seleccionada, value="multiplicar")
+                                                    variable=self.operacion_seleccionada, value="multiplicar",
+                                                    font=("Arial", 15))
         self.radio_multiplicar.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
         # Botón para calcular
