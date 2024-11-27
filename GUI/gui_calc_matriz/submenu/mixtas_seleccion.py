@@ -1,3 +1,7 @@
+"""
+Archivo: mixtas_seleccion.py 1.5.3
+Descripción: Este archivo contiene el frame para operaciones mixtas.
+"""
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
 from GUI.gui_calc_matriz.calculadoras.ecuacion_matricial_matrizxvector_calc import MultiplicacionMatricesFrame
 from GUI.gui_calc_matriz.calculadoras.Au_Ax_calc import CalculadoraDeMatrizxVectoresFrame
@@ -21,9 +25,9 @@ class CalculadoraMixtaFrame(CTkFrame):
         self.label_seleccion = CTkLabel(
             master=self.frame_encabezado,
             text="Seleccione el tipo de calculadora:",
-            font=CTkFont(family="Consolas", size=14)
+            font=CTkFont(family="Consolas", size=17)
         )
-        self.label_seleccion.pack(side="left", padx=(0, 10), anchor="w")
+        self.label_seleccion.pack(side="left", padx=(10, 10), anchor="w")
 
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
@@ -32,9 +36,10 @@ class CalculadoraMixtaFrame(CTkFrame):
             anchor="w",
             width=250,
             hover=True,
-            command=self.cambiar_frame  # Cambia al método que selecciona el frame
+            command=self.cambiar_frame,  # Cambia al método que selecciona el frame
+            font=CTkFont(family="Georgia", size=15)
         )
-        self.btn_menu_tipo_calculadora.pack(side="right", padx=(0, 10))
+        self.btn_menu_tipo_calculadora.pack(side="right", padx=(10, 10), pady=10)
 
         # Frame principal de la calculadora (scrollable)
         self.frame_calculadora = CTkScrollableFrame(master=self)  # Cambiado a CTkScrollableFrame
