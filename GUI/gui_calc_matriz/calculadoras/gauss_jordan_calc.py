@@ -1,5 +1,5 @@
 """
-Archivo: jauss_jorda_calc.py 1.8.2
+Archivo: jauss_jorda_calc.py 1.8.3
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
@@ -60,7 +60,8 @@ class GaussJordanFrame(ctk.CTkFrame):
         self.text_salida_frame = ctk.CTkFrame(self.resultado_frame)
         self.text_salida_frame.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=400, height=150, wrap="none")
+        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=450, height=200, wrap="none",
+                                          font=("Arial", 15))
         self.text_salida.pack(side="left", fill="both", expand=True)
 
         self.scrollbar = ctk.CTkScrollbar(self.text_salida_frame, command=self.text_salida.yview)
