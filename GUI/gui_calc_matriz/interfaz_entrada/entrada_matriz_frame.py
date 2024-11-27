@@ -36,13 +36,13 @@ class FrameEntradaMatriz(ctk.CTkFrame):
         self.boton_establecer_matriz = ctk.CTkButton(self.frame_dimensiones, text="Establecer Matriz",
                                                      command=self.establecer_matriz, font=("Georgia", 15))
         self.boton_establecer_matriz.grid(row=0, column=4, padx=10, pady=5)
-        self.tooltip_importar = CTkToolTip(self.boton_establecer_matriz,
+        self.tooltip_establecer = CTkToolTip(self.boton_establecer_matriz,
                                            message="Establecer las dimensiones de la matriz. ")
 
         # Frame inferior para la matriz
         self.frame_matriz = ctk.CTkFrame(self)
         self.frame_matriz.pack(pady=20)
-        self.tooltip_importar = CTkToolTip(self.frame_matriz,
+        self.tooltip_informar = CTkToolTip(self.frame_matriz,
                                            message="Puede presionar Espacio para saltar al siguiente cuadro.")
 
         menu_popup = CTkFloatingWindow(self.frame_matriz)  # menu popup
