@@ -1,5 +1,5 @@
 """
-Archivo: LU_calc_frame.py 1.1.1
+Archivo: LU_calc_frame.py 1.1.7
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan para resolver por Ax=b por factorización LU.
 """
@@ -12,6 +12,7 @@ from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_vector_frame import *
 from funciones_adicionales.convertir_formato_lista import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame
+
 
 class LUFactorizationFrame(ctk.CTkFrame):
     def __init__(self, parent, historial, *args, **kwargs):
@@ -29,40 +30,44 @@ class LUFactorizationFrame(ctk.CTkFrame):
         self.output_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         # Widgets en el frame izquierdo (entrada)
-        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Ingrese la matriz A:")
-        self.label_matrix.grid(row=0, column=0, padx=5, pady=5)
+        self.label_matrix = ctk.CTkLabel(self.input_frame, text="Ingrese la matriz A:", font=("Arial", 17))
+        self.label_matrix.pack(padx=5, pady=5)
 
-        self.btn_importar_hist = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial)
-        self.btn_importar_hist.grid(row=1, column=0, padx=10, pady=10)
+        self.btn_importar_hist = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial,
+                                               font=("Georgia", 15))
+        self.btn_importar_hist.pack(padx=10, pady=10)
         self.tooltip_importar = CTkToolTip(self.btn_importar_hist,
                                            message="Importar una matriz del historial")
 
         self.matriz_entrada = FrameEntradaMatriz(self.input_frame)
-        self.matriz_entrada.grid(row=2, column=0, padx=5, pady=5)
+        self.matriz_entrada.pack(padx=5, pady=5)
 
-        self.label_vector = ctk.CTkLabel(self.input_frame, text="Ingrese el vector b:")
-        self.label_vector.grid(row=3, column=0, padx=5, pady=5)
+        self.label_vector = ctk.CTkLabel(self.input_frame, text="Ingrese el vector b:", font=("Arial", 17))
+        self.label_vector.pack(padx=5, pady=5)
 
-        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2)
-        self.btn_importar_hist2.grid(row=4, column=0, padx=10, pady=10)
+        self.btn_importar_hist2 = ctk.CTkButton(self.input_frame, text="Importar", command=self.abrir_historial2,
+                                                font=("Georgia", 15))
+        self.btn_importar_hist2.pack(padx=10, pady=10)
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist2,
                                             message="Importar un vector del historial")
 
         self.vector_entrada = FrameEntradaVector(self.input_frame)
-        self.vector_entrada.grid(row=5, column=0, padx=5, pady=5)
+        self.vector_entrada.pack(padx=5, pady=5)
 
-        self.calculate_button = ctk.CTkButton(self.input_frame, text="Calcular", command=self.calculate_lu)
-        self.calculate_button.grid(row=6, column=0, padx=5, pady=10)
+        self.calculate_button = ctk.CTkButton(self.input_frame, text="Calcular", command=self.calculate_lu,
+                                              font=("Georgia", 15))
+        self.calculate_button.pack(padx=5, pady=10)
 
         # Widgets en el frame derecho (salida)
-        self.output_label = ctk.CTkLabel(self.output_frame, text="Resultado")
-        self.output_label.grid(row=0, column=0, padx=5, pady=5)
+        self.output_label = ctk.CTkLabel(self.output_frame, text="Resultado",  font=("Arial", 17))
+        self.output_label.pack(padx=5, pady=5)
 
-        self.textbox_output = ctk.CTkTextbox(self.output_frame, width=300, height=250)
-        self.textbox_output.grid(row=1, column=0, padx=5, pady=5)
+        self.textbox_output = ctk.CTkTextbox(self.output_frame, width=450, height=200)
+        self.textbox_output.pack(padx=5, pady=5)
 
-        self.clear_button = ctk.CTkButton(self.output_frame, text="Limpiar", command=self.limpiar_entradas)
-        self.clear_button.grid(row=2, column=0, padx=5, pady=10)
+        self.clear_button = ctk.CTkButton(self.output_frame, text="Limpiar", command=self.limpiar_entradas,
+                                          font=("Georgia", 15))
+        self.clear_button.pack(padx=5, pady=10)
 
         # Variables para los frames y tablas adicionales
         self.frame_tablas_izq = None
