@@ -1,5 +1,5 @@
 """
-Archivo: ecuacion_matricial_matrizxvector_calc.py 2.5.5
+Archivo: ecuacion_matricial_matrizxvector_calc.py 2.5.11
 Descripción: Archivo contiene la interfaz grafica para la ecuacion matricial
 """
 from ctkcomponents import *
@@ -10,7 +10,6 @@ from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_vector_frame import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame
-# todo: fix la salida del vector en el texbox
 
 
 class MultiplicacionMatricesFrame(ctk.CTkFrame):
@@ -37,13 +36,13 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         # --- Frame Izquierdo: Entradas ---
         # Entradas para la matriz A
         self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Ingrese la matriz A:")
-        self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
+                                           text="Ingrese la matriz A:", font=("Arial", 17))
+        self.label_matriz_A.pack(padx=10, pady=10)
 
         # boton para importar en primera entrada
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
-                                                        command=self.abrir_historial1)
-        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+                                                        command=self.abrir_historial1, font=("Georgia", 15))
+        self.btn_importar_hist_entrada1.pack(padx=10, pady=10)
 
         # tooltip de importar
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
@@ -51,47 +50,49 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
 
         # textbox para primera entrada
         self.text_matriz_A = FrameEntradaMatriz(self.frame_izquierdo)
-        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_A.pack(padx=10, pady=10)
 
         # Entradas para la matriz b
-        self.label_matriz_b = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Ingrese el vector b:")
-        self.label_matriz_b.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz_b = ctk.CTkLabel(self.frame_izquierdo, text="Ingrese el vector b:", font=("Arial", 17))
+        self.label_matriz_b.pack(padx=10, pady=10)
 
         # botón para importar en segunda entrada
         self.btn_importar_hist_entrada2 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
-                                                        command=self.abrir_historial2)
-        self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+                                                        command=self.abrir_historial2, font=("Georgia", 15))
+        self.btn_importar_hist_entrada2.pack(padx=10, pady=10)
 
         # tooltip para botón de importar
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar un vector del historial")
 
         self.text_matriz_b = FrameEntradaVector(self.frame_izquierdo)
-        self.text_matriz_b.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
+        self.text_matriz_b.pack(padx=10, pady=10)
 
         # Botones debajo de las entradas
-        self.btn_calcular = ctk.CTkButton(self.frame_izquierdo, text="Calcular Ax = b",
-                                          command=self.calcular_multiplicacion)
-        self.btn_calcular.grid(row=7, column=0, padx=10, pady=10)
+        self.frame_botones = ctk.CTkFrame(self.frame_izquierdo)
+        self.frame_botones.pack(padx=10, pady=10)
+
+        self.btn_calcular = ctk.CTkButton(self.frame_botones, text="Calcular Ax = b",
+                                          command=self.calcular_multiplicacion, font=("Georgia", 15))
+        self.btn_calcular.grid(row=0, column=0, padx=10, pady=10)
 
         self.tooltip_calcular = CTkToolTip(self.btn_calcular,
                                             message="Encontrar solución")
 
-        self.btn_mostrar_pasos = ctk.CTkButton(self.frame_izquierdo, text="Mostrar Resultado con Pasos",
-                                               command=self.mostrar_resultado_con_pasos)
-        self.btn_mostrar_pasos.grid(row=7, column=1, padx=10, pady=10)
+        self.btn_mostrar_pasos = ctk.CTkButton(self.frame_botones, text="Mostrar Resultado con Pasos",
+                                               command=self.mostrar_resultado_con_pasos, font=("Georgia", 15))
+        self.btn_mostrar_pasos.grid(row=0, column=1, padx=10, pady=10)
         self.tooltip_pasos = CTkToolTip(self.btn_mostrar_pasos,
                                             message="Mostrar solución con pasos. ")
 
         # --- Frame Derecho: Salida y Botón de Limpiar ---
-        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:")
-        self.label_salida.grid(row=0, column=0, padx=10, pady=10)
+        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:", font=("Arial", 17))
+        self.label_salida.pack(padx=10, pady=10)
 
         self.text_salida_frame = ctk.CTkFrame(self.frame_derecho)
-        self.text_salida_frame.grid(row=1, column=0, padx=10, pady=10)
+        self.text_salida_frame.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=400, height=150, wrap="none")
+        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=450, height=200, wrap="none")
         self.text_salida.pack(side="left", fill="both", expand=True)
 
         # Scrollbar para el text_salida
@@ -100,8 +101,9 @@ class MultiplicacionMatricesFrame(ctk.CTkFrame):
         self.text_salida.configure(yscrollcommand=self.scrollbar.set)
 
         # Botón de limpiar debajo del textbox de salida
-        self.btn_limpiar = ctk.CTkButton(self.frame_derecho, text="Limpiar", command=self.clear_inputs)
-        self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10)
+        self.btn_limpiar = ctk.CTkButton(self.frame_derecho, text="Limpiar", command=self.clear_inputs,
+                                         font=("Georgia", 15))
+        self.btn_limpiar.pack(padx=10, pady=10)
 
         # Variables para los frames y tablas adicionales
         self.frame_tablas_entradas = None
