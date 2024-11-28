@@ -1,10 +1,9 @@
 """
-Archivo: LU_calc_frame.py 1.1.7
+Archivo: LU_calc_frame.py 1.1.8
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan para resolver por Ax=b por factorización LU.
 """
 from ctkcomponents import *
-from tkinter import messagebox
 from CTkToolTip import *
 from models.modelos_matriz_vector.clase_matriz_fact_LU import LUFactorization
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
@@ -92,7 +91,8 @@ class LUFactorizationFrame(ctk.CTkFrame):
 
             self.crear_tablas()
         except Exception as e:
-            messagebox.showerror("Error", f"Hubo un problema con las entradas: {str(e)}")
+            CTkMessagebox(title="Error", message=f"Hubo un problema con las entradas: {str(e)}", icon="warning",
+                          option_1="Entendido", button_hover_color="green", fade_in_duration=2)
 
     def limpiar_entradas(self):
         """Limpia los cuadros de texto de entrada y salida."""
