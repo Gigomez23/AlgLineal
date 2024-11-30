@@ -1,5 +1,5 @@
 """
-Archivo: main_gui.py 3.0.0
+Archivo: main_gui.py 3.4.0
 Descripción: archivo que contiene la construcción de la aplicación principal.
 """
 from customtkinter import *
@@ -40,9 +40,13 @@ class PantallaInicio(CTk):
         self.image_label = CTkLabel(self.frame_seleccion, image=self.central_image, text="")
         self.image_label.pack(pady=(10, 30))  # Ubicación debajo del título
 
+        self.frame_botones = CTkFrame(self.frame_seleccion)
+        self.frame_botones.pack(padx=10, pady=10)
+
+
         # Botón para abrir la Calculadora de Matrices y Vectores
         self.btn_calculadora_matrices = CTkButton(
-            self.frame_seleccion,
+            self.frame_botones,
             text="Calculadora de Matrices/Vectores",
             command=self.mostrar_calculadora_matrices,
             font=("Arial", 16),
@@ -50,11 +54,11 @@ class PantallaInicio(CTk):
             hover_color="#005A8D",
             corner_radius=8
         )
-        self.btn_calculadora_matrices.pack(pady=20, padx=20)
+        self.btn_calculadora_matrices.pack(pady=20, padx=20, side="left")
 
         # Botón para abrir la Calculadora en desarrollo
         self.btn_calculadora_funciones = CTkButton(
-            self.frame_seleccion,
+            self.frame_botones,
             text="Calculadora de Funciones",
             command=self.mostrar_calculadora_otra,
             font=("Arial", 16),
@@ -62,7 +66,7 @@ class PantallaInicio(CTk):
             hover_color="#005A8D",
             corner_radius=8
         )
-        self.btn_calculadora_funciones.pack(pady=20, padx=20)
+        self.btn_calculadora_funciones.pack(pady=20, padx=20, side="right")
 
         # Frame para la Calculadora de Matrices y Vectores
         self.calculadora_matrices_frame = CalculadoraMatricesApp(self, self.mostrar_inicio)
