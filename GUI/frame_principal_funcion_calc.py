@@ -6,7 +6,6 @@ from customtkinter import *
 from Historial.historial_matriz.matriz_historial import Historial
 from GUI.gui_calc_raices.submenu.funciones_raices import FuncionesRaicesFrame
 from GUI.gui_calc_raices.submenu.frame_raices import *
-# todo: fix el issue con el menu no mostrandose completo en modo de resize
 
 class CalculadoraFuncionApp(CTkFrame):
     """App de calculadora de matrices y vectores, convertida en Frame para integración."""
@@ -19,7 +18,7 @@ class CalculadoraFuncionApp(CTkFrame):
 
         # Frame principal que contendrá el menú y el área de visualización
         self.frame_principal = CTkFrame(self)
-        self.frame_principal.pack(fill="both", expand=True, padx=10)
+        self.frame_principal.pack(side="left", fill="both", expand=True, padx=10)
 
         # Frame para el contenido principal
         self.frame_contenido = CTkFrame(self.frame_principal)
