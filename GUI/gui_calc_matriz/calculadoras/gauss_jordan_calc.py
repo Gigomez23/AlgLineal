@@ -1,5 +1,5 @@
 """
-Archivo: jauss_jorda_calc.py 1.8.0
+Archivo: jauss_jorda_calc.py 1.8.3
 Descripción: Este archivo contiene el diseño del frame para la calculadora de matrices
 por método escalonado o de Gauss-Jordan.
 """
@@ -35,30 +35,33 @@ class GaussJordanFrame(ctk.CTkFrame):
 
         # Componentes del frame de entrada
         self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Ingrese la matriz:")
-        self.label_matriz.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+                                         text="Ingrese la matriz:", font=("Arial", 17))
+        self.label_matriz.pack(padx=10, pady=10)
 
-        self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
-        self.btn_importar_hist.grid(row=2, column=0, padx=10, pady=10)
+        self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial,
+                                               font=("Georgia", 15))
+        self.btn_importar_hist.pack(padx=10, pady=10)
         self.tooltip_importar = CTkToolTip(self.btn_importar_hist,
                                            message="Importar una matriz del historial")
 
         # frame para entrada
         self.text_matriz = FrameEntradaMatriz(self.entrada_frame)
-        self.text_matriz.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+        self.text_matriz.pack(padx=10, pady=10)
 
         # Botón único para resolver
-        self.btn_resolver = ctk.CTkButton(self.entrada_frame, text="Resolver", command=self.resolver_matriz)
-        self.btn_resolver.grid(row=4, column=0, padx=10, pady=10, sticky="")
+        self.btn_resolver = ctk.CTkButton(self.entrada_frame, text="Resolver", command=self.resolver_matriz,
+                                          font=("Georgia", 15))
+        self.btn_resolver.pack(padx=10, pady=10)
 
         # Frame para resultados
-        self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Solución:")
-        self.label_salida.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        self.label_salida = ctk.CTkLabel(self.resultado_frame, text="Solución:", font=("Arial", 17))
+        self.label_salida.pack(padx=10, pady=10)
 
         self.text_salida_frame = ctk.CTkFrame(self.resultado_frame)
-        self.text_salida_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.text_salida_frame.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=400, height=150, wrap="none")
+        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=450, height=200, wrap="none",
+                                          font=("Arial", 15))
         self.text_salida.pack(side="left", fill="both", expand=True)
 
         self.scrollbar = ctk.CTkScrollbar(self.text_salida_frame, command=self.text_salida.yview)
@@ -66,8 +69,9 @@ class GaussJordanFrame(ctk.CTkFrame):
         self.text_salida.configure(yscrollcommand=self.scrollbar.set)
 
         # Botón para limpiar entradas
-        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
-        self.btn_limpiar.grid(row=2, column=0, padx=10, pady=10, sticky="")
+        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas,
+                                         font=("Georgia", 15))
+        self.btn_limpiar.pack(padx=10, pady=10)
 
         # Variables para los frames y tablas adicionales
         self.tablas_entrada = None
@@ -106,7 +110,7 @@ class GaussJordanFrame(ctk.CTkFrame):
             self.tablas_salidas.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
 
         # botón de guardado
-        self.btn_guardar = ctk.CTkButton(self.tablas_salidas.frame_entradas, text="Guardar",
+        self.btn_guardar = ctk.CTkButton(self.tablas_salidas.frame_entradas, text="Guardar", font=("Georgia", 15),
                                          command=self.accionar_guardado)
         self.btn_guardar.pack(padx=10, pady=10)
         self.tooltip_guardar = CTkToolTip(self.btn_guardar,

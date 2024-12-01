@@ -1,5 +1,5 @@
 """
-Archivo: frame_principal_vect_matr_calc.py 1.0.2
+Archivo: frame_principal_vect_matr_calc.py 1.0.4
 Descripción: archivo que contiene la construcción de la calculadora de matrices y vectores.
 """
 from customtkinter import *
@@ -30,28 +30,28 @@ class CalculadoraMatricesApp(CTkFrame):
         # Frame para el menú de navegación (inicialmente oculto)
         self.frame_menu = CTkFrame(self.frame_principal, width=200)
         self.label_menu = CTkLabel(self.frame_menu, text="Seleccione el tipo \nde operación:",
-                                   font=CTkFont(family="Consolas", size=14))
-        self.label_menu.pack(padx=5, pady=10)
+                                   font=CTkFont(family="Consolas", size=16))
+        self.label_menu.pack(padx=10, pady=10)
 
         self.btn_matrices = CTkButton(self.frame_menu, text="Calculadora de Matrices",
-                                      command=lambda: self.mostrar_contenido('matrices'))
+                                      command=lambda: self.mostrar_contenido('matrices'), font=("Georgia", 15))
         self.btn_matrices.pack(pady=10, padx=5)
 
         self.btn_mixta = CTkButton(self.frame_menu, text="Calculadora Mixta",
-                                   command=lambda: self.mostrar_contenido('mixta'))
+                                   command=lambda: self.mostrar_contenido('mixta'), font=("Georgia", 15))
         self.btn_mixta.pack(pady=10, padx=5)
 
         self.btn_vectores = CTkButton(self.frame_menu, text="Calculadora de Vectores",
-                                      command=lambda: self.mostrar_contenido('vectores'))
+                                      command=lambda: self.mostrar_contenido('vectores'), font=("Georgia", 15))
         self.btn_vectores.pack(pady=10, padx=5)
 
         self.btn_historial = CTkButton(self.frame_menu, text="Historial",
-                                       command=lambda: self.mostrar_contenido('historial'))
+                                       command=lambda: self.mostrar_contenido('historial'), font=("Georgia", 15))
         self.btn_historial.pack(pady=10, padx=5)
 
         # Botón para regresar a la pantalla de inicio
         self.btn_regresar_inicio = CTkButton(self.frame_menu, text="Regresar a Inicio",
-                                             command=self.regresar_a_inicio)
+                                             command=self.regresar_a_inicio, font=("Georgia", 15))
         self.btn_regresar_inicio.pack(side="bottom", pady=10, padx=5)
 
         # Botón en la parte superior derecha para mostrar el menú
@@ -59,7 +59,7 @@ class CalculadoraMatricesApp(CTkFrame):
             self.frame_principal, text="☰", width=32, height=20,
             command=self.mostrar_menu
         )
-        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)
+        self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=5)
 
         # Inicializa la primera calculadora directamente
         self.mostrar_contenido('matrices')

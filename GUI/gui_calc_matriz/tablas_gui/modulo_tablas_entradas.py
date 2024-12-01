@@ -1,5 +1,5 @@
 """
-Archivo: modulo_tablas_entradas.py 1.0.6
+Archivo: modulo_tablas_entradas.py 1.0.8
 Descripción: Diseño de modulo que contiene la propagación de las tablas.
 """
 import customtkinter as ctk
@@ -27,11 +27,11 @@ class TablasFrame(ctk.CTkFrame):
 
         # se inicializa el frame
         self.frame_entradas = ctk.CTkFrame(self)
-        self.frame_entradas.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.frame_entradas.pack(padx=10, pady=10)
 
         # se crean las tablas
         if self.tabla_matriz1 is not None:
-            self.lbl_matriz1 = ctk.CTkLabel(self.frame_entradas, text=texto1)
+            self.lbl_matriz1 = ctk.CTkLabel(self.frame_entradas, text=texto1, font=("Arial", 17))
             self.lbl_matriz1.pack(padx=10, pady=10)
 
             # tablas para la frame 1 que contiene los datos de entrada
@@ -40,7 +40,7 @@ class TablasFrame(ctk.CTkFrame):
             self.tabla1.pack(padx=10, pady=10)
 
         if self.tabla_matriz2 is not None:
-            self.lbl_matriz2 = ctk.CTkLabel(self.frame_entradas, text=texto2)
+            self.lbl_matriz2 = ctk.CTkLabel(self.frame_entradas, text=texto2, font=("Arial", 17))
             self.lbl_matriz2.pack(padx=10, pady=10)
 
             # tablas para la frame 1 que contiene los datos de entrada
@@ -49,7 +49,7 @@ class TablasFrame(ctk.CTkFrame):
             self.tabla2.pack(padx=10, pady=10)
 
         if self.tabla_matriz3 is not None:
-            self.lbl_matriz3 = ctk.CTkLabel(self.frame_entradas, text=texto3)
+            self.lbl_matriz3 = ctk.CTkLabel(self.frame_entradas, text=texto3, font=("Arial", 17))
             self.lbl_matriz3.pack(padx=10, pady=10)
 
             # tablas para la frame 1 que contiene los datos de entrada
@@ -58,7 +58,7 @@ class TablasFrame(ctk.CTkFrame):
             self.tabla3.pack(padx=10, pady=10)
 
         if self.tabla_matriz4 is not None:
-            self.lbl_matriz4 = ctk.CTkLabel(self.frame_entradas, text=texto4)
+            self.lbl_matriz4 = ctk.CTkLabel(self.frame_entradas, text=texto4, font=("Arial", 17))
             self.lbl_matriz4.pack(padx=10, pady=10)
 
             # tablas para la frame 1 que contiene los datos de entrada

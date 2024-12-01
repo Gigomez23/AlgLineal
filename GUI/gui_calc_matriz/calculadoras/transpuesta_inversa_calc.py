@@ -1,5 +1,5 @@
 """
-Archivo: transpuesta_inversa_calc.py 1.2.1
+Archivo: transpuesta_inversa_calc.py 1.2.6
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de transpuestas e inversas de matrices.
 """
 from ctkcomponents import *
@@ -31,10 +31,11 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.left_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         self.input_label = ctk.CTkLabel(self.left_frame,
-                                        text="Ingrese la matriz (aumentada para la inversa):")
+                                        text="Ingrese la matriz (aumentada para la inversa):", font=("Arial", 17))
         self.input_label.pack(pady=10)
 
-        self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial)
+        self.btn_importar_hist = ctk.CTkButton(self.left_frame, text="Importar", command=self.abrir_historial,
+                                               font=("Georgia", 15))
         self.btn_importar_hist.pack(pady=10)
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist,
                                             message="Importar una matriz del historial")
@@ -45,25 +46,28 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
 
         self.operacion = ctk.StringVar(value="transpuesta")
         self.transpuesta_radio = ctk.CTkRadioButton(self.left_frame, text="Transpuesta", variable=self.operacion,
-                                                    value="transpuesta")
+                                                    value="transpuesta", font=("Arial", 15))
         self.inversa_radio = ctk.CTkRadioButton(self.left_frame, text="Inversa", variable=self.operacion,
-                                                value="inversa")
+                                                value="inversa", font=("Arial", 15))
         self.transpuesta_radio.pack(pady=5)
         self.inversa_radio.pack(pady=5)
 
-        self.calcular_button = ctk.CTkButton(self.left_frame, text="Calcular", command=self.calcular)
+        self.calcular_button = ctk.CTkButton(self.left_frame, text="Calcular", command=self.calcular,
+                                             font=("Georgia", 15))
         self.calcular_button.pack(pady=10)
 
         self.right_frame = ctk.CTkFrame(self)
         self.right_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        self.solucion_label = ctk.CTkLabel(self.right_frame, text="Solución:")
+        self.solucion_label = ctk.CTkLabel(self.right_frame, text="Solución:", font=("Arial", 17))
         self.solucion_label.pack(pady=10)
 
-        self.result_textbox = ctk.CTkTextbox(self.right_frame, width=400, height=150, state="disabled")
+        self.result_textbox = ctk.CTkTextbox(self.right_frame, width=450, height=200, state="disabled",
+                                             font=("Arial", 15))
         self.result_textbox.pack(pady=10)
 
-        self.limpiar_button = ctk.CTkButton(self.right_frame, text="Limpiar", command=self.limpiar)
+        self.limpiar_button = ctk.CTkButton(self.right_frame, text="Limpiar", command=self.limpiar,
+                                            font=("Georgia", 15))
         self.limpiar_button.pack(pady=10)
 
         self.historial_local = []
@@ -72,12 +76,6 @@ class MatrizCalculatorInvTranFrame(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Variables para los frames y tablas adicionales
-        # self.frame_matriz1 = None
-        # self.tabla_matriz2 = None
-        # self.frame_matriz2 = None
-        # self.tabla_matriz1 = None
-        # self.tabla_salida = None
         self.tablas_entradas = None
         self.tablas_salidas = None
 

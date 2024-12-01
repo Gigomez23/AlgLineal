@@ -1,5 +1,5 @@
 """
-Archivo: determinante_frame.py 1.3.0
+Archivo: determinante_frame.py 1.3.6
 Descripción: Este archivo contiene la interfáz gráfica de la calculadora de determinantes.
 """
 from ctkcomponents import *
@@ -35,35 +35,37 @@ class DeterminanteFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # Componentes del frame de entrada
-        self.label_matriz = ctk.CTkLabel(self.entrada_frame,
-                                         text="Ingrese la matriz:")
-        self.label_matriz.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
+        self.label_matriz = ctk.CTkLabel(self.entrada_frame, text="Ingrese la matriz:", font=("Arial", 17))
+        self.label_matriz.pack(padx=10, pady=10)
 
         # botón importar
-        self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
-        self.btn_importar_hist.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial,
+                                               font=("Georgia", 15))
+        self.btn_importar_hist.pack(padx=10, pady=10)
 
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist,
                                             message="Importar una matriz del historial")
 
         # frame para entrada
         self.text_matriz = FrameEntradaMatriz(self.entrada_frame)
-        self.text_matriz.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+        self.text_matriz.pack(padx=10, pady=10)
 
         # Botón para calcular
-        self.btn_calcular = ctk.CTkButton(self.entrada_frame, text="Calcular", command=self.calcular_determinante)
-        self.btn_calcular.grid(row=4, column=0, padx=10, pady=10, columnspan=2)
-
-        # Botón para limpiar
-        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
-        self.btn_limpiar.grid(row=3, column=0, padx=10, pady=10)
+        self.btn_calcular = ctk.CTkButton(self.entrada_frame, text="Calcular", command=self.calcular_determinante,
+                                          font=("Georgia", 15))
+        self.btn_calcular.pack(padx=10, pady=10)
 
         # Frame para resultados
-        self.label_resultado = ctk.CTkLabel(self.resultado_frame, text="Resultado:")
-        self.label_resultado.grid(row=0, column=0, padx=10, pady=10)
+        self.label_resultado = ctk.CTkLabel(self.resultado_frame, text="Resultado:", font=("Arial", 17))
+        self.label_resultado.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.resultado_frame, width=400, height=150)
-        self.text_salida.grid(row=1, column=0, padx=10, pady=10)
+        self.text_salida = ctk.CTkTextbox(self.resultado_frame, width=450, height=200, font=("Arial", 15))
+        self.text_salida.pack(padx=10, pady=10)
+
+        # Botón para limpiar
+        self.btn_limpiar = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas,
+                                         font=("Georgia", 15))
+        self.btn_limpiar.pack(padx=10, pady=10)
 
         self.tablas_entradas = None
         self.tablas_salidas = None

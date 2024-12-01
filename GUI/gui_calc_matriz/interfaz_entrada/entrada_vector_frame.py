@@ -1,11 +1,12 @@
 """
-Archivo: entrada_matriz_frame.py 1.0.6
+Archivo: entrada_matriz_frame.py 1.1.0
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras con matrices.
 """
 import customtkinter as ctk
 from fractions import Fraction
 from customtkinter import CTkButton
 from CTkMessagebox import CTkMessagebox
+from CTkToolTip import *
 from funciones_adicionales.dropdown_menu import CTkFloatingWindow
 
 
@@ -15,24 +16,27 @@ class FrameEntradaVector(ctk.CTkFrame):
 
         # Frame superior para las entradas de dimensiones y botón
         self.frame_dimensiones = ctk.CTkFrame(self)
-        self.frame_dimensiones.pack(pady=10)
+        self.frame_dimensiones.pack(pady=10, padx=10)
 
         # Etiquetas y entradas para filas y columnas (alineadas horizontalmente)
-        self.etiqueta_filas = ctk.CTkLabel(self.frame_dimensiones, text="Filas:")
+        self.etiqueta_filas = ctk.CTkLabel(self.frame_dimensiones, text="Filas:", font=("Arial", 17))
         self.etiqueta_filas.grid(row=0, column=0, padx=5)
 
-        self.entrada_filas = ctk.CTkEntry(self.frame_dimensiones, width=50)
+        self.entrada_filas = ctk.CTkEntry(self.frame_dimensiones, width=50, font=("Arial", 15))
         self.entrada_filas.grid(row=0, column=1, padx=5)
         self.entrada_filas.insert(0, "3")
 
-        self.boton_establecer_matriz = ctk.CTkButton(
-            self.frame_dimensiones, text="Establecer Matriz", command=self.establecer_matriz
-        )
-        self.boton_establecer_matriz.grid(row=0, column=2, padx=10)
+        self.boton_establecer_matriz = ctk.CTkButton(self.frame_dimensiones, text="Establecer Vector",
+                                                     command=self.establecer_matriz, font=("Georgia", 15))
+        self.boton_establecer_matriz.grid(row=0, column=2, padx=10, pady=5)
+        self.tooltip_establecer = CTkToolTip(self.boton_establecer_matriz,
+                                           message="Establecer las canitdades de filas del vector.")
 
         # Frame inferior para la matriz
         self.frame_matriz = ctk.CTkFrame(self)
         self.frame_matriz.pack(pady=20)
+        self.tooltip_informar = CTkToolTip(self.frame_matriz,
+                                           message="Puede presionar Espacio para saltar al siguiente cuadro.")
 
         menu_popup = CTkFloatingWindow(self.frame_matriz)  # menu popup
 
@@ -64,7 +68,7 @@ class FrameEntradaVector(ctk.CTkFrame):
         self.filas += 1
         self.entrada_filas.delete(0, ctk.END)
         self.entrada_filas.insert(0, str(self.filas))
-        nueva_fila = [ctk.CTkEntry(self.frame_matriz, width=50) for _ in range(self.columnas)]
+        nueva_fila = [ctk.CTkEntry(self.frame_matriz, width=50, font=("Arial", 15)) for _ in range(self.columnas)]
         for c, entrada in enumerate(nueva_fila):
             entrada.grid(row=self.filas - 1, column=c, padx=5, pady=5)
             entrada.bind("<space>", lambda e, row=self.filas - 1, col=c: self.focus_siguiente_entrada(row, col))
@@ -103,7 +107,7 @@ class FrameEntradaVector(ctk.CTkFrame):
         for r in range(self.filas):
             fila = []
             for c in range(self.columnas):
-                entrada = ctk.CTkEntry(self.frame_matriz, width=50)
+                entrada = ctk.CTkEntry(self.frame_matriz, width=50, font=("Arial", 15))
                 entrada.grid(row=r, column=c, padx=5, pady=5)
                 entrada.bind("<space>", lambda e, row=r, col=c: self.focus_siguiente_entrada(row, col))
                 fila.append(entrada)

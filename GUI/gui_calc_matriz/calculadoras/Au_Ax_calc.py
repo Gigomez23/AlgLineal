@@ -1,5 +1,5 @@
 """
-Archivo: Au_Ax_calc.py 1.5.1
+Archivo: Au_Ax_calc.py 1.5.7
 Descripción: diseño de frame para gui de problemas tipo de Au + Av
 """
 from ctkcomponents import *
@@ -32,14 +32,13 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
 
         # --- Frame Izquierdo: Entradas ---
-        self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Ingrese la Matriz A:")
-        self.label_matriz_A.grid(row=1, column=0, padx=10, pady=10, columnspan=4, sticky="nsew")
+        self.label_matriz_A = ctk.CTkLabel(self.frame_izquierdo, text="Ingrese la Matriz A:", font=("Arial", 17))
+        self.label_matriz_A.pack(padx=10, pady=10)
 
         # boton para importar en primera entrada
         self.btn_importar_hist_entrada1 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
-                                                        command=self.abrir_historial1)
-        self.btn_importar_hist_entrada1.grid(row=2, column=0, padx=10, pady=10, columnspan=4)
+                                                        command=self.abrir_historial1, font=("Georgia", 15))
+        self.btn_importar_hist_entrada1.pack(padx=10, pady=10)
 
         #tooltip para boton de importar
         self.tooltip_importar1 = CTkToolTip(self.btn_importar_hist_entrada1,
@@ -47,70 +46,79 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
 
 
         self.text_matriz_A = FrameEntradaMatriz(self.frame_izquierdo)
-        self.text_matriz_A.grid(row=3, column=0, padx=10, pady=10, columnspan=4)
+        self.text_matriz_A.pack(padx=10, pady=10)
 
-        self.label_vector_u = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Ingrese el Vector u:")
-        self.label_vector_u.grid(row=4, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.frame_secundario = ctk.CTkFrame(self.frame_izquierdo)
+        self.frame_secundario.pack(padx=10, pady=10)
+
+        self.label_vector_u = ctk.CTkLabel(self.frame_secundario, text="Ingrese el Vector u:", font=("Arial", 17))
+        self.label_vector_u.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
         # boton para importar en segunda entrada
-        self.btn_importar_hist_entrada2 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
-                                                        command=self.abrir_historial2)
-        self.btn_importar_hist_entrada2.grid(row=5, column=0, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist_entrada2 = ctk.CTkButton(self.frame_secundario, text="Importar",
+                                                        command=self.abrir_historial2, font=("Georgia", 15))
+        self.btn_importar_hist_entrada2.grid(row=1, column=0, padx=10, pady=10)
 
         # tooltip para boton de importar 2
         self.tooltip_importar2 = CTkToolTip(self.btn_importar_hist_entrada2,
                                             message="Importar un vector del historial")
 
-        self.text_vector_u = FrameEntradaVector(self.frame_izquierdo)
-        self.text_vector_u.grid(row=6, column=0, padx=10, pady=10, columnspan=2)
+        self.text_vector_u = FrameEntradaVector(self.frame_secundario)
+        self.text_vector_u.grid(row=2, column=0, padx=10, pady=10, columnspan=2)
 
-        self.label_vector_v = ctk.CTkLabel(self.frame_izquierdo,
-                                           text="Ingrese el Vector v:")
-        self.label_vector_v.grid(row=4, column=2, padx=10, pady=10, columnspan=2, sticky="w")
+        self.label_vector_v = ctk.CTkLabel(self.frame_secundario, text="Ingrese el Vector v:", font=("Arial", 17))
+        self.label_vector_v.grid(row=0, column=2, padx=10, pady=10, columnspan=2, sticky="w")
 
         # boton para importar en primera entrada
-        self.btn_importar_hist_entrada3 = ctk.CTkButton(self.frame_izquierdo, text="Importar",
-                                                        command=self.abrir_historial3)
-        self.btn_importar_hist_entrada3.grid(row=5, column=2, padx=10, pady=10, columnspan=2)
+        self.btn_importar_hist_entrada3 = ctk.CTkButton(self.frame_secundario, text="Importar",
+                                                        command=self.abrir_historial3, font=("Georgia", 15))
+        self.btn_importar_hist_entrada3.grid(row=1, column=2, padx=10, pady=10, columnspan=2)
 
         # tooltip para boton de importación
         self.tooltip_importar3 = CTkToolTip(self.btn_importar_hist_entrada3,
                                             message="Importar un vector del historial")
 
-        self.text_vector_v = FrameEntradaVector(self.frame_izquierdo)
-        self.text_vector_v.grid(row=6, column=2, padx=10, pady=10, columnspan=2)
+        self.text_vector_v = FrameEntradaVector(self.frame_secundario)
+        self.text_vector_v.grid(row=2, column=2, padx=10, pady=10, columnspan=2)
 
         # --- Frame Derecho: Controles y Salida ---
-        self.label_metodo = ctk.CTkLabel(self.frame_derecho, text="Método de Resolución:")
-        self.label_metodo.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.label_metodo = ctk.CTkLabel(self.frame_derecho, text="Método de Resolución:", font=("Arial", 17))
+        self.label_metodo.pack(padx=10, pady=10)
+
+
+        # frame para posicionar radio buttons
+
+        self.frame_radio = ctk.CTkFrame(self.frame_derecho)
+        self.frame_radio.pack(padx=10, pady=10)
+
 
         self.metodo_var = ctk.StringVar(value="directo")
-        self.radio_directo = ctk.CTkRadioButton(self.frame_derecho, text="A(u + v)", variable=self.metodo_var,
-                                                value="directo")
-        self.radio_directo.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
+        self.radio_directo = ctk.CTkRadioButton(self.frame_radio, text="A(u + v)", variable=self.metodo_var,
+                                                value="directo", font=("Arial", 15))
+        self.radio_directo.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
 
-        self.radio_separado = ctk.CTkRadioButton(self.frame_derecho, text="A(u) + A(v)", variable=self.metodo_var,
-                                                 value="separado")
-        self.radio_separado.grid(row=1, column=1, padx=10, pady=5, sticky="nsew")
+        self.radio_separado = ctk.CTkRadioButton(self.frame_radio, text="A(u) + A(v)", variable=self.metodo_var,
+                                                 value="separado", font=("Arial", 15))
+        self.radio_separado.grid(row=0, column=1, padx=10, pady=5, sticky="nsew")
 
-        self.radio_ambos = ctk.CTkRadioButton(self.frame_derecho, text="Ambos métodos", variable=self.metodo_var,
-                                              value="ambos")
-        self.radio_ambos.grid(row=2, column=0, padx=10, pady=5, columnspan=2, sticky="nsew")
+        self.radio_ambos = ctk.CTkRadioButton(self.frame_radio, text="Ambos métodos", variable=self.metodo_var,
+                                              value="ambos", font=("Arial", 15))
+        self.radio_ambos.grid(row=1, column=0, padx=10, pady=5, columnspan=2, sticky="nsew")
 
         # Botón de calcular
         self.btn_calcular = ctk.CTkButton(self.frame_derecho, text="Calcular", width=100,
-                                          command=self.calcular_multiplicacion)
-        self.btn_calcular.grid(row=3, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+                                          command=self.calcular_multiplicacion, font=("Georgia", 15))
+        self.btn_calcular.pack(padx=10, pady=10)
 
         # Área de salida
-        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:")
-        self.label_salida.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        self.label_salida = ctk.CTkLabel(self.frame_derecho, text="Solución:", font=("Arial", 17))
+        self.label_salida.pack(padx=10, pady=10)
 
         self.text_salida_frame = ctk.CTkFrame(self.frame_derecho)
-        self.text_salida_frame.grid(row=5, column=0, padx=10, pady=10)
+        self.text_salida_frame.pack(padx=10, pady=10)
 
-        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=400, height=150, wrap="none")
+        self.text_salida = ctk.CTkTextbox(self.text_salida_frame, width=450, height=200, wrap="none",
+                                          font=("Arial", 15))
         self.text_salida.pack(side="left", fill="both", expand=True)
 
         # Scrollbar para el text_salida
@@ -119,8 +127,9 @@ class CalculadoraDeMatrizxVectoresFrame(ctk.CTkFrame):
         self.text_salida.configure(yscrollcommand=self.scrollbar.set)
 
         # Botón de limpiar debajo del textbox de salida
-        self.btn_limpiar = ctk.CTkButton(self.frame_derecho, text="Limpiar", width=100, command=self.clear_inputs)
-        self.btn_limpiar.grid(row=6, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.btn_limpiar = ctk.CTkButton(self.frame_derecho, text="Limpiar", width=100, command=self.clear_inputs,
+                                         font=("Georgia", 15))
+        self.btn_limpiar.pack(padx=10, pady=10)
 
         # Variables para los frames y tablas adicionales
         self.frame_tablas_entradas = None

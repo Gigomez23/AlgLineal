@@ -1,5 +1,5 @@
 """
-Archivo: multi_fila_x_columna_calc.py 2.2.3
+Archivo: multi_fila_x_columna_calc.py 2.2.9
 Descripcion: Archivo que contiene el diseño del frame para operaciones de vector x vector.
 """
 from CTkToolTip import *
@@ -32,39 +32,53 @@ class VectorMultiplicacionFrame(ctk.CTkFrame):
         self.resultado_frame = ctk.CTkFrame(self)
         self.resultado_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
+        # Configurar pesos para que los frames se ajusten al redimensionar
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
         # Configuración del frame
-        self.label_fila = ctk.CTkLabel(self.entrada_frame, text="Introduce el vector fila:")
+
+        self.frame_modulo_entrada = ctk.CTkFrame(self.entrada_frame)
+        self.frame_modulo_entrada.pack(padx=10, pady=10)
+
+        self.label_fila = ctk.CTkLabel(self.frame_modulo_entrada, text="Introduce el vector fila:", font=("Arial", 17))
         self.label_fila.grid(row=0, column=0, padx=10, pady=10)
 
-        self.btn_importar_hist_fila = ctk.CTkButton(self.entrada_frame, text="Importar", command=self.abrir_historial)
+        self.btn_importar_hist_fila = ctk.CTkButton(self.frame_modulo_entrada, text="Importar",
+                                                    command=self.abrir_historial, font=("Georgia", 15))
         self.btn_importar_hist_fila.grid(row=1, column=0, padx=10, pady=10)
         self.tooltip_importar = CTkToolTip(self.btn_importar_hist_fila,
                                            message="Importar un vector fila del historial")
 
-        self.entry_fila = FrameEntradaVector(self.entrada_frame)
+        self.entry_fila = FrameEntradaVector(self.frame_modulo_entrada)
         self.entry_fila.grid(row=2, column=0, padx=10, pady=10)
 
-        self.label_columna = ctk.CTkLabel(self.entrada_frame, text="Introduce el vector columna:")
+        self.label_columna = ctk.CTkLabel(self.frame_modulo_entrada, text="Introduce el vector columna:",
+                                          font=("Arial", 17))
         self.label_columna.grid(row=0, column=1, padx=10, pady=10)
 
-        self.btn_importar_hist_columna = ctk.CTkButton(self.entrada_frame, text="Importar",
-                                                       command=self.abrir_historial2)
+        self.btn_importar_hist_columna = ctk.CTkButton(self.frame_modulo_entrada, text="Importar",
+                                                       command=self.abrir_historial2, font=("Georgia", 15))
         self.btn_importar_hist_columna.grid(row=1, column=1, padx=10, pady=10)
         self.tooltip_importar = CTkToolTip(self.btn_importar_hist_columna,
                                            message="Importar un vector columna del historial")
 
-        self.entry_columna = FrameEntradaVector(self.entrada_frame)
+        self.entry_columna = FrameEntradaVector(self.frame_modulo_entrada)
         self.entry_columna.grid(row=2, column=1, padx=10, pady=10)
 
         self.button_calculate = ctk.CTkButton(self.entrada_frame, text="Calcular Multiplicación",
-                                              command=self.calcular_multiplicacion)
-        self.button_calculate.grid(row=3, column=0, padx=10, pady=10, sticky="n", columnspan=2)
+                                              command=self.calcular_multiplicacion, font=("Georgia", 15))
+        self.button_calculate.pack(padx=10, pady=10)
 
-        self.result_text = ctk.CTkTextbox(self.resultado_frame, height=200, width=300)
+        self.resultado_label = ctk.CTkLabel(self.resultado_frame, text="Solución y prcedimiento:", font=("Arial", 17))
+        self.resultado_label.pack(padx=10, pady=10)
+
+        self.result_text = ctk.CTkTextbox(self.resultado_frame, width=450, height=200)
         self.result_text.pack(pady=10, padx=10)
         self.result_text.configure(state="disabled")  # Hacer que el textbox sea de solo lectura
 
-        self.button_clear = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas)
+        self.button_clear = ctk.CTkButton(self.resultado_frame, text="Limpiar", command=self.limpiar_entradas,
+                                          font=("Georgia", 15))
         self.button_clear.pack(pady=10)
 
         self.tablas_entrada = None
