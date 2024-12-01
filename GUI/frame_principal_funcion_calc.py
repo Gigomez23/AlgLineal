@@ -91,7 +91,7 @@ class CalculadoraFuncionApp(CTkFrame):
         for widget in self.frame_contenido.winfo_children():
             widget.destroy()
 
-        frame = CTkFrame(self.frame_contenido)  # todo: add the calculadoras frame here
+        frame = CTkFrame(self.frame_contenido)
         frame.pack(fill="both", expand=True)
 
         if opcion == 'Raices':
