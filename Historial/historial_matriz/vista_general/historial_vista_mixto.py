@@ -1,5 +1,5 @@
 """
-Archivo: historial_vista_mixto.py 1.0.5
+Archivo: historial_vista_mixto.py 1.0.6
 Descripción: Este archivo contiene el frame interno para mostrar problemas mixtos en el historial general.
 """
 from customtkinter import *
@@ -31,12 +31,16 @@ class HistorialMixtoFrame(CTkFrame):
         problemas_matriz = self.historial.obtener_historial_mixtos()
 
         for i, problema in enumerate(problemas_matriz):
+            # Crear un sub-frame para organizar mejor cada problema
+            problema_frame = CTkFrame(self.frame_historial)
+            problema_frame.grid(row=i, column=0, padx=10, pady=10, sticky="ew")
+
             # Mostrar el nombre del problema
-            nombre_label = CTkLabel(self.frame_historial, text=f"{problema['nombre']}:")
+            nombre_label = CTkLabel(problema_frame, text=f"{problema['nombre']}:")
             nombre_label.grid(row=i, column=0, padx=10, pady=5)
 
             # Agregar un botón para visualizar más detalles del problema y pasar el nombre
-            visualizar_btn = CTkButton(self.frame_historial, text="Visualizar",
+            visualizar_btn = CTkButton(problema_frame, text="Visualizar",
                                        command=lambda nombre=problema["nombre"]: self.visualizar_problema(nombre))
             visualizar_btn.grid(row=i, column=1, padx=10, pady=5)
 
