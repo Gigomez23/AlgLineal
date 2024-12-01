@@ -1,5 +1,5 @@
 """
-Archivo: frame_entrada_funcion.py 1.7.1
+Archivo: frame_entrada_funcion.py 1.7.3
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 import re
@@ -16,10 +16,16 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         self.expresion = ""
         self.modo_superindice = False  # Modo superíndice
 
-        self.frame_derecho = ctk.CTkFrame(self)
+        self.frame_superior = ctk.CTkFrame(self)
+        self.frame_superior.pack(expand=True, padx=10, pady=5, fill='x')
+
+        self.frame_inferior = ctk.CTkFrame(self)
+        self.frame_inferior.pack(fill="x", expand=True, padx=10, pady=5)
+
+        self.frame_derecho = ctk.CTkFrame(self.frame_inferior)
         self.frame_derecho.pack(side="right", fill="y", expand=True, padx=5, pady=5)
 
-        self.frame_izquierdo = ctk.CTkFrame(self)
+        self.frame_izquierdo = ctk.CTkFrame(self.frame_inferior)
         self.frame_izquierdo.pack(side="left", fill="y", expand=True, padx=5, pady=5)
 
         self.categorias = {
@@ -29,10 +35,11 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         }
 
         self.categoria_var = ctk.StringVar(value="Exponenciales")
-        self.menu_desplegable = ctk.CTkOptionMenu(self.frame_izquierdo, variable=self.categoria_var,
+        self.menu_desplegable = ctk.CTkOptionMenu(self.frame_superior, variable=self.categoria_var,
                                                   values=list(self.categorias.keys()),
-                                                  command=self.mostrar_botones_categoria)
-        self.menu_desplegable.pack(fill="x", padx=2, pady=2)
+                                                  command=self.mostrar_botones_categoria, width=200, font=("Times New Roman", 15)
+)
+        self.menu_desplegable.pack(fill="x", padx=2, pady=2, side="left")
 
         self.categoria_botones_frame = ctk.CTkFrame(self.frame_izquierdo)
         self.categoria_botones_frame.pack(fill="both", expand=True, padx=5, pady=5)

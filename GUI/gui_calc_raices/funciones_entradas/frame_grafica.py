@@ -18,11 +18,11 @@ class GraficarFuncionFrame(ctk.CTkFrame):
         super().__init__(master)
         self.textbox = textbox
         self.canvas_frame = ctk.CTkFrame(self)
-        self.canvas_frame.pack(pady=10, fill="both", expand=True)
+        self.canvas_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
         # Etiqueta para mostrar los valores al pasar el mouse sobre la gráfica
         self.valor_label = ctk.CTkLabel(self, text="Valor: (x, y)", font=("Arial", 14))
-        self.valor_label.pack(pady=10)
+        self.valor_label.pack(pady=10, padx=10)
 
         # Botón de graficar
         self.boton_graficar = ctk.CTkButton(self, text="Graficar Función", command=self.graficar_funcion, width=200, height=40)

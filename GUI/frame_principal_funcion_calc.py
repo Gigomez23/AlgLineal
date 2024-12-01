@@ -1,12 +1,12 @@
 """
-Archivo: frame_principal_fucnion_calc.py 1.0.1
+Archivo: frame_principal_fucnion_calc.py 1.0.2
 Descripción: archivo que contiene la construcción de la calculadora de matrices y vectores.
 """
 from customtkinter import *
 from Historial.historial_matriz.matriz_historial import Historial
-from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import MetodosRaicesFrame
 from GUI.gui_calc_raices.submenu.funciones_raices import FuncionesRaicesFrame
-
+from GUI.gui_calc_raices.submenu.frame_raices import *
+# todo: fix el issue con el menu no mostrandose completo en modo de resize
 
 class CalculadoraFuncionApp(CTkFrame):
     """App de calculadora de matrices y vectores, convertida en Frame para integración."""
@@ -19,7 +19,7 @@ class CalculadoraFuncionApp(CTkFrame):
 
         # Frame principal que contendrá el menú y el área de visualización
         self.frame_principal = CTkFrame(self)
-        self.frame_principal.pack(fill="both", expand=True)
+        self.frame_principal.pack(fill="both", expand=True, padx=10)
 
         # Frame para el contenido principal
         self.frame_contenido = CTkFrame(self.frame_principal)
@@ -31,9 +31,13 @@ class CalculadoraFuncionApp(CTkFrame):
                                    font=CTkFont(family="Consolas", size=14))
         self.label_menu.pack(padx=5, pady=10)
 
-        self.btn_matrices = CTkButton(self.frame_menu, text="Funciones Mixtas",
-                                      command=lambda: self.mostrar_contenido('General'))
+        self.btn_matrices = CTkButton(self.frame_menu, text="Funciones Raices",
+                                      command=lambda: self.mostrar_contenido('Raices'))
         self.btn_matrices.pack(pady=10, padx=5)
+
+        self.btn_otros = CTkButton(self.frame_menu, text="Otros",
+                                      command=lambda: self.mostrar_contenido('Otros'))
+        self.btn_otros.pack(pady=10, padx=5)
 
         # Botón para regresar a la pantalla de inicio
         self.btn_regresar_inicio = CTkButton(self.frame_menu, text="Regresar a Inicio",
@@ -48,7 +52,7 @@ class CalculadoraFuncionApp(CTkFrame):
         self.boton_menu_icono.place(relx=0.0, rely=0.0, anchor="nw", x=20, y=1)
 
         # Inicializa la primera calculadora directamente
-        self.mostrar_contenido('General')
+        self.mostrar_contenido('Raices')
 
         # Área sensible para mostrar el menú
         self.area_sensible = CTkFrame(self.frame_principal, width=10, bg_color="transparent")
@@ -87,14 +91,15 @@ class CalculadoraFuncionApp(CTkFrame):
         for widget in self.frame_contenido.winfo_children():
             widget.destroy()
 
-        if opcion == 'General':
-            frame = CTkFrame(self.frame_contenido) #todo: add the calculadoras frame here
-            frame.pack(fill="both", expand=True)
-            frame_calculadora = FuncionesRaicesFrame(frame)
+        frame = CTkFrame(self.frame_contenido)  # todo: add the calculadoras frame here
+        frame.pack(fill="both", expand=True)
+
+        if opcion == 'Raices':
+            frame_calculadora = FrameRaices(frame)
             frame_calculadora.pack(fill="both", expand=True)
-        # elif opcion == 'matrices':
-        #     frame = CalculadoraMatricesFrame(self.frame_contenido, self.historial)
-        #     frame.pack(fill="both", expand=True)
+        elif opcion == 'Otros':
+            frame = FuncionesRaicesFrame(frame)
+            frame.pack(fill="both", expand=True)
         # elif opcion == 'mixta':
         #     frame = CalculadoraMixtaFrame(self.frame_contenido, self.historial)
         #     frame.pack(fill="both", expand=True)
