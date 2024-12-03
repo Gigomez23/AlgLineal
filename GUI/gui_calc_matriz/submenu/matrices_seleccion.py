@@ -34,7 +34,7 @@ class CalculadoraMatricesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Resolver Ecuaciones Lineales', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz",
+            values=['Metodo Gauss-Jordan', 'Operaciones de Matrices', "Inversa/Transpuesta Matriz",
                     "Determinante", 'Metodo Cramer'],
             anchor="w",
             width=250,
@@ -54,7 +54,7 @@ class CalculadoraMatricesFrame(CTkFrame):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Resolver Ecuaciones Lineales': GaussJordanFrame(self.frame_cambiable, self.historial),
+            'Metodo Gauss-Jordan': GaussJordanFrame(self.frame_cambiable, self.historial),
             'Operaciones de Matrices': OperacionesAritmeticasMatrizFrame(self.frame_cambiable, self.historial),
             'Inversa/Transpuesta Matriz': MatrizCalculatorInvTranFrame(self.frame_cambiable, self.historial),
             'Determinante': DeterminanteFrame(self.frame_cambiable, self.historial),
@@ -62,7 +62,7 @@ class CalculadoraMatricesFrame(CTkFrame):
         }
 
         # Muestra el frame por defecto
-        self.cambiar_frame('Resolver Ecuaciones Lineales')
+        self.cambiar_frame('Metodo Gauss-Jordan')
 
     def cambiar_frame(self, opcion_seleccionada):
         """Cambia el frame según la opción seleccionada en el menú."""

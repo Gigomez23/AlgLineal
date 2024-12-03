@@ -30,7 +30,7 @@ class FuncionesAdicionalesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Gráficar', 'Método de Newton Raphson', 'Método de Secante'],
+            values=['Gráficar'],
             anchor="w",
             width=250,
             hover=True,
