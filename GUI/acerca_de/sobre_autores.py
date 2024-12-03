@@ -9,10 +9,10 @@ class SobreAutoresFrame(ctk.CTkFrame):
 
         self.lista_imagenes = ["GUI/archivos_adicionales/v2.2.5.png", "GUI/archivos_adicionals/v2.8.1.png"]
         self.lista_imagenes.append("GUI/archivos_adicionals/v2.8.1.png")
-        self.text = ("Este programa fue desarrollado por un grupo de estudiante de la clase de Algebra Linea. \n"
+        self.text = ("Este programa fue desarrollado por un grupo de estudiante de la clase de Algebra Lineal de la UAM. \n"
                      "Gabriel Gómez, Gabriel Lacayo, Gessler Herrera, Oliver Espinoza.\n"
                      "Apoyo: ChatGPT (Alias el Mata burro)\n"
-                     "Retroalimentacion y guía del proyecto: Prof. Ivan Arguello")
+                     "Retroalimentacion y guía del proyecto: Prof. Ivan Argüello")
 
         self.frame_label = ctk.CTkFrame(self)
         self.frame_label.pack(padx=10, pady=10)
