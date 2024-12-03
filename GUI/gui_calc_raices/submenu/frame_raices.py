@@ -1,5 +1,5 @@
 """
-Archivo: frame_raices.py 1.0.0
+Archivo: frame_raices.py 1.0.3
 Descripción: Este archivo contiene la interfáz gráfica para los metodos de resolucion de raices.
 """
 import sympy as sp
@@ -7,6 +7,7 @@ from CTkToolTip import *
 import customtkinter as ctk
 from tkinter import Text, END
 from CTkMessagebox import CTkMessagebox
+from funciones_adicionales.ctk_xyframe import *
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 from GUI.gui_calc_raices.funciones_entradas.frame_grafica import *
 from GUI.gui_calc_raices.calculadoras.secante_resolve import *
@@ -19,11 +20,14 @@ class FrameRaices(ctk.CTkFrame):
         super().__init__(parent, *args, **kwargs)
         self.parent = parent
 
-        self.frame_superior = ctk.CTkFrame(self)
-        self.frame_superior.pack(padx=10, pady=10, expand=True)
+        self.frame_general = CTkXYFrame(master=self)
+        self.frame_general.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.frame_inferior = ctk.CTkFrame(self)
-        self.frame_inferior.pack(padx=10, pady=10, expand=True)
+        self.frame_superior = ctk.CTkFrame(self.frame_general)
+        self.frame_superior.pack(padx=10, pady=10, expand=True, fill="both")
+
+        self.frame_inferior = ctk.CTkFrame(self.frame_general)
+        self.frame_inferior.pack(padx=10, pady=10, expand=True, fill="both")
 
         # se crean frames para estructura general del programa
         self.frame_de_entradas = ctk.CTkFrame(self.frame_superior)
