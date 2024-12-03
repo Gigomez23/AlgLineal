@@ -4,7 +4,7 @@ Descripción: Este archivo contiene la interfáz gráfica de la calculadora de d
 """
 from ctkcomponents import *
 from CTkToolTip import *
-from funciones_adicionales.convertir_formato_lista import lista_a_matriz
+from utils.convertir_formato_lista import lista_a_matriz
 from models.modelos_matriz_vector.operaciones_determinante import *
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *

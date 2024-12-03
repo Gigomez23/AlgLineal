@@ -7,7 +7,7 @@ from fractions import Fraction
 from customtkinter import CTkButton
 from CTkMessagebox import CTkMessagebox
 from CTkToolTip import *
-from funciones_adicionales.dropdown_menu import CTkFloatingWindow
+from utils.dropdown_menu import CTkFloatingWindow
 
 
 class FrameEntradaMatriz(ctk.CTkFrame):

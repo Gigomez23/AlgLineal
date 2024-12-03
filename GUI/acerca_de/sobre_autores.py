@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from funciones_adicionales.CTkSlideView import CTkSlideView
+from utils.CTkSlideView import CTkSlideView
 from PIL import Image
 import os
 

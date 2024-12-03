@@ -1,5 +1,5 @@
 from customtkinter import CTkLabel, CTkFrame, CTkButton, CENTER, DISABLED, NORMAL
-from funciones_adicionales.CTkAnimator import CTkAnimator
+from utils.CTkAnimator import CTkAnimator
 
 class CTkSlideView(CTkFrame):
     def __init__(self, *args,

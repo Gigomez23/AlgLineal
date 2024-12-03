@@ -7,7 +7,7 @@ from CTkToolTip import *
 import customtkinter as ctk
 from tkinter import Text, END
 from CTkMessagebox import CTkMessagebox
-from funciones_adicionales.ctk_xyframe import *
+from utils.ctk_xyframe import *
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 from GUI.gui_calc_raices.funciones_entradas.frame_grafica import *
 from GUI.gui_calc_raices.calculadoras.secante_resolve import *

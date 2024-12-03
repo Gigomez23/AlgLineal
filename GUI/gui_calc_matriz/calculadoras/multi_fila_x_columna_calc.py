@@ -6,7 +6,7 @@ from CTkToolTip import *
 from ctkcomponents import *
 from models.modelos_matriz_vector.clase_muli_vectores import VectorMultiplicacionCalculadora
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_vector_frame import *
-from funciones_adicionales.convertir_formato_lista import *
+from utils.convertir_formato_lista import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 

@@ -7,7 +7,7 @@ from CTkToolTip import *
 from Historial.historial_matriz.historial_popup.historial_popup_ui import *
 from models.modelos_matriz_vector.operacion_cramer import CreadorDeCramer
 from GUI.gui_calc_matriz.interfaz_entrada.entrada_matriz_frame import *
-from funciones_adicionales.convertir_formato_lista import *
+from utils.convertir_formato_lista import *
 from GUI.gui_calc_matriz.tablas_gui.modulo_tablas_entradas import TablasFrame
 
 
