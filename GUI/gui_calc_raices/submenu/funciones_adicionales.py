@@ -1,5 +1,5 @@
 """
-Archivo: funciones_raices.py 1.0.0
+Archivo: funciones_adicionales.py 1.0.0
 Descripción: archivo que contiene el frame general para las calculadoras.
 """
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
@@ -7,9 +7,10 @@ from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import Meto
 from GUI.gui_calc_raices.calculadoras.frame_newt_raph_der_calc import MetodoNewRaphFrame
 from GUI.gui_calc_raices.calculadoras.secante_frame import SecanteFrame
 from GUI.gui_calc_raices.submenu.frame_raices import *
+from GUI.gui_calc_raices.calculadoras.graficadora_frame import FrameGraficadora
 
 
-class FuncionesRaicesFrame(CTkFrame):
+class FuncionesAdicionalesFrame(CTkFrame):
     def __init__(self, parent, *args, **kwargs):
         """Inicializa la calculadora en un frame."""
         super().__init__(parent, *args, **kwargs)
@@ -29,7 +30,7 @@ class FuncionesRaicesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Método Falsa Posicion/Bisseción', 'Método de Newton Raphson', 'Método de Secante', "prueba"],
+            values=['Gráficar', 'Método de Newton Raphson', 'Método de Secante'],
             anchor="w",
             width=250,
             hover=True,
@@ -47,14 +48,13 @@ class FuncionesRaicesFrame(CTkFrame):
 
         # Inicializa los frames diferentes para las opciones
         self.frames = {
-            'Método Falsa Posicion/Bisseción': MetodosRaicesFrame(self.frame_cambiable),
+            'Gráficar': FrameGraficadora(self.frame_cambiable),
             'Método de Newton Raphson': MetodoNewRaphFrame(self.frame_cambiable),
             'Método de Secante': SecanteFrame(self.frame_cambiable),
-            'prueba': FrameRaices(self.frame_cambiable)
         }
 
         # Muestra el frame por defecto
-        self.cambiar_frame('Método Falsa Posicion/Bisseción')
+        self.cambiar_frame('Gráficar')
 
     def cambiar_frame(self, opcion_seleccionada):
         """Cambia el frame según la opción seleccionada en el menú."""

@@ -4,7 +4,7 @@ Descripción: archivo que contiene la construcción de la calculadora de matrice
 """
 from customtkinter import *
 from Historial.historial_matriz.matriz_historial import Historial
-from GUI.gui_calc_raices.submenu.funciones_raices import FuncionesRaicesFrame
+from GUI.gui_calc_raices.submenu.funciones_adicionales import FuncionesAdicionalesFrame
 from GUI.gui_calc_raices.submenu.frame_raices import *
 
 class CalculadoraFuncionApp(CTkFrame):
@@ -97,7 +97,7 @@ class CalculadoraFuncionApp(CTkFrame):
             frame_calculadora = FrameRaices(frame)
             frame_calculadora.pack(fill="both", expand=True)
         elif opcion == 'Otros':
-            frame = FuncionesRaicesFrame(frame)
+            frame = FuncionesAdicionalesFrame(frame)
             frame.pack(fill="both", expand=True)
         # elif opcion == 'mixta':
         #     frame = CalculadoraMixtaFrame(self.frame_contenido, self.historial)
