@@ -2,9 +2,6 @@
 Archivo: frame_grafica.py 1.0.0
 Descripción: Este archivo contiene la interfáz gráfica de la grafica en un window.
 """
-# todo: funciones complejas no se grafican, x^3, trig, exp.
-# todo: queda un subproceso lo cual no permite cerrar correctamente la App
-
 import re
 import customtkinter as ctk
 import matplotlib.pyplot as plt
