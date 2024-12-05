@@ -1,5 +1,5 @@
 """
-Archivo: frame_entrada_funcion.py 1.7.3
+Archivo: frame_entrada_funcion.py 1.7.4
 Descripción: Este archivo contiene la interfáz gráfica de las entradas para las calculadoras de raices.
 """
 import re
@@ -100,10 +100,15 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         elif self.modo_superindice and event.char.isdigit():
             # Convertir el dígito a superíndice
             superindices = {'0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵',
-                            '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
+                            '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', 'x': 'ˣ'}
             texto_superindice = superindices.get(event.char, event.char)
             self.parent_textbox.insert("insert", texto_superindice)
             return "break"  # Evitar que la tecla normal se agregue
+        elif self.modo_superindice and event.char in ('x', 'X'):
+            texto_superindice = 'ˣ'
+            self.parent_textbox.insert("insert", texto_superindice)
+            return "break"  # Evitar que la tecla normal se agregue
+
 
         elif event.char in ('+', '-', '*', '/', '.', 'x', '(', ')'):
             # Permitir caracteres especiales
@@ -185,6 +190,9 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
                 self.expresion = (expresion_actual[:int(caret_pos)] +
                                   superindices.get(texto_boton, texto_boton) +
                                   expresion_actual[int(caret_pos):])
+            elif texto_boton == 'x' and self.modo_superindice:
+                self.expresion = expresion_actual[:int(caret_pos)] + 'ˣ' + expresion_actual[int(caret_pos):]
+
             else:
                 self.expresion = expresion_actual[:int(caret_pos)] + texto_boton + expresion_actual[int(caret_pos):]
 
@@ -208,9 +216,11 @@ class CalculadoraCientificaFrame(ctk.CTkFrame):
         funcion = self.parent_textbox.get()
 
         # Reemplaza superíndices Unicode por '**' para interpretación en Python
-        funcion_modificada = funcion.replace('²', '**2').replace('³', '**3').replace('⁴', '**4').replace('⁵', '**5') \
-            .replace('⁶', '**6').replace('⁷', '**7').replace('⁸', '**8').replace('⁹', '**9') \
-            .replace('⁰', '**0')
+        funcion_modificada = funcion.replace('²', '**2').replace('³', '**3') \
+            .replace('⁴', '**4').replace('⁵', '**5') \
+            .replace('⁶', '**6').replace('⁷', '**7') \
+            .replace('⁸', '**8').replace('⁹', '**9') \
+            .replace('⁰', '**0').replace('ˣ', '**x')
 
         # Reemplazar nombres de funciones y corregir instancias como 3x a 3*x
         funcion_modificada = funcion_modificada.replace('sen', 'sin').replace('√', 'sqrt').replace('^', '**')
