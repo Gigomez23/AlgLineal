@@ -22,7 +22,7 @@ class GraficarFuncionFrame(ctk.CTkFrame):
         self.botones_frame.pack(pady=10, padx=10, expand=True, side="right", fill="y")
 
         self.boton_graficar = ctk.CTkButton(self.botones_frame, text="Graficar Función", command=self.graficar_funcion)
-        self.boton_graficar.pack(pady=10)
+        self.boton_graficar.pack(pady=10, padx=10)
 
         # Inicializar canvas, toolbar, marcador y botón
         self.canvas = None
