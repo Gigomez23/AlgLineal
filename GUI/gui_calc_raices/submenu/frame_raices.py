@@ -1,13 +1,9 @@
 """
-Archivo: frame_raices.py 1.1.0
+Archivo: frame_raices.py 1.1.1
 Descripción: Este archivo contiene la interfáz gráfica para los metodos de resolucion de raices.
 """
-import sympy as sp
 from CTkToolTip import *
 from ctkcomponents import *
-import customtkinter as ctk
-from tkinter import Text, END
-from CTkMessagebox import CTkMessagebox
 from utils.ctk_xyframe import *
 from GUI.gui_calc_raices.funciones_entradas.frame_entrada_funcion import CalculadoraCientificaFrame
 from GUI.gui_calc_raices.funciones_entradas.frame_grafica import *
@@ -58,11 +54,15 @@ class FrameRaices(ctk.CTkFrame):
 
         self.entry_xi = ctk.CTkEntry(self.frame_de_entradas, width=200, font=("Arial", 15))
         self.entry_xi.grid(row=1, column=1, padx=10, pady=10)
+        self.tooltip_valor_inicial = CTkToolTip(self.entry_xi, message="Valor Inicial", follow=False)
 
         ctk.CTkLabel(self.frame_de_entradas, text="Intervalo superior (Xu):", font=("Arial", 17)).grid(row=2, column=0,
                                                                                                        padx=10, pady=10)
+
         self.entry_xu = ctk.CTkEntry(self.frame_de_entradas, width=200, font=("Arial", 15))
         self.entry_xu.grid(row=2, column=1, padx=10, pady=10)
+        self.tooltip_valor_opcional = CTkToolTip(self.entry_xu, message="Esta entrada es opcional si va a resolver"
+                                                                        "por metodo de Newton-Raphston", follow=False)
 
         ctk.CTkLabel(self.frame_de_entradas, text="Error de tolerancia:", font=("Arial", 17)).grid(row=3, column=0,
                                                                                                    padx=10, pady=10)
