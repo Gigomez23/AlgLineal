@@ -98,4 +98,3 @@ def mostrar_resultados_newton(iteraciones, xr, converged, parent_frame, toleranc
     # Separador entre información y tabla
     separator = ctk.CTkFrame(resultados_ventana, height=2, width=600, fg_color="gray")
     separator.pack(pady=10, padx=10, fill="x")
-
