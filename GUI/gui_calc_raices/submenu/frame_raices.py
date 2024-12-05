@@ -1,9 +1,10 @@
 """
-Archivo: frame_raices.py 1.0.3
+Archivo: frame_raices.py 1.1.0
 Descripción: Este archivo contiene la interfáz gráfica para los metodos de resolucion de raices.
 """
 import sympy as sp
 from CTkToolTip import *
+from ctkcomponents import *
 import customtkinter as ctk
 from tkinter import Text, END
 from CTkMessagebox import CTkMessagebox
@@ -44,6 +45,13 @@ class FrameRaices(ctk.CTkFrame):
         self.tooltip_entry_funcion = CTkToolTip(self.entrada_de_funcion,
                                                 message="Presione shift para salir del modo exponencial. ",
                                                 follow=False)
+
+        self.btn_recomendacion = ctk.CTkButton(self.frame_de_entradas, text="I", command=self.recomendar_metodo,
+                                               font=("Georgia", 17), width=50)
+        self.btn_recomendacion.grid(row=0, column=2, pady=10, padx=10, sticky='n')
+        self.tooltip_recomendacion = CTkToolTip(self.btn_recomendacion, message="Presione para recibir una "
+                                                                                "recomendación de que metodo "
+                                                                                "utilizar para resolver.", follow=False)
 
         ctk.CTkLabel(self.frame_de_entradas, text="Intervalo inferior (Xi):", font=("Arial", 17)).grid(row=1, column=0,
                                                                                                        padx=10, pady=10)
@@ -89,11 +97,61 @@ class FrameRaices(ctk.CTkFrame):
         self.btn_resolver.grid(row=6, column=0, columnspan=2, padx=10, pady=20)
 
         self.frame_de_grafica = GraficarFuncionFrame(self.frame_superior, self.entrada_de_funcion)
-        self.frame_de_grafica.grid(row=0, column=1, columnspan=2, sticky='nsew', padx=10, pady=10)
+        self.frame_de_grafica.grid(row=0, column=1, columnspan=2, sticky='nse', padx=10, pady=10)
 
         # Crear el frame de la calculadora científica
         self.calculadora_cientifica_frame = CalculadoraCientificaFrame(self.frame_de_botones, self.entrada_de_funcion)
         self.calculadora_cientifica_frame.pack(pady=10, fill="both", expand=True)
+
+    def recomendar_metodo(self):
+        """
+        Método que analiza la función ingresada y recomienda el método más eficiente para resolverla.
+        """
+        try:
+            # Obtener la función desde el cuadro de texto
+            funcion_texto = self.calculadora_cientifica_frame.obtener_funcion()
+            funcion = sp.sympify(funcion_texto)  # Convertir texto a función simbólica
+
+            # Leer entradas del intervalo y parámetros
+            xi = float(self.entry_xi.get())
+            xu = float(self.entry_xu.get())
+
+            # Verificar que Xi y Xu sean válidos
+            if xi >= xu:
+                raise ValueError("El intervalo inferior debe ser menor que el superior.")
+
+            # Evaluar la función en los extremos del intervalo
+            f_xi = funcion.evalf(subs={sp.symbols('x'): xi})
+            f_xu = funcion.evalf(subs={sp.symbols('x'): xu})
+
+            # Verificar cambio de signo
+            if f_xi * f_xu < 0:
+                # Cambio de signo → Recomendación Bisección/Falsa Posición
+                metodo = "Método de Bisección o Falsa Posición"
+            else:
+                # Verificar derivada para métodos basados en derivadas
+                derivada = sp.diff(funcion, sp.symbols('x'))
+                derivada_xi = derivada.evalf(subs={sp.symbols('x'): xi})
+                derivada_xu = derivada.evalf(subs={sp.symbols('x'): xu})
+
+                if derivada_xi != 0 and derivada_xu != 0:
+                    # Si la derivada no es cero → Recomendación Newton-Raphson
+                    metodo = "Método de Newton-Raphson"
+                else:
+                    # Último recurso → Método de Secante
+                    metodo = "Método de Secante"
+
+            # Mostrar recomendación
+            CTkNotification(master=self, state="info",
+                            message=f"El método más eficiente para \nresolver este problema sería: {metodo}",
+                            side="right_bottom")
+
+        except ValueError as ve:
+            CTkMessagebox(title="Error", message=str(ve), icon="warning")
+        except Exception as e:
+            CTkMessagebox(title="Error inesperado",
+                          message=f"Ocurrió un error al analizar la función: {str(e)}",
+                          icon="warning")
 
     def resolver(self):
         seleccion = self.menu_metodo_res.get()
