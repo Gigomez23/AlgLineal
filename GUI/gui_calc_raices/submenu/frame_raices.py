@@ -1,5 +1,5 @@
 """
-Archivo: frame_raices.py 1.1.1
+Archivo: frame_raices.py 1.1.4
 Descripción: Este archivo contiene la interfáz gráfica para los metodos de resolucion de raices.
 """
 from CTkToolTip import *
@@ -174,10 +174,10 @@ class FrameRaices(ctk.CTkFrame):
             max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
 
             # Llamar a la función externa para calcular el método de Falsa Posición
-            iteraciones, xr, converged = calcular_falsa_posicion(expr_latex, xi, xu, error_tol, max_iter)
+            iteraciones, xr, converged, error = calcular_falsa_posicion(expr_latex, xi, xu, error_tol, max_iter)
 
             # Mostrar los resultados usando la función externa
-            mostrar_resultados(iteraciones, xr, converged, "Falsa Posición")
+            mostrar_resultados(iteraciones, xr, converged, "Falsa Posición", error)
 
         except Exception as e:
             CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning", fade_in_duration=2)
@@ -191,10 +191,10 @@ class FrameRaices(ctk.CTkFrame):
             max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
 
             # Llamar a la función externa para calcular el método de Bisección
-            iteraciones, xr, converged = calcular_biseccion(expr_latex, xi, xu, error_tol, max_iter)
+            iteraciones, xr, converged, error = calcular_biseccion(expr_latex, xi, xu, error_tol, max_iter)
 
             # Mostrar los resultados usando la función externa
-            mostrar_resultados(iteraciones, xr, converged, "Bisección")
+            mostrar_resultados(iteraciones, xr, converged, "Bisección", error)
 
         except Exception as e:
             CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning", fade_in_duration=2)
@@ -207,10 +207,10 @@ class FrameRaices(ctk.CTkFrame):
             max_iter = int(self.entry_max_iter.get()) if self.entry_max_iter.get() else 100
 
             # Llamar a la función externa para calcular el método de Newton-Raphson
-            iteraciones, raiz, converged = calcular_newton_raphson(expr_texto, x0, error_tol, max_iter)
+            iteraciones, raiz, converged, error = calcular_newton_raphson(expr_texto, x0, error_tol, max_iter)
 
             # Mostrar los resultados usando la función externa
-            mostrar_resultados_newton(iteraciones, raiz, converged, self)
+            mostrar_resultados_newton(iteraciones, raiz, converged, self, error)
 
         except ValueError as e:
             CTkMessagebox(title="Error", message=f"Ocurrió un error: {str(e)}", icon="warning", fade_in_duration=2)
@@ -223,9 +223,9 @@ class FrameRaices(ctk.CTkFrame):
         tolerancia = self.entry_error_tol.get()
         max_iter = self.entry_max_iter.get()
 
-        iteraciones, raiz, convergencia = calcular_secante(funcion_str, x0, x1, tolerancia, max_iter)
+        iteraciones, raiz, convergencia, error = calcular_secante(funcion_str, x0, x1, tolerancia, max_iter)
         if iteraciones:  # Si el cálculo fue exitoso
-            mostrar_resultados_secante(iteraciones, raiz, convergencia)
+            mostrar_resultados_secante(iteraciones, raiz, convergencia, self, error)
 
     def limpiar_entradas(self):
         self.entrada_de_funcion.delete(0, END)
@@ -242,5 +242,3 @@ if __name__ == "__main__":
     app.title("Métodos de Raíces")
     FrameRaices(app).pack(fill="both", expand=True)
     app.mainloop()
-
-
