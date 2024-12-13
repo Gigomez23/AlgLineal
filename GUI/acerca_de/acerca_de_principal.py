@@ -26,7 +26,6 @@ class AcercaDeApp(ctk.CTkToplevel):
         # Crear frames de contenido
         self.frames = {
             "Acerca De": AcercaDeFrame(self.content_frame),
-            "Manual de Uso": ManualDeUsoFrame(self.content_frame),
             "Sobre Autores": SobreAutoresFrame(self.content_frame)
         }
 

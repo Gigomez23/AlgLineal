@@ -3,10 +3,8 @@ Archivo: funciones_adicionales.py 1.0.0
 Descripción: archivo que contiene el frame general para las calculadoras.
 """
 from customtkinter import *  # Importa CustomTkinter para los componentes de la UI
-from GUI.gui_calc_raices.calculadoras.falsa_pos_bissecion_calc_frame import MetodosRaicesFrame
-from GUI.gui_calc_raices.calculadoras.frame_newt_raph_der_calc import MetodoNewRaphFrame
-from GUI.gui_calc_raices.calculadoras.secante_frame import SecanteFrame
-from GUI.gui_calc_raices.submenu.frame_raices import *
+from Desarrollo.frame_newt_raph_der_calc import MetodoNewRaphFrame
+from Desarrollo.secante_frame import SecanteFrame
 from GUI.gui_calc_raices.calculadoras.graficadora_frame import FrameGraficadora
 
 
@@ -30,7 +28,7 @@ class FuncionesAdicionalesFrame(CTkFrame):
         # Menú de selección del tipo de calculadora
         self.btn_menu_tipo_calculadora = CTkOptionMenu(
             master=self.frame_encabezado,
-            values=['Gráficar', 'Método de Newton Raphson', 'Método de Secante'],
+            values=['Gráficar'],
             anchor="w",
             width=250,
             hover=True,

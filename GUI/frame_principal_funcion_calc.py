@@ -7,6 +7,7 @@ from Historial.historial_matriz.matriz_historial import Historial
 from GUI.gui_calc_raices.submenu.funciones_adicionales import FuncionesAdicionalesFrame
 from GUI.gui_calc_raices.submenu.frame_raices import *
 
+
 class CalculadoraFuncionApp(CTkFrame):
     """App de calculadora de matrices y vectores, convertida en Frame para integración."""
 

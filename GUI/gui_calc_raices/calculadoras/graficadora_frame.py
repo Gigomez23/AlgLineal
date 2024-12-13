@@ -1,5 +1,5 @@
 """
-Archivo: graficadora_frame.py 1.0.0
+Archivo: graficadora_frame.py 1.0.1
 Descripción: Este archivo contiene la interfáz gráficadora.
 """
 import customtkinter as ctk
@@ -13,11 +13,11 @@ class FrameGraficadora(ctk.CTkFrame):
         super().__init__(parent, *args, **kwargs)
         self.parent = parent
 
-        self.frame_de_entradas = ctk.CTkFrame(self)
-        self.frame_de_entradas.pack(padx=10, pady=10, expand=True, fill="x")
-
         self.frame_superior = ctk.CTkFrame(self)
         self.frame_superior.pack(padx=10, pady=10, expand=True, fill="x")
+
+        self.frame_de_entradas = ctk.CTkFrame(self)
+        self.frame_de_entradas.pack(padx=10, pady=10, expand=True, fill="x")
 
         self.frame_de_botones = ctk.CTkFrame(self)
         self.frame_de_botones.pack(padx=10, pady=10, expand=True, fill="x")
